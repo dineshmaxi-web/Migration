@@ -1,0 +1,304 @@
+[{
+    "groupLabel" : "Customer Contact Information",
+    "groupName" :  "CustomerContactInformation",
+    "isActive" : 1,
+    "fields" : [
+        {
+            "fieldName" : "name",
+            "fieldLabel" : "Name",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "emailAddress",
+            "fieldLabel" : "Email Address",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "phoneNumber",
+            "fieldLabel" : "Phone Number",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "address",
+            "fieldLabel" : "Address",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "city",
+            "fieldLabel" : "City",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "country",
+            "fieldLabel" : "Country",
+            "fieldType" : "select",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "state",
+            "fieldLabel" : "State/province",
+            "fieldType" : "select",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "zipCode",
+            "fieldLabel" : "ZIP Code",
+            "fieldType" : "text",
+            "isActive" : 1
+        }
+    ]
+},{
+    "groupLabel" :  "Opportunity Information",
+    "groupName" :  "OpportunityInformation",
+    "isActive" : 1,
+    "fields" : [
+        {
+            "fieldName" : "accountNumber",
+            "fieldLabel" : "Account Number",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "purposeOfMigration",
+            "fieldLabel" : "Purpose Of Migration",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "targetEquipmentPurchased",
+            "fieldLabel" : "Target Equipment Purchase Yet?",
+            "fieldType" : "checkbox",
+            "show" : false,
+            "isActive" : 1,
+            "subField" : [{
+                        "fieldName" : "installed",
+                        "fieldLabel" : "If so, installed?",
+                        "fieldType" : "checkbox",
+                        "isActive" : 1                        
+                    }]
+        },
+        {
+            "fieldName" : "startDate",
+            "fieldLabel" : "Estimated Start date of Migration?",
+            "fieldType" : "date",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "completionDate",
+            "fieldLabel" : "Target Completion Date(only if hard date required)?",
+            "fieldType" : "date",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "wasCode",
+            "fieldLabel" : "Internal accounting (WAS Code)",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "deliverySpecific",
+            "fieldLabel" : "Delivery Specific",
+            "fieldType" : "select",
+            "isActive" : 1,
+            "subField":[{
+                "fieldName" : "OffShore",
+                "fieldLabel" : "Off Shore",
+                "fieldType" : "option",
+                "isActive" : 1
+            },{
+                "fieldName" : "OnShore",
+                "fieldLabel" : "On Shore",
+                "fieldType" : "option",
+                "isActive" : 1
+            }]
+        },
+        {
+            "fieldName" : "migrationType",
+            "fieldLabel" : "Migration Type",
+            "fieldType" : "select",
+            "isActive" : 1,
+            "subField":[{
+                "fieldName" : "storageMigration",
+                "fieldLabel" : "Storage Migration",
+                "fieldType" : "option",
+                "isActive" : 1
+            },{
+                "fieldName" : "seasonalMigration",
+                "fieldLabel" : "Seasonal Migration",
+                "fieldType" : "option",
+                "isActive" : 1
+            }]
+        },
+        {
+            "fieldName" : "description",
+            "fieldLabel" : "Description",
+            "fieldType" : "textarea",
+            "isActive" : 1
+        }
+    ]
+},{
+    "groupLabel" :  "Management Information",
+    "groupName" :  "ManagementInformation",
+    "isActive" : 1,
+    "fields" : [
+        {
+            "fieldName" : "freeze",
+            "fieldLabel" : "Are there any Freeze windows?",
+            "fieldType" : "checkbox",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "outageWindows",
+            "fieldLabel" : "Outage windows;frequency, restrictions notification period:",
+            "fieldType" : "text",
+            "isActive" : 1
+        }
+    ] 
+},{
+    "groupLabel" :  "Site Details",
+    "groupName" :  "SiteDetails",
+    "isActive" : 1,
+    "fields" : [
+        {
+            "fieldName" : "sourceSiteName",
+            "fieldLabel" : "Source Site Name",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "sourceSiteAddress",
+            "fieldLabel" : "Source Site Address",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "sourceArray",
+            "fieldLabel" : "Source Array(Vendor and Model)",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "noOfSourceArray",
+            "fieldLabel" : "No. of Source Arrays",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "storageVirtualization",
+            "fieldLabel" : "Storage virtualization",
+            "fieldType" : "checkbox",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "destinationArray",
+            "fieldLabel" : "Destination Array(Vendor and Model)",
+            "fieldType" : "text",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "migrationbetween",
+            "fieldLabel" : "Migration between DC's",
+            "fieldType" : "checkbox",
+            "isActive" : 1,
+            "subField" : [
+                {
+                    "fieldName" : "destinationSiteName",
+                    "fieldLabel" : "Destination Site Name",
+                    "fieldType" : "text",
+                    "isActive" : 1
+                },
+                {
+                    "fieldName" : "destinationSiteAddress",
+                    "fieldLabel" : "Destination Site Address",
+                    "fieldType" : "text",
+                    "isActive" : 1
+                }
+            ]
+        },
+        {
+            "fieldName" : "connection",
+            "fieldLabel" : "Connection between Source and Destination",
+            "fieldType" : "checkbox",
+            "isActive" : 1
+        },
+        {
+            "fieldName" : "connectivity",
+            "fieldLabel" : "Connectivity",
+            "fieldType" : "select",
+            "isActive" : 1,
+            "subField": [
+                {   
+                    "fieldName": "CopperChannel",
+                    "fieldLabel": "Copper Channel",
+                    "fieldType": "option",
+                    "isActive": 1
+                },
+                {
+                  "fieldName": "FibreChannel",
+                  "fieldLabel": "Fibre Channel",
+                  "fieldType": "option",
+                  "isActive": 1,
+                  "show" : false,
+                  "subField" : [{
+                      "fieldName" : "No.ofSANPorts",
+                      "fieldLabel" : "No .of SAN Ports",
+                      "fieldType" : "text",
+                      "isActive" : 1
+                  }]
+                }]
+        }
+    ] 
+},{
+    "groupLabel": "Servers in Migration Scope",
+    "groupName": "ServersinMigrationScope",
+    "isActive": 1,
+    "fields": [
+            {
+            "fieldName": "servers",
+            "fieldLabel": "Servers",
+            "fieldType": "select",
+            "isActive": 1,
+            "subField": [
+                { 
+                    "fieldName": "vMware",
+                    "fieldLabel": "VMware",
+                    "fieldType": "option",
+                    "isActive": 1,
+                    "show" : false,
+                    "subField" : [ {
+                        "fieldName": "numberofESXHosts",
+                        "fieldLabel": "Number of ESX Hosts",
+                        "placeholder": "No. of ESX Hosts",
+                        "fieldType": "text",
+                        "isActive": 1
+                    },
+                    {
+                        "fieldName": "numberofVMGuests",
+                        "fieldLabel": "Number of VM Guests",
+                        "placeholder": "NO. of VM Guests",
+                        "fieldType": "text",
+                        "isActive": 1
+                    },
+                    {
+                        "fieldName": "numberofSANBoots",
+                        "fieldLabel": "Number of SAN Boots",
+                        "placeholder": "No. of SAN Boots",
+                        "fieldType": "text",
+                        "isActive": 1
+                    }]
+                },
+                {
+                    "fieldName": "aIX",
+                    "fieldLabel": "AIX",
+                    "fieldType": "option",
+                    "isActive": 1
+                }
+            ]
+        }
+    ]
+}]

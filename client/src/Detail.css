@@ -1,0 +1,73 @@
+.details-view .btn{
+    margin-top: 5%;
+    margin-left: 48%;
+}
+
+.modal_data {
+    position: absolute;
+    top: 80px;
+    left: 50px;
+    right: 50px;
+    bottom: 40px;
+    border: 1px solid rgb(101, 174, 241);
+    background: #d5e7f9;
+    overflow: auto;
+    border-radius: 4px;
+    outline: none;
+    padding: 20px;
+    font-size: 15px;
+    font-weight: 400;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.modal_data label::after {
+    content: " ";
+}
+
+.ReactModalPortal input,label {
+    width: 100%;
+}
+
+.ReactModal__Overlay{
+    background-color: #fbfcfd !important;
+}
+
+.CloseData-btn{
+	float: right;
+    margin: -12px;
+    border: none;
+}
+
+.CloseData-btn:hover {
+	background-color: tomato;
+	color: white;
+}
+
+.fullView:hover{
+    cursor: pointer;
+}
+
+.ag-theme-balham .ag-header-row{
+    background-color: #1b75bc;
+    color: white;
+}
+
+.ag-theme-balham{
+    height: 100vh;
+    width: 100%;
+    padding: 55px;
+    display: inline-block;
+}
+
+.ag-theme-balham .ag-row-even {
+    background-color: #c1d0e2 !important;
+}
+
+.ag-theme-balham .ag-row-odd {
+    background-color: #e3ebf1 !important;
+}
+
+.ag-theme-balham .ag-root {
+    border: 1px solid #BDC3C7;
+    margin-top: 15px;
+}
