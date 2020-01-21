@@ -61,8 +61,6 @@ class Login extends React.Component {
                             <input type="submit"  className="fadeIn fourth" value="Log In" />
                         </form>
                         <div id="formFooter">
-                            <a className="underlineHover" href="#" onClick={this.handleForgetPass}>Forgot Password?</a><br/>
-                            Create New Account? <a className="underlineHover" onClick={this.handleRegister} href="#">Sign Up</a>
                         </div>
                 </div>
             </div>
@@ -72,11 +70,6 @@ class Login extends React.Component {
         if(this.state.showHome){
             return(
                 <GetData />
-            )
-        }
-        if(this.state.showRegister) {
-            return (
-                <Register />
             )
         }
     }

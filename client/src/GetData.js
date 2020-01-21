@@ -8,7 +8,7 @@ import logo from './vtglogo.jpg';
 import './Detail.css';
 import Modal from 'react-modal';
 import _ from 'lodash';
-var args = ["name", "emailAddress", "country", "state"];
+var args = ["name", "emailAddress", "country", "state", "zipCode"];
 class GetData extends Component {
 
   state = {
@@ -126,6 +126,8 @@ console.log(JSON.stringify(rowDataSet));
         <div className="data-modal">
           <div className="header">
             <img src={logo} className="logo"></img>
+            <button className="CloseData-btn btn-primary" id="CloseData" name="CloseData" onClick={this.closeModal}>
+          <i class="fa fa-arrow-circle-left"></i> BACK</button>
           </div>
           <Modal
             isOpen={this.state.modalIsOpen}
@@ -134,7 +136,6 @@ console.log(JSON.stringify(rowDataSet));
             ariaHideApp={false}
             className="modal_data"
           >
-            <button className="CloseData-btn" id="CloseData" name="CloseData" onClick={this.closeModal}>&times;</button>
             <div className="row">
               {
                 keys.map((data) => (

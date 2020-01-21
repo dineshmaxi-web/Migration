@@ -6,7 +6,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+var url = "mongodb://root:Qucvws3a1k93iGc@localhost:27017";
 var dbo;
 
 MongoClient.connect(url, function(err, db) {
