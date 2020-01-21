@@ -2,6 +2,11 @@ import React from 'react';
 import Modal from 'react-modal';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import './App.css';
+import 'flatpickr/dist/themes/material_green.css';
+import Flatpickr from 'react-flatpickr';
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
+import Input from 'react-phone-number-input/input';
 
 
 class Type extends React.Component {
@@ -13,20 +18,26 @@ class Type extends React.Component {
     modalIsOpen: false,
     tempVar: "",
     sendArray: "",
-    country: "",
-    region: "",
-    showISCSI : false
+    country: "United States",
+    state: "Texas",
+    showISCSI : false,
+    date: new Date(),
+    phoneNumber: ""
   }
 
   selectCountry = (val) => {
+    var groupName = this.props.group.groupName;
+
     this.setState({ country: val });
-     
-    this.props.func("country", val);
+    this.props.func("country", val, groupName);
+    this.props.field.showRequired = false;
   }
 
   selectRegion = (val) => {
-    this.setState({ region: val });
-    this.props.func("state", val);
+    var groupName = this.props.group.groupName;
+
+    this.setState({ state: val });
+    this.props.func("state", val, groupName);
   }
 
   changeShowInstall = () => {
@@ -36,12 +47,15 @@ class Type extends React.Component {
       this.setState({ showInstall: true })
   }
 
-  onChangeHandler = (event) => {
-    var fieldName = event.target.name;
-    var fieldValue = event.target.value;
 
-    if (event.target.type === "text" || event.target.type === "date" || event.target.type === "textarea") {
-      this.props.func(fieldName, fieldValue);
+  onChangeHandler = (fieldName, fieldValue, fieldType, event) => {
+
+    var groupName = this.props.group.groupName;
+
+
+    if (fieldType === "text" || fieldType === "date" || fieldType === "phoneNumber" || fieldType === "textarea") {
+    
+      this.props.func(fieldName, fieldValue, groupName);
 
       //Changing show Required to true and false
       this.props.group.fields.map(field => {
@@ -51,31 +65,31 @@ class Type extends React.Component {
               if(subField.hasOwnProperty("subField"))
               {
                 subField.subField.map(subSubField => {
-                  if(subSubField.fieldName === event.target.name && event.target.value !== "")
+                  if(subSubField.fieldName === fieldName && fieldValue !== "")
                   {
                     subSubField.showRequired = false;
                   }
-                  if(subSubField.fieldName === event.target.name && event.target.value === "")
+                  if(subSubField.fieldName === fieldName && fieldValue === "")
                   {
                     subSubField.showRequired = true;
                   }
                 })
               }
               
-            if(subField.fieldName === event.target.name && event.target.value !== "")
+            if(subField.fieldName === fieldName && fieldValue !== "")
             {
               subField.showRequired = false;
             }
-            if(subField.fieldName === event.target.name && event.target.value === "")
+            if(subField.fieldName === fieldName && fieldValue === "")
             {
               subField.showRequired = true;
             }
           })
         }
         else{
-          if(field.fieldName === event.target.name && event.target.value !== "")
+          if(field.fieldName === fieldName && fieldValue !== "")
             field.showRequired = false;
-          if(field.fieldName === event.target.name && event.target.value === "")
+          if(field.fieldName === fieldName && fieldValue === "")
             field.showRequired = true;
         }
       })
@@ -90,11 +104,16 @@ class Type extends React.Component {
 
     }
 
-    if (event.target.type === "checkbox") {
+    
+      if (fieldType === "checkbox") {
+
+      var groupName = this.props.group.groupName;
+      console.log(event.target.checked)
       if (event.target.checked)
       {
-        this.props.func(fieldName, 1);
-
+        
+        this.props.func(fieldName, 1, groupName);
+        
         //Changing show Required to true
         this.props.group.fields.map(field => {
           if(field.hasOwnProperty("subField"))
@@ -113,14 +132,43 @@ class Type extends React.Component {
             this.props.changeFullGroup(this.props.stateGroups)
           }
         })
-
       }
-
       else{
-        this.props.func(fieldName, 0);
-      }
+        console.log(this.props.field)
 
+        //Changing show Required to false
+        this.props.group.fields.map(field => {
+          if(field.hasOwnProperty("subField"))
+          {
+            field.subField.map(subField => {
+              subField.mandatory = false;
+              subField.showRequired = false;
+            })
+          }
+        })
+
+        this.props.stateGroups.map(group => {
+          if(group.groupName === this.props.group.groupName)
+          {
+            group = this.props.group;
+            this.props.changeFullGroup(this.props.stateGroups)
+          }
+        })
+
+        if(event.target.name === "migrationbetween")
+        {
+          this.props.delSubField(this.props.group.groupName, "destinationSiteName","destinationSiteAddress");
+        }
+        if(event.target.name === "freeze")
+        {
+          console.log(this.props.group.groupName)
+          this.props.delSubField(this.props.group.groupName, "when");
+        }
+        
+        this.props.func(fieldName, 0, groupName);
+      }
     }
+    
   }
 
   changeShowDsn = () => {
@@ -147,7 +195,7 @@ class Type extends React.Component {
 
   addNewServerInfoFunc = () => {
     let lengthOfFields = this.props.group.fields.length - 1;
-
+    console.log(lengthOfFields)
     var newServer = {
       "fieldName": this.props.group.fields[lengthOfFields].fieldName + "_1",
       "fieldLabel": "Servers",
@@ -219,6 +267,7 @@ class Type extends React.Component {
   }
 
   onClickAddServerName = () => {
+    this.setState({ modalIsOpen: false });
     var count = 0;
     var tempField = this.props.group.fields[0].subField;
 
@@ -228,7 +277,7 @@ class Type extends React.Component {
       }
     })
 
-    if (count === 0) {
+    if (count === 0 && this.state.tempVar !== "") {
       this.props.addNewServer({
         fieldName: this.state.tempVar,
         fieldLabel: this.state.tempVar,
@@ -241,11 +290,12 @@ class Type extends React.Component {
   }
 
   handleSelect1 = (event) => {
+    var groupName = this.props.group.groupName;
     var fieldName = event.target.name;
     var fieldValue = event.target.value;
-    this.props.func(fieldName, fieldValue);
 
-    
+    this.props.func(fieldName, fieldValue, groupName);
+
     if(event.target.name === "deliverySpecific" || event.target.name === "migrationType")
     {
       console.log(this.props.group)
@@ -277,6 +327,8 @@ class Type extends React.Component {
       let groupFour = this.props.stateGroups;
       groupFour[4].isActive = 1;
 
+      this.props.delSubField(this.props.group.groupName, "NoofISCSI");
+      
       //Mandatory true in fifth section
       groupFour[4].fields.map(field => {
         
@@ -311,7 +363,6 @@ class Type extends React.Component {
         {
           if(subField.fieldLabel === "Fiber Channel")
           {
-            this.props.delConnectivitySubField("NoofSANPorts");
             this.props.field.showRequired = false;
 
             subField.subField.map(subSubField => {
@@ -332,30 +383,33 @@ class Type extends React.Component {
               })
             })
           }
-          // else{
-          //   subField.subField.map(subSubField => {
-          //     subSubField.mandatory = false;
-                
-          //     this.props.group.fields.map(field => {
-          //       if(field.fieldName === fieldName)
-          //       {
-          //         field = this.props.field
-          //         this.props.stateGroups[3] = this.props.group
-          //         this.props.changeFullGroup(this.props.stateGroups)
-          //       }
-          //     })
-          //   })
-          // }
+          else{
+            subField.subField.map(subSubField => {
+                subSubField.mandatory = false;
+
+              this.props.group.fields.map(field => {
+                if(field.fieldName === fieldName)
+                {
+                  field = this.props.field
+                  this.props.stateGroups[3] = this.props.group
+                  this.props.changeFullGroup(this.props.stateGroups)
+                }
+              })
+            })
+          }
         }
       })   
     }
 
     if(fieldValue === "NAS"){
-      
+      this.props.delFifthSecState();
+      this.props.delSubField(this.props.group.groupName, "NoofISCSI","NoofSANPorts");
+
       let groupFour = this.props.stateGroups;
       this.setState({ showISCSI: false, showSan: false })
       groupFour[4].isActive = 0;
       this.props.field.showRequired = false;
+
 
       //Mandatory false in fourth section last elements
       this.props.field.subField.map(subField => {
@@ -400,6 +454,7 @@ class Type extends React.Component {
           })
         }
       })
+      
       this.props.changeFullGroup(groupFour);
     }
 
@@ -407,6 +462,8 @@ class Type extends React.Component {
       this.setState({ showISCSI: true, showSan: false })
       let groupFour = this.props.stateGroups;
       groupFour[4].isActive = 1;
+
+      this.props.delSubField(this.props.group.groupName,"NoofSANPorts");
 
       //Mandatory true in fifth section
       groupFour[4].fields.map(field => {
@@ -441,7 +498,6 @@ class Type extends React.Component {
         {
           if(subField.fieldLabel === "ISCSI")
           {
-            this.props.delConnectivitySubField("NoofISCSI");
             this.props.field.showRequired = false;
 
             subField.subField.map(subSubField => {
@@ -481,12 +537,25 @@ class Type extends React.Component {
   }
 
   handleSelect2 = (event) => {
-    var fieldName = event.target.name
+    var groupName = this.props.group.groupName;
+    var fieldName = event.target.name;
     var fieldValue = event.target.value;
 
     if (event.target.value === "VMware") {
-      this.setState({ [event.target.value]: event.target.value });
-      this.props.func(fieldName, fieldValue);
+
+      this.props.field.showRequired = false;
+
+      this.props.group.fields.map(field => {
+        if(field.fieldName === fieldName)
+        {
+          field = this.props.field
+          this.props.stateGroups[4] = this.props.group
+          this.props.changeFullGroup(this.props.stateGroups)
+        }
+      })
+
+      this.setState({[event.target.value]: event.target.value});
+      this.props.func(fieldName, fieldValue, groupName);
       this.setState({ showVmWare: true });
 
       this.props.field.subField.map(subField => {
@@ -496,7 +565,7 @@ class Type extends React.Component {
           {
               subField.subField.map(subSubField => {
                 subSubField.mandatory = true;
-
+                
                 this.props.group.fields.map(field => {
                   if(field.fieldName === fieldName)
                   {
@@ -527,11 +596,32 @@ class Type extends React.Component {
     else if (event.target.value === "Add Server") {
       this.setState({ modalIsOpen: true });
       this.setState({ showVmWare: false });
+
+      this.props.field.showRequired = true;
+      
+      this.props.group.fields.map(field => {
+        if(field.fieldName === fieldName)
+        {
+          field = this.props.field
+          this.props.stateGroups[4] = this.props.group
+          this.props.changeFullGroup(this.props.stateGroups)
+        }
+      })
     }
     else {
-      this.setState({ [event.target.value]: event.target.value });
+      this.props.field.showRequired = false;
+
+      this.props.group.fields.map(field => {
+        if(field.fieldName === fieldName)
+        {
+          field = this.props.field
+          this.props.stateGroups[4] = this.props.group
+          this.props.changeFullGroup(this.props.stateGroups)
+        }
+      })
+      this.setState({ [event.target.value]: event.target.value});
       this.setState({ showVmWare: false });
-      this.props.func(fieldName, fieldValue);
+      this.props.func(fieldName, fieldValue, groupName);
 
       this.props.field.subField.map(subField => {
         if(subField.subField)
@@ -553,6 +643,18 @@ class Type extends React.Component {
    }
   }
 
+  delCurrentServer = () => {
+    this.props.group.fields.map((field, index) => {
+      if(field.fieldName === this.props.field.fieldName)
+      {
+        this.props.group.fields.splice(index, 1);
+      }
+    })
+    
+    this.props.stateGroups[4] = this.props.group; 
+    this.props.changeFullGroup(this.props.stateGroups);
+  }
+
   render() {   
     
     var fieldType = this.props.field.fieldType;
@@ -561,15 +663,35 @@ class Type extends React.Component {
     var subField = this.props.field.subField;
     var placeholder = this.props.field.placeholder;
     var fieldKey = this.props.fieldKey;
+    var {phoneNumber} =this.state;
+    
+
+    if (fieldType === "phoneNumber") {
+      return (
+        <div id={fieldName + '_field'} name={fieldName + '_field'}>
+          <label id={fieldName + '_label'}>{fieldLabel}
+          {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*</span>) : null)
+          }
+          </label>
+          <Input
+          className="phone-number"
+          placeholder="Enter phone number"
+          country="US"
+          value={phoneNumber}
+          onChange={(phoneNumber) => this.onChangeHandler(fieldName, phoneNumber, fieldType , "")}/>
+        </div>
+      )
+    }
 
     if (fieldType === "text") {
       return (
         <div id={fieldName + '_field'} name={fieldName + '_field'}>
-          <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}</label>
-          <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onChange={this.onChangeHandler} />
+          <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
           {
-            (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (<span></span>))
-          }
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*</span>) : (<span></span>))
+          }</label>
+          <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />    
         </div>
       )
     }
@@ -578,10 +700,11 @@ class Type extends React.Component {
       return (
         <div id={fieldName + '_field'} name={fieldName + '_field'}>
           <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}</label>
-          <textarea id={fieldName} type={fieldType} name={fieldName} onChange={this.onChangeHandler}></textarea>
           {
-            (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (<span style={{ color: "red" }}></span>))
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*</span>) : (<span style={{ color: "red" }}></span>))
           }
+          <textarea id={fieldName} type={fieldType} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)}></textarea>
+          
         </div>
       )
     }
@@ -591,13 +714,13 @@ class Type extends React.Component {
         return (
           <div id={fieldName + '_field'} name={fieldName + '_field'}>
             <label id={fieldName + '_label'}>{fieldLabel}</label>
-            <input className="checkbox" type={fieldType} id={fieldName} name={fieldName} onClick={this.changeShowInstall} onChange={this.onChangeHandler} required></input>
+            <input className="checkbox" type={fieldType} id={fieldName} name={fieldName} onClick={this.changeShowInstall} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)}></input>
             {
               (this.state.showInstall ? (
                 subField.map((field) => (
                   <div id={field.fieldName + '_field'} name={field.fieldName + '_field'}>
                     <label id={field.fieldName + '_label'} name={field.fieldName + '_label'}>{field.fieldLabel}</label>
-                    <input className="checkbox" id={field.fieldName} type={field.fieldType} name={field.fieldName} onChange={this.onChangeHandler}></input>
+                    <input className="checkbox" id={field.fieldName} type={field.fieldType} name={field.fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)}></input>
                   </div>
                 ))
               ) : (null))
@@ -609,21 +732,23 @@ class Type extends React.Component {
         return (
           <div id={fieldName + '_field'} name={fieldName + '_field'}>
             <label id={fieldName + '_label'}>{fieldLabel}</label>
-            <input className="checkbox" type={fieldType} id={fieldName} name={fieldName} onChange={this.onChangeHandler} onClick={this.changeShowDsn}></input>
-            <h1>{this.props.field.showRequired}</h1>
             {
-              (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (null))
+              (this.props.field.showRequired ? (<span style={{ color: "red" }}>*</span>) : (null))
             }
+            <input className="checkbox" type={fieldType} id={fieldName} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} onClick={this.changeShowDsn}></input>
+            <h1>{this.props.field.showRequired}</h1>
+            
             <div className="subfield-algn"> 
             {
               (this.state.showDsn ? (
                 subField.map((field) => (
                   <div id={field.fieldName + '_field'} name={field.fieldName + '_field'}>
                     <label id={field.fieldName + '_label'} name={field.fieldName + '_label'}>{field.fieldLabel}</label>
-                    <input id={field.fieldName} type={field.fieldType} name={field.fieldName} onChange={this.onChangeHandler}></input>
                     {
-                      (field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (null))
+                      (field.showRequired ? (<span style={{ color: "red" }}>*</span>) : (null))
                     }
+                    <input id={field.fieldName} type={field.fieldType} name={field.fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)}></input>
+                    
                   </div>
                 ))
               ) : (null))
@@ -636,41 +761,43 @@ class Type extends React.Component {
         return (
           <div id={fieldName + '_field'} name={fieldName + '_field'}>
             <label id={fieldName + '_label'}>{fieldLabel}</label>
-            <input className="checkbox" type={fieldType} id={fieldName} name={fieldName} onClick={this.onChangeHandler}></input>
             {
-              (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (null))
+              (this.props.field.showRequired ? (<span style={{ color: "red" }}>*</span>) : (null))
             }
+            <input className="checkbox" type={fieldType} id={fieldName} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)}></input>
+            
           </div>
         )
       }
     }
 
     if (fieldType === "select") {
-      const { country, region } = this.state;
+      const { country, state } = this.state;
 
       if (fieldName === "country") {
-       
+        
          return(
           <div className="state-country">
             <div id='country_field' name='country_field'>
               <label id='country_label'>Country</label>
+              {
+                  (this.props.field.showRequired ? (<span style={{ color: "red" }}>*</span>) : (null))
+                }
               <CountryDropdown
                 value={country}
                 onChange={(val) => this.selectCountry(val)} />
-              {
-                (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (null))
-              }
+                
             </div>
 
             <div id='region_field' name='region_field'>
               <label id='region_label'>Region</label>
+              {
+                (this.props.field.showRequired ? (<span style={{ color: "red" }}>*</span>) : (null))
+              }
               <RegionDropdown
                 country={country}
-                value={region}
+                value={state}
                 onChange={(val) => this.selectRegion(val)} />
-              {
-                (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (null))
-              }
             </div>
 
           </div>
@@ -686,9 +813,13 @@ class Type extends React.Component {
         ))
 
         return (
+          <div className="connectivity-algn">
           <div id={fieldName + '_field'} name={fieldName + '_field'}>
             
             <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}</label>
+            {
+              (this.props.field.showRequired ? (<span style={{ color: "red" }}>*</span>) : (null))
+            }
             <select onChange={this.handleSelect1} id={fieldName} name={fieldName}>
               <option value="" disabled selected>{"Select " + fieldLabel}</option>
               {
@@ -697,17 +828,17 @@ class Type extends React.Component {
                 ))
               }
             </select>
-            {
-              (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (null))
-            }
+            </div>
+            
             {
               (this.state.showISCSI && subSubField[1][0] ? (
                   <div id={subSubField[1][0].fieldName + '_field'} name={subSubField[1][0].fieldName + '_field'}>
                       <label id={subSubField[1][0].fieldName + '_label'} name={subSubField[1][0].fieldName + '_label'}>{subSubField[1][0].fieldLabel}</label>
-                      <input type={subSubField[1][0].fieldType} id={subSubField[1][0].fieldName} name={subSubField[1][0].fieldName} onChange={this.onChangeHandler}></input>
                       {
-                        (subSubField[1][0].showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (null))
+                        (subSubField[1][0].showRequired ? (<span style={{ color: "red" }}>*</span>) : (null))
                       }
+                      <input type={subSubField[1][0].fieldType} id={subSubField[1][0].fieldName} name={subSubField[1][0].fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)}></input>
+                    
                   </div>
                 ) : (null))
             }
@@ -715,14 +846,16 @@ class Type extends React.Component {
               (this.state.showSan && subSubField[0][0] ? (
                 <div id={subSubField[0][0].fieldName + '_field'} name={subSubField[0][0].fieldName + '_field'}>
                   <label id={subSubField[0][0].fieldName + '_label'} name={subSubField[0][0].fieldName + '_label'}>{subSubField[0][0].fieldLabel}</label>
-                  <input type={subSubField[0][0].fieldType} id={subSubField[0][0].fieldName} name={subSubField[0][0].fieldName} onChange={this.onChangeHandler}></input>
                   {
-                    (subSubField[0][0].showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (null))
+                    (subSubField[0][0].showRequired ? (<span style={{ color: "red" }}>*</span>) : (null))
                   }
+                  <input type={subSubField[0][0].fieldType} id={subSubField[0][0].fieldName} name={subSubField[0][0].fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)}></input>
+                
                 </div>
               ) : (null))
             }            
           </div>
+
         )
       }
       
@@ -735,17 +868,20 @@ class Type extends React.Component {
         ))
 
         return (
-          <div className="row">
-            <div className="field-align col-md-3 mt-2" id={fieldName + '_field'} name={fieldName + '_field'}>
-            
-              {fieldKey == 0 &&
-                <>
-                  <button id="addButton" className="btn btn-primary" name="addButton" onClick={this.addNewServerInfoFunc}>Add</button>
-                  <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}</label>
-                </>
-              }
+          <div className="row server-box">
+            {
+              fieldKey > 0 &&
+              <button onClick={this.delCurrentServer} className="remove-btn">&times;</button>
+            }
+            <div className="field-align col-md-3 mt-2 " id={fieldName + '_field'} name={fieldName + '_field'}>
+              {/* <button id="addButton" className="btn btn-primary" name="addButton" onClick={this.addNewServerInfoFunc}>Add</button> */}
               
-              <select onChange={this.handleSelect2} id={fieldName} name={fieldName}>
+              <label id={fieldName + '_label'} className="servers_label" name={fieldName + '_label'}>{fieldLabel}
+              {
+                (this.props.field.showRequired ? (<span clasName="span-algn" style={{ color: "red" }}>*</span>) : (<span></span>))
+              }
+              </label>
+              <select onChange={this.handleSelect2} className="servers" id={fieldName} name={fieldName}>
 
                 <option value="" selected disabled>{"Select " + fieldLabel}</option>
                 {
@@ -755,9 +891,13 @@ class Type extends React.Component {
                 }
                 <option id="addServerOption" name="addServerOption" value="Add Server">Add Server</option>
               </select>
-              {
-              (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (<span></span>))
-            }
+
+              {fieldKey == 0 &&
+              <div>
+                <button id="addButton" className="btn btn-primary" name="addButton" onClick={this.addNewServerInfoFunc}>Add</button>
+                </div>
+              }
+             
             </div>
             <div>
               <Modal
@@ -780,7 +920,7 @@ class Type extends React.Component {
                     field.map((field) => (
                       <div className="field-align col-md-4" id={field.fieldName + '_field'} name={field.fieldName + '_field'}>
                         <label id={field.fieldName + '_label'} name={field.fieldName + '_label'}>{field.fieldLabel}</label>
-                        <input type={field.fieldType} id={field.fieldName} name={field.fieldName} onChange={this.onChangeHandler}></input>
+                        <input type={field.fieldType} id={field.fieldName} name={field.fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)}></input>
                       </div>
                     ))
                   ))
@@ -791,16 +931,13 @@ class Type extends React.Component {
         )
       }
       if (fieldName === "deliverySpecific" || fieldName === "migrationType") {   
-        // let subSubField = [];
-        // subField.map((field) => (
-        //   (field.subField ? (
-        //     subSubField.push(field.subField)
-        //   ) : (null))
-        // ))
 
         return (
           <div id={fieldName + '_field'} name={fieldName + '_field'}>
             <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}</label>
+            {
+              (this.props.field.showRequired ? (<span style={{ color: "red" }}>*</span>) : (null))
+            }
             <select onChange={this.handleSelect1} id={fieldName} name={fieldName}>
               <option value="" disabled selected>{"Select " + fieldLabel}</option>
               {
@@ -809,9 +946,7 @@ class Type extends React.Component {
                 ))
               }
             </select>
-            {
-              (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (null))
-            }
+            
           </div>
         )
       }
@@ -823,11 +958,14 @@ class Type extends React.Component {
     if (fieldType === "date") {
       return (
         <div id={fieldName + '_field'} name={fieldName + '_field'}>
-          <label id={fieldName + '_label'}>{fieldLabel}</label>
-          <input type={fieldType} id={fieldName} name={fieldName} onChange={this.onChangeHandler}></input>
+          <label id={fieldName + '_label'}>{fieldLabel}
           {
-            (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Required</span>) : (null))
-          }
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*</span>) : (null))
+          }</label>
+
+          <Flatpickr data-enable-time
+            value={this.state.date}
+            onChange={(e) => this.onChangeHandler(fieldName, this.state.date, fieldType, e)} />
         </div>
       )
     }

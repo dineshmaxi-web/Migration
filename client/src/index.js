@@ -10,14 +10,13 @@ import { Route, Router,  BrowserRouter } from 'react-router-dom';
 class Index extends Component {
     render () {
       return (
-        <App></App>
-        // <BrowserRouter>
-        //   <div>
-        //     <Route path="/" component={App} exact />
-        //     <Route path="/login" component={Login} />
-        //     <Route path="/get_data" component={GetData}  />
-        //   </div>
-        // </BrowserRouter>
+        <BrowserRouter>
+          <div>
+            <Route path="/" component={App} exact />
+            <Route path="/login" component={Login} />
+            <Route path="/get_data" component={GetData}  />
+          </div>
+        </BrowserRouter>
       )
     }
   }

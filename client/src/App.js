@@ -4,13 +4,16 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from './vtglogo.jpg';
 import $ from "jquery";
+import './success_page.css';
 
 var latestGroup = [];
 
 class App extends React.Component {
   state = {
     groups: [],
-    registrationNumber : 0
+    registrationNumber : 0,
+    showSuccess : false,
+    date: new Date()
   }
 
   componentDidMount() {
@@ -71,16 +74,30 @@ class App extends React.Component {
     var count = 0;
     delete croppedState.groups;
     delete croppedState.registrationNumber;
+    delete croppedState.showSuccess;
+    var keysOfCroppedState = Object.keys(this.state);
 
-    var keysOfCroppedState = Object.keys(croppedState);
 
-    console.log(keysOfCroppedState, fieldsInJsons)
+    var finalValues = [];
+    var finalObject = {};
+    
+    for(let i = 0 ; i < keysOfCroppedState.length ; i++)
+    {
+      var nestedKeys = Object.keys(this.state[keysOfCroppedState[i]]);
+      
+      for(let j = 0 ; j < nestedKeys.length ; j++)
+      {
+        finalObject[nestedKeys[j]] = this.state[keysOfCroppedState[i]][nestedKeys[j]];
+        finalValues.push(nestedKeys[j])
+      }
+    }
 
-    if(keysOfCroppedState.length > 0 )
+    
+    if(finalValues.length > 0 )
     {
       for(let i = 0 ; i < fieldsInJsons.length ; i++)
       {
-        if(croppedState.hasOwnProperty(fieldsInJsons[i]) === false || croppedState[fieldsInJsons[i]] === "")
+        if(finalObject.hasOwnProperty(fieldsInJsons[i]) === false || finalObject[fieldsInJsons[i]] === "")
         {
            count = count + 1;  
         }
@@ -89,7 +106,6 @@ class App extends React.Component {
     else{
       count = count + 1;
     }
-
     if(count === 0)
     {
       fetch('/post/data', {
@@ -102,7 +118,7 @@ class App extends React.Component {
         .then(function (response) {
           return response.json()
         }).then((body) => {
-              alert("done")
+            this.setState({showSuccess : true})
         });
     }
   }
@@ -121,18 +137,47 @@ class App extends React.Component {
     this.setState({ groups : groups});
   }
 
-  setStateFunction = (fieldName, fieldValue) => {
-      this.setState({[fieldName]: fieldValue})
+  setStateFunction = (fieldName, fieldValue, groupName) => {
+    let stateVariables = this.state;
+
+    if(fieldValue === "")
+    {
+      delete stateVariables[groupName][fieldName];
+      this.setState(stateVariables, ()=>console.log(this.state));
+    } 
+    else
+    {
+      if(stateVariables[groupName])
+      {
+        stateVariables[groupName][fieldName] = fieldValue;
+        this.setState(stateVariables, ()=> console.log(this.state)) 
+      }
+      else{
+        this.setState({[groupName] : {[fieldName]: fieldValue}}, ()=> console.log(this.state))
+      }
+    }
   }
 
-  delConnectivitySubField = (fieldName) => {
-    let temp = this.state;
-    delete temp[fieldName]
-    this.setState({temp});
+  delFifthSecState = () => {
+    var wholeState = this.state;
+
+    delete wholeState["ServersinMigrationScope"]
+    this.setState(wholeState, ()=>console.log(this.state))
+  }
+
+  delSubField = (groupName, fieldName1, fieldName2) => {
+      let temp = this.state;
+
+      if(temp.hasOwnProperty(groupName))
+      {
+        delete temp[groupName][fieldName1];
+        delete temp[groupName][fieldName2];
+        this.setState(temp, ()=>console.log(this.state));  
+      }
   }
 
   changeFullGroup = (fullGroup) => {
-    this.setState({groups : fullGroup}, ()=>console.log(this.state.groups))
+    this.setState({groups : fullGroup})
   }
 
   arrowFunction(groupKey) {
@@ -146,17 +191,50 @@ class App extends React.Component {
     $( document ).ready(function() {
       $('.state-country').parent().removeClass('col-md-3');
       $('.state-country').parent().addClass('col-md-6');
-  });
+    });
 
-  $( document ).ready(function() {
-    $('.row').parent().removeClass('col-md-3');
-    $('.row').parent().addClass('col-md-12');
-});
+    $( document ).ready(function() {
+      $('.row').parent().removeClass('col-md-3');
+      $('.row').parent().addClass('col-md-12');
+    });
 
-$( document ).ready(function() {
-  $('#migrationbetween_field').parent().removeClass('col-md-3');
-  $('#migrationbetween_field').parent().addClass('col-md-6');
-});
+    $( document ).ready(function() {
+      $('#migrationbetween_field').parent().removeClass('col-md-3');
+      $('#migrationbetween_field').parent().addClass('col-md-6');
+    });
+
+    $( document ).ready(function() {
+      $('.connectivity-algn').parent().removeClass('col-md-3');
+      $('.connectivity-algn').parent().addClass('col-md-6');
+    });
+    if(this.state.showSuccess){
+      return (
+        <div id="success-body">
+         <div className="header">
+                  <img src={logo} className="logo"></img>
+              </div>
+                <div className="wrapper">
+                  <div id="success-formContent">
+                    <div class="icon-box">
+                      <i class="fa fa-check"></i>
+                    </div><br />
+                    <form>
+                      <div>
+                        <h4>Submission Successful!</h4>
+                      </div>
+                      <div>
+                        <p>We have received the information<br/>
+                          And will get in touch shortly</p>
+                      </div>
+                      <div class="success-footer">
+                      <input type="submit"  className="fadeIn fourth" value="Ok" />
+                      </div>
+                      </form>
+                    </div>
+                </div>
+            </div>
+            )
+      }
 
     return (
       <div>
@@ -182,7 +260,7 @@ $( document ).ready(function() {
                                       {
                                         group.fields.map((field, fieldKey) => (
                                           <div className="field-align col-md-3">
-                                              <Type group={group} changeFullGroup={this.changeFullGroup} field={field}  fieldKey={fieldKey} stateGroups={this.state.groups} addNewServer={this.setNewServer} addNewServerInfo={this.setNewServerInfo} func={this.setStateFunction} delConnectivitySubField={this.delConnectivitySubField} /> 
+                                              <Type group={group} changeFullGroup={this.changeFullGroup} field={field}  fieldKey={fieldKey} stateGroups={this.state.groups} addNewServer={this.setNewServer} addNewServerInfo={this.setNewServerInfo} func={this.setStateFunction} delSubField={this.delSubField} delFifthSecState={this.delFifthSecState}/> 
                                           </div>
                                         ))
                                       }
@@ -196,7 +274,7 @@ $( document ).ready(function() {
               </div>
           </div>
           <div className="box-footer">
-              <button className="submit-btn btn btn-success" onClick={this.submit}>Submit</button>
+              <button className="submit-btn btn btn-success" disabled={this.state.btnDisable} onClick={this.submit}>Submit</button>
           </div>
       </div>
   )

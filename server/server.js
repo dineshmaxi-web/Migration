@@ -54,7 +54,6 @@ app.get("/get/forminfo", (req,res) => {
 
 app.get("/get/formdata", (req,res) => {
   dbo.collection("FormData").find({}).toArray(function(err, result) {
-    console.log(result)
     res.send(result)
   })
 }); 

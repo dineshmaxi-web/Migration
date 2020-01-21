@@ -24,7 +24,12 @@
     content: " ";
 }
 
-.ReactModalPortal input,label {
+.ReactModalPortal input {
+    width: 100%;
+}
+
+
+.ReactModalPortal label {
     width: 100%;
 }
 
@@ -70,4 +75,13 @@
 .ag-theme-balham .ag-root {
     border: 1px solid #BDC3C7;
     margin-top: 15px;
+}
+
+.header .logout-btn {
+    border: none;
+    border-radius: 4px;
+    background-color: #f12d2d;
+    color: white;
+    float: right;
+    z-index: 1;
 }

@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,700i,800&display=swap');
 body {
-	background-color:#a7caf4 !important;
+	background-color:#dce4ec !important;
 	position: relative;
     width: 100%;
   }
@@ -100,11 +100,12 @@ textarea{
 
 #addButton{
 	font-size: 12px !important;
-	color: white;
-	margin: 13px;
-	background-color: #3797e2;
-	font-family: 'Open Sans', sans-serif;
-	border-radius: 4px;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 4px;
+    display: inline-block;
+    margin: -2px;
+    margin-top: 0px;
 }
 
 #addServerButton{
@@ -171,14 +172,32 @@ label{
 }
 
 #destinationSiteName_field {
-	float: right;
+	float: left;
     /* margin-top: 19px; */
     width: 47%;
 }
 
 #destinationSiteAddress_field {
 	/* margin-top: -12px; */
-    width: 52%;
+    width: 48%;
+    float: right;
+}
+
+.connectivity-algn {
+	display: flex;
+}
+#connectivity_field {
+	width: 47%;
+}
+
+#NoofSANPorts_field {
+	margin-left: 6%;
+	width: 47%;
+}
+
+#NoofISCSI_field {
+	margin-left: 6%;
+	width: 47%;
 }
 
 .group input:hover{
@@ -244,6 +263,25 @@ textarea:hover{
     color: #4e4e4e;
 }
 
+.servers_label {
+	width: 100%;
+}
+
+.servers{
+	float: left;
+    width: 75%;
+	margin-right: 5px;
+}
+
+.server-box {
+	background: #F0F0F0;
+    padding: 10px;
+    margin-bottom: 5px;
+	position: relative;
+	margin-right: 5px !important;
+	margin-left: 5px !important;
+}
+
 .Modal-box input::placeholder {
 	font-size: 13px;
 }
@@ -268,7 +306,7 @@ textarea:hover{
 }
 
 .align {
-	margin-top: 22px;
+	margin-top: 9px;
 }
 
 .request-no {
@@ -289,4 +327,25 @@ textarea:hover{
 }
 .subfield-algn {
 	display: inline-block;
+}
+
+.phone-number{
+	width: 100%;
+	padding: 6px 6px;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	color: #4e4e4e;
+}
+
+.remove-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: none;
+    font-size: 10px;
+    background: #ff3a3a;
+    color: #fff;
+    cursor: pointer;
 }
