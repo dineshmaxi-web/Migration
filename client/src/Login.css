@@ -383,3 +383,7 @@
   vertical-align: middle;
   border-style: none;
 }
+
+.formContent i{
+  color : tomato
+}

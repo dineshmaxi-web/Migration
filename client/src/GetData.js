@@ -8,7 +8,10 @@ import logo from './vtglogo.jpg';
 import './Detail.css';
 import Modal from 'react-modal';
 import _ from 'lodash';
+
+
 var args = ["name", "emailAddress", "country", "state", "zipCode"];
+
 class GetData extends Component {
 
   state = {
@@ -29,7 +32,6 @@ class GetData extends Component {
 
   closeModal = () => {
     this.setState({ showHome: true, modalIsOpen: false, showLogin: false });
-
   }
 
   handleLogout = () => {
@@ -38,6 +40,11 @@ class GetData extends Component {
 
   onRowClicked = (e) => {
     this.setState({ modalIsOpen: true, showHome: false, showLogin: false });
+    fetch('/get/formdata')
+    .then(result => result.json())
+    .then(rowDataSet => {
+      console.log(rowDataSet)
+    });
 
     for (let i = 0; i < this.state.rowData.length; i++) {
       if (this.state.rowData[i].emailAddress === e.data.emailAddress) {
@@ -50,7 +57,7 @@ class GetData extends Component {
     fetch('/get/formdata')
       .then(result => result.json())
       .then(rowDataSet => {
-        console.log(rowDataSet)
+
         var tempRowData = [];
         var tempColumnDefs = [];
         var tempBeforeRowData = {};
@@ -62,7 +69,7 @@ class GetData extends Component {
 
         for (let i = 0; i < args.length; i++) {
           tempColumnDefs.push({
-            "headerName": args[i],
+            "headerName": args[i].toUpperCase(),
             "field": args[i]
           });
         }
@@ -82,9 +89,10 @@ class GetData extends Component {
   render() {
     var datas = this.state.details;
     var keys = Object.keys(datas)
-    keys.map((data) => {
-      console.log(datas[data])
-    })
+    // keys.map((data) => {
+    //   console.log(datas[data])
+    // })
+    const camelCase = require('camelcase');
 
     if (this.state.showHome) {
       return (
@@ -130,8 +138,8 @@ class GetData extends Component {
             <div className="row">
               {
                 keys.map((data) => (
-                  <div className="col-md-3">
-                    <label name={data + "_label"} id={data + "_label"}>{data}</label>
+                  <div className="col-md-3 sample">
+                    <label name={data + "_label"} id={data + "_label"}>{data.toUpperCase()}</label>
                     <input name={datas[data]} id={datas[data]} value={datas[data]} disabled />
                   </div>
                 ))

@@ -245,24 +245,14 @@ textarea:hover{
     top: 35%;
     left: 25%;
     right: 25%;
-    border: 1px solid #1bade5;
+    border: none;
     background: rgb(209, 219, 225);
-    overflow: auto;
     border-radius: 4px;
     outline: none;
     padding: 0px;
 }
 
-.closeModal-btn{
-	float: right;
-    margin: 10px;
-    border: none;
-}
 
-.closeModal-btn:hover {
-	background-color: tomato;
-	color: white;
-}
 .addserver-btn {
 	margin: 10px;
     border: none;
@@ -306,12 +296,6 @@ textarea:hover{
 
 .Modal-box input::placeholder {
 	font-size: 13px;
-}
-
-.server-label{
-	font-size: 15px;
-    margin-left: 10px;
-    margin-bottom: -0.5rem;
 }
 
 .state-country {
@@ -400,4 +384,100 @@ textarea:hover{
 
 .group .flatpickr-innerContainer {
 	width: 100% !important;
+}
+
+.Modal-box .box-head{
+	padding: 5px;
+	height: 35px;
+	line-height: 25px;
+	background-color: #3d4061;
+	color:#ffffff;	
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	font-weight: 500;
+	font-size: 13px;
+	margin: auto;
+  }
+
+.Modal-box {
+	position: absolute;
+    top: 35%;
+    left: 25%;
+    right: 25%;
+    border: none;
+    background: rgb(228, 232, 234);
+    border-radius: 4px;
+    outline: none;
+	padding: 0px;
+	box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.25);
+}
+
+.closeModal-btn{
+	float: right;
+    border: none;
+    border-radius: 4px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 14px;
+}
+
+#addServerBtn{
+	float: right;
+    border: none;
+    border-radius: 4px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 14px;
+	margin-right: 5px;
+    padding: 3px;
+}
+
+.closeModal-btn .fa {
+	margin-top: 5px;
+    margin-left: 5px;
+}
+
+#addServerBtn .fa{
+	margin-top: 5px;
+    margin-left: 5px;
+}
+
+.closeModal-btn .fa{
+	margin-top: 5px;
+    margin-left: 5px;
+}
+
+/* 
+.Server-input{
+	width: 86%;
+    margin-left: 10px;
+    margin-bottom: 15px;
+    padding: 8px 8px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #4e4e4e;
+} */
+
+.servers_label {
+	width: 100%;
+}
+
+.Modal-box input::placeholder {
+	font-size: 13px;
+}
+
+.server-label{
+	margin-top: 0rem !important;
+}
+
+.modalbody {
+	padding: 20px;
+}
+
+#ServerName {
+	padding: 8px 8px;
+}
+
+.ReactModal__Overlay{
+    background-color:  rgba(0, 0, 0, 0.6) !important;
 }

@@ -25,18 +25,17 @@
     content: " ";
 }
 
-.ReactModalPortal input {
+.data-modal .ReactModalPortal input {
     width: 100%;
 }
 
-
-.ReactModalPortal label {
+.data-modal .ReactModalPortal label {
     width: 100%;
 }
-
+/* 
 .ReactModal__Overlay{
     background-color: #fbfcfd !important;
-}
+} */
 
 .CloseData-btn{
 	border: none;
@@ -87,4 +86,21 @@
     color: white;
     float: right;
     font-family: 'Open Sans', sans-serif;
+}
+
+.sample  input {
+    width: 100%;
+	padding: 6px 6px;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+	color: #4e4e4e;
+
+}
+
+.sample label {
+    width: 100%;
+    margin-top: 0.8rem !important;
+	margin-bottom: 0rem !important;
 }
