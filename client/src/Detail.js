@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from './VTG-logo.png';
 import './Detail.css';
 import Modal from 'react-modal';
+import { upperCase } from "upper-case";
 
 class Detail extends React.Component
 {
@@ -29,9 +30,6 @@ openModal = () => {
     {
       var datas = this.props.data;
       var keys =  Object.keys(datas)
-      keys.map((data) => {
-        console.log(datas[data])
-      })
 
       if(this.state.isView)
       return (
@@ -49,12 +47,12 @@ openModal = () => {
               <button className="CloseData-btn" id="CloseData" name="CloseData" onClick={this.closeModal}>&times;</button>
               <div className="row">
               {
-            keys.map((data) => (
-              <div className="col-md-3">
-                <label name={data+"_label"} id={data+"_label"}>{data}</label>
-                <input name={datas[data]} id={datas[data]} value={datas[data]} disabled/>
-              </div>
-            ))
+                keys.map((data) => (              
+                  <div className="col-md-3">
+                    <label name={data+"_label"} id={data+"_label"}>{upperCase(data)}</label>
+                    <input name={datas[data]} id={datas[data]} value={datas[data]} disabled/>
+                  </div>
+                ))
               }
               </div>
               </Modal>

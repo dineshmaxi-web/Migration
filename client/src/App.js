@@ -13,7 +13,14 @@ class App extends React.Component {
     groups: [],
     registrationNumber : 0,
     showSuccess : false,
-    date: new Date()
+    customerContactInformation: {
+        country : "United States",
+        state : "Texas",
+    },
+    opportunityInformation: {
+      startDate : new Date(),
+      completionDate : new Date()
+    }
   }
 
   componentDidMount() {
@@ -69,14 +76,16 @@ class App extends React.Component {
           })   
         })
 
-       
+    var copyGroup = this.state.groups;
+
+    var copyRegistrationNumber = this.state.registrationNumber;
+    var copyShowSuccess = this.state.showSuccess;
     var croppedState = this.state;
-    var count = 0;
+    var count = 0, countForShowRequired = 0;
     delete croppedState.groups;
     delete croppedState.registrationNumber;
     delete croppedState.showSuccess;
     var keysOfCroppedState = Object.keys(this.state);
-
 
     var finalValues = [];
     var finalObject = {};
@@ -84,15 +93,13 @@ class App extends React.Component {
     for(let i = 0 ; i < keysOfCroppedState.length ; i++)
     {
       var nestedKeys = Object.keys(this.state[keysOfCroppedState[i]]);
-      
       for(let j = 0 ; j < nestedKeys.length ; j++)
       {
         finalObject[nestedKeys[j]] = this.state[keysOfCroppedState[i]][nestedKeys[j]];
         finalValues.push(nestedKeys[j])
       }
     }
-
-    
+        
     if(finalValues.length > 0 )
     {
       for(let i = 0 ; i < fieldsInJsons.length ; i++)
@@ -106,6 +113,7 @@ class App extends React.Component {
     else{
       count = count + 1;
     }
+
     if(count === 0)
     {
       fetch('/post/data', {
@@ -121,6 +129,65 @@ class App extends React.Component {
             this.setState({showSuccess : true})
         });
     }
+    
+     
+    //Setting the deleted state 
+    this.setState({groups :copyGroup, registrationNumber : copyRegistrationNumber, showSuccess : copyShowSuccess}, () => console.log(this.state.groups))
+    
+    
+    //Show Required enabling
+    for(let i = 0 ; i < fieldsInJsons.length ; i++)
+    {
+      console.log(fieldsInJsons.length)
+      for(let j = 0 ; j < finalValues.length ; j++)
+      {
+        if(fieldsInJsons[i] === finalValues[j])
+        {
+          countForShowRequired = countForShowRequired + 1;
+        }
+      }
+
+      if(countForShowRequired === 0)
+      {
+        // console.log("called before setstate")
+        copyGroup.map((json) => {
+          json.fields.map((field) => {
+              if(fieldsInJsons[i] === field.fieldName && field.mandatory)
+              {
+                field.showRequired = true;
+              }
+  
+              if(field.subField)
+              {
+                field.subField.map((subField) => {
+                  if(fieldsInJsons[i] === subField.fieldName && subField.mandatory)
+                  {
+                    subField.showRequired = true;
+                  }
+  
+                  if(subField.subField)
+                  {
+                    subField.subField.map((subSubField) => {
+                      if(fieldsInJsons[i] === subSubField.fieldName && subSubField.mandatory)
+                      {
+                        if(subSubField.fieldType === "text")
+                        {
+                          subSubField.showRequired = true;
+                        }
+                        else
+                        {
+                          subField.showRequired = true;
+                        }
+                      }
+                    })
+                  }
+                })
+              }
+            })   
+          })
+      }
+      countForShowRequired = 0;
+    }  
   }
  
   setNewServerInfo = (info) => {

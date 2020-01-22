@@ -122,17 +122,11 @@ textarea{
 
 .group{
 	margin: 70px 0;
-	/* background-color: #f2f3f8; */
 }
 
 ::placeholder {
 	color: #cacaca;
 }
-
-/* ::-webkit-scrollbar {
-	width: 0px;
-	height: 0px;
-} */
 
 label{
 	margin-top: 0.8rem !important;
@@ -152,6 +146,34 @@ label{
 }
 
 #noOfSourceArray_label::after{
+	content: "";
+}
+
+#targetEquipmentPurchased_label::after{
+	content: "";
+}
+
+#installed_label::after{
+	content: "";
+}
+
+#freeze_label::after{
+	content: "";
+}
+
+#storageVirtualization_label::after{
+	content: "";
+}
+
+#connection_label::after{
+	content: "";
+}
+
+#migrationbetween_label::after{
+	content: "";
+}
+
+.container-fluid .request-no::after{
 	content: "";
 }
 
@@ -348,4 +370,34 @@ textarea:hover{
     background: #ff3a3a;
     color: #fff;
     cursor: pointer;
+}
+
+.group label::after{
+	content: "*";
+	color: tomato;
+}
+
+.group .flatpickr-days {
+	width: 100% !important;
+}
+
+.group .dayContainer {
+	max-width: 100% !important;
+    width: 100% !important;
+    min-width: 100% !important;
+}
+
+.group .flatpickr-wrapper {
+    position: relative !important;
+    display: inherit !important;
+}
+
+.group .flatpickr-calendar  {
+    z-index: 999 !important;
+    display: block !important;
+    max-width: 100% !important;
+}
+
+.group .flatpickr-innerContainer {
+	width: 100% !important;
 }

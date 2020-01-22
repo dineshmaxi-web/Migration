@@ -50,11 +50,11 @@ class GetData extends Component {
     fetch('/get/formdata')
       .then(result => result.json())
       .then(rowDataSet => {
-
+        console.log(rowDataSet)
         var tempRowData = [];
         var tempColumnDefs = [];
         var tempBeforeRowData = {};
-console.log(JSON.stringify(rowDataSet));
+        //console.log(JSON.stringify(rowDataSet));
         rowDataSet.map(function(rowData){
           tempRowData.push(_.assign.apply(_, Object.values(rowData.data)));
           console.log(_.assign.apply(_, Object.values(rowData.data)))
@@ -73,15 +73,6 @@ console.log(JSON.stringify(rowDataSet));
             return <i className="fa fa-eye fullView"></i>
           }
         });
-
-        // for(let i = 0 ; i < rowData.length ; i++)
-        // {
-        //   var nestedKeys = Object.keys(rowData[i].data);
-        //   for(let j = 0 ; j < nestedKeys.length ; j++)
-        //   {
-        //     rowData.push(rowData[i].data[nestedKeys[j]])
-        //   }          
-        // }
 
         this.setState({ rowData: tempRowData, columnDefs: tempColumnDefs }, () => console.log(this.state))
 

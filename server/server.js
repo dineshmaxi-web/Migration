@@ -6,7 +6,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://root:Qucvws3a1k93iGc@localhost:27017";
+var url = "mongodb://localhost:27017";
 var dbo;
 
 MongoClient.connect(url, function(err, db) {
@@ -63,5 +63,5 @@ app.post("/post/data", (req,res) => {
       res.send(result);
   });
 });
-
-app.listen(5000, () => console.log(`Listening on port 5000`));
+var port = process.env.NODE_ENV || 5000
+app.listen(port, () => console.log(`Listening on port 5000`));
