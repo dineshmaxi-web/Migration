@@ -31,7 +31,7 @@ openModal = () => {
       var datas = this.props.data;
       var keys =  Object.keys(datas)
 
-      if(this.state.isView)
+      if(this.state.isView){
       return (
           <div className="data-modal">
           <div className="header">
@@ -59,6 +59,7 @@ openModal = () => {
         </div>
         
       )
+            }
         else {
             return (
                 <div className="modal-body">

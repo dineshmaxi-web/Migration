@@ -77,7 +77,7 @@ body {
 	border-radius:4px;
   }
 
-  .group input[type="text"],input[type="date"],select{
+  .group input[type="text"],input[type="email"],input[type="date"],select{
 	width: 100%;
 	padding: 6px 6px;
 	display: inline-block;

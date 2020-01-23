@@ -6,6 +6,7 @@ import logo from './vtglogo.jpg';
 import $ from "jquery";
 import './success_page.css';
 import _ from 'lodash';
+import GetData from './GetData';
 
 var latestGroup = [];
 
@@ -14,11 +15,11 @@ class App extends React.Component {
     groups: [],
     registrationNumber: 0,
     showSuccess: false,
-    customerContactInformation: {
+    CustomerContactInformation: {
       country: "United States",
       state: "Texas",
     },
-    opportunityInformation: {
+    OpportunityInformation: {
       startDate: new Date(),
       completionDate: new Date()
     }
@@ -118,16 +119,14 @@ class App extends React.Component {
         }).then((body) => {
           this.setState({ showSuccess: true })
         });
-    }
-
-
-    //Setting the deleted state 
-    this.setState({ groups: copyGroup, registrationNumber: copyRegistrationNumber, showSuccess: copyShowSuccess }, () => console.log(this.state.groups))
+    }   
+      //Setting the deleted state 
+      this.setState({ groups: copyGroup, registrationNumber: copyRegistrationNumber, showSuccess: copyShowSuccess })
 
 
     //Show Required enabling
     for (let i = 0; i < fieldsInJsons.length; i++) {
-      console.log(fieldsInJsons.length)
+
       for (let j = 0; j < finalValues.length; j++) {
         if (fieldsInJsons[i] === finalValues[j]) {
           countForShowRequired = countForShowRequired + 1;
@@ -135,7 +134,7 @@ class App extends React.Component {
       }
 
       if (countForShowRequired === 0) {
-        // console.log("called before setstate")
+
         copyGroup.map((json) => {
           json.fields.map((field) => {
             if (fieldsInJsons[i] === field.fieldName && field.mandatory) {
@@ -185,10 +184,10 @@ class App extends React.Component {
 
   setStateFunction = (fieldName, fieldValue, groupName) => {
     let stateVariables = this.state;
-    var keysFourthSection = []
+ 
     if (fieldValue === "") {
       delete stateVariables[groupName][fieldName];
-      this.setState(stateVariables, () => console.log(this.state));
+      this.setState(stateVariables);
     }
     else {
       if (stateVariables[groupName]) {
@@ -232,7 +231,7 @@ class App extends React.Component {
     var wholeState = this.state;
 
     delete wholeState["ServersinMigrationScope"]
-    this.setState(wholeState, () => console.log(this.state))
+    this.setState(wholeState)
   }
 
   delSubField = (groupName, fieldName1, fieldName2) => {
@@ -241,7 +240,7 @@ class App extends React.Component {
     if (temp.hasOwnProperty(groupName)) {
       delete temp[groupName][fieldName1];
       delete temp[groupName][fieldName2];
-      this.setState(temp, () => console.log(this.state));
+      this.setState(temp);
     }
   }
 
@@ -255,27 +254,28 @@ class App extends React.Component {
     this.setState({ groups });
   }
 
+  handleSubmit = (e) => {
+    e.preventDefault();
+    window.location.reload();
+  }
+
   render() {
 
     $(document).ready(function () {
       $('.state-country').parent().removeClass('col-md-3');
       $('.state-country').parent().addClass('col-md-6');
-    });
 
-    $(document).ready(function () {
       $('.row').parent().removeClass('col-md-3');
       $('.row').parent().addClass('col-md-12');
-    });
 
-    $(document).ready(function () {
+
       $('#migrationbetween_field').parent().removeClass('col-md-3');
       $('#migrationbetween_field').parent().addClass('col-md-6');
-    });
 
-    $(document).ready(function () {
       $('.connectivity-algn').parent().removeClass('col-md-3');
       $('.connectivity-algn').parent().addClass('col-md-6');
-    });
+  });
+
     if (this.state.showSuccess) {
       return (
         <div id="success-body">
@@ -287,7 +287,7 @@ class App extends React.Component {
               <div class="icon-box">
                 <i class="fa fa-check"></i>
               </div><br />
-              <form>
+              <form onSubmit={this.handleSubmit}>
                 <div>
                   <h4>Submission Successful!</h4>
                 </div>
@@ -306,6 +306,7 @@ class App extends React.Component {
     }
 
     return (
+      
       <div>
         <div className="header">
           <img src={logo} className="logo"></img>

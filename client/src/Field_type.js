@@ -5,10 +5,10 @@ import './App.css';
 import 'flatpickr/dist/themes/material_green.css';
 import Flatpickr from 'react-flatpickr';
 import 'react-phone-number-input/style.css';
-import PhoneInput from 'react-phone-number-input';
 import Input from 'react-phone-number-input/input';
 import _ from 'lodash';
-
+import $ from "jquery";
+import EmailValidator from 'email-validator';
 
 class Type extends React.Component {
   state = {
@@ -23,7 +23,8 @@ class Type extends React.Component {
     state: "Texas",
     showISCSI: false,
     date: new Date(),
-    phoneNumber: ""
+    phoneNumber: "",
+    inValidEmail : false
   }
 
   selectCountry = (val) => {
@@ -53,7 +54,18 @@ class Type extends React.Component {
 
     var groupName = this.props.group.groupName;
 
-    console.log(fieldType)
+    if(fieldType === "email")
+    {
+      if(EmailValidator.validate(fieldValue)){
+        this.setState({inValidEmail : false})
+       this.props.func(fieldName, fieldValue, groupName);
+      }
+      else{
+        event.target.value = "";
+        this.setState({inValidEmail : true})
+      }
+    }
+
     if (fieldType === "text" || fieldType === "date" || fieldType === "phoneNumber" || fieldType === "textarea") {
 
       this.props.func(fieldName, fieldValue, groupName);
@@ -67,25 +79,17 @@ class Type extends React.Component {
                 if (subSubField.fieldName === fieldName && fieldValue !== "") {
                   subSubField.showRequired = false;
                 }
-                if (subSubField.fieldName === fieldName && fieldValue === "") {
-                  subSubField.showRequired = true;
-                }
               })
             }
 
             if (subField.fieldName === fieldName && fieldValue !== "") {
               subField.showRequired = false;
             }
-            if (subField.fieldName === fieldName && fieldValue === "") {
-              subField.showRequired = true;
-            }
           })
         }
         else {
           if (field.fieldName === fieldName && fieldValue !== "")
             field.showRequired = false;
-          if (field.fieldName === fieldName && fieldValue === "")
-            field.showRequired = true;
         }
       })
 
@@ -102,17 +106,24 @@ class Type extends React.Component {
     if (fieldType === "checkbox") {
 
       var groupName = this.props.group.groupName;
-      console.log(event.target.checked)
       if (event.target.checked) {
 
         this.props.func(fieldName, 1, groupName);
-
-        //Changing show Required to true
+      
+        //Changing show Required to false
         this.props.group.fields.map(field => {
           if (field.hasOwnProperty("subField")) {
-            field.subField.map(subField => {
-              subField.mandatory = true;
-            })
+            
+              field.subField.map(subField => {
+                if(subField.fieldType === "checkbox")
+                {
+                  subField.mandatory = false;
+                }
+                if(subField.fieldType === "text")
+                {
+                  subField.mandatory = true;
+                }
+              })
           }
         })
 
@@ -124,8 +135,6 @@ class Type extends React.Component {
         })
       }
       else {
-        console.log(this.props.field)
-
         //Changing show Required to false
         this.props.group.fields.map(field => {
           if (field.hasOwnProperty("subField")) {
@@ -189,7 +198,7 @@ class Type extends React.Component {
       {
         copyField = _.clone(field, true);
         copyField.fieldName = field.fieldName + "_" + lengthOfFields;
-        copyField.subField.map((subField, subIndex)=>{
+        copyField.subField.map((subField)=>{
           if(index === 0){
             subField.fieldName = copyField.fieldName;
           }
@@ -203,7 +212,7 @@ class Type extends React.Component {
   } 
 
   onChangeAddServerName = (event) => {
-    if(event.target.value !== "")
+    if(event.target.value !== "" )
       this.setState({ tempVar: event.target.value });
   }
 
@@ -213,18 +222,29 @@ class Type extends React.Component {
     var group = this.props.group;
     group.fields.map(field => {
       copyField = _.clone(field, true);
-      if(copyField.fieldName ==  copyField.subField[0].fieldName && this.state.tempVar !== ""){
-        copyField.subField.push({
-          fieldName : copyField.fieldName,
-          fieldLabel : this.state.tempVar,
-          fieldType : "option",
-          disabled : false,
-          isActive : 1
+      if(copyField.fieldName ==  copyField.subField[0].fieldName  && this.state.tempVar !== ""){
+        let count = 0;
+        copyField.subField.map(subSubField => {
+          if(subSubField.fieldLabel.toUpperCase() === this.state.tempVar.toUpperCase())
+          {
+            count = count + 1;
+          }
         })
+
+        if(count === 0)
+        {
+          copyField.subField.push({
+            fieldName : copyField.fieldName,
+            fieldLabel : this.state.tempVar,
+            fieldType : "option",
+            disabled : false,
+            isActive : 1
+          })
+        }
       }
       
     })   
-    console.log(this.props.group);
+
     this.props.stateGroups[4] = this.props.group
     this.props.changeFullGroup(this.props.stateGroups)
   }
@@ -236,13 +256,12 @@ class Type extends React.Component {
 
     this.props.func(fieldName, fieldValue, groupName);
 
-    if (event.target.name === "deliverySpecific" || event.target.name === "migrationType") {
-      console.log(this.props.group)
+    if (fieldName === "deliverySpecific" || fieldName === "migrationType") {
+  
       this.props.group.fields.map(field => {
-        if (field.fieldName === event.target.name) {
+        if (field.fieldName === fieldName) {
           field.subField.map(subField => {
-            console.log(event.target.value, subField.fieldLabel)
-            if (event.target.value === subField.fieldLabel) {
+            if (fieldValue === subField.fieldLabel) {
               field.showRequired = false;
             }
           })
@@ -450,7 +469,7 @@ class Type extends React.Component {
     var fieldName = event.target.name;
     var fieldValue = event.target.value;
 
-    if (event.target.value === "VMware") {
+    if (fieldValue === "VMware") {
 
       this.props.field.showRequired = false;
 
@@ -462,7 +481,7 @@ class Type extends React.Component {
         }
       })
 
-      this.setState({ [event.target.value]: event.target.value });
+      this.setState({ [fieldValue]: fieldValue });
       this.props.func(fieldName, fieldValue, groupName);
       this.setState({ showVmWare: true });
 
@@ -496,7 +515,7 @@ class Type extends React.Component {
         }
       })
     }
-    else if (event.target.value === "Add Server") {
+    else if (fieldValue === "Add Server") {
       this.setState({ modalIsOpen: true });
       this.setState({ showVmWare: false });
 
@@ -518,7 +537,7 @@ class Type extends React.Component {
           this.props.changeFullGroup(this.props.stateGroups)
         }
       })
-      this.setState({ [event.target.value]: event.target.value });
+      this.setState({ [fieldValue]: fieldValue });
       this.setState({ showVmWare: false });
       this.props.func(fieldName, fieldValue, groupName);
 
@@ -538,8 +557,6 @@ class Type extends React.Component {
         }
       })
     }
-
-    console.log(this.props.state);
   }
 
   delCurrentServer = () => {
@@ -563,6 +580,21 @@ class Type extends React.Component {
     var fieldKey = this.props.fieldKey;
     var { phoneNumber } = this.state;
 
+    if (fieldType === "email") {
+      return (
+        <div id={fieldName + '_field'} name={fieldName + '_field'}>
+          <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
+          </label>
+          <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onBlur={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />
+          {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : null)
+          }
+          {
+            (this.state.inValidEmail ? (<span style={{ color: "red" }}>Invalid Email Address</span>) : null)
+          }
+        </div>
+      )
+    }
 
     if (fieldType === "phoneNumber") {
       return (
@@ -661,9 +693,9 @@ class Type extends React.Component {
             <label id={fieldName + '_label'}>{fieldLabel}</label>
 
             <input className="checkbox" type={fieldType} id={fieldName} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)}></input>
-            {
+            {/* {
               (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
-            }
+            } */}
           </div>
         )
       }
@@ -808,7 +840,7 @@ class Type extends React.Component {
               >
                 <div className="box-head">
                 <button className="closeModal-btn btn-danger" id="closeModal" name="closeModal" onClick={this.closeModal}>Cancel <i class="fa fa-remove"></i></button>
-              <button className="btn btn-success" id="addServerBtn" name="addServerBtn" onClick={this.onClickAddServerName}>save&close <i class="fa fa-save"></i></button>
+                <button className="btn btn-success" id="addServerBtn" name="addServerBtn" onClick={this.onClickAddServerName}>save&close <i class="fa fa-save"></i></button>
                 <label className="server-label" id="serverLabel" name="ServerLabel">Add New Server</label>
                 </div>
                 <div className="modalbody">
@@ -871,7 +903,7 @@ class Type extends React.Component {
           <label id={fieldName + '_label'}>{fieldLabel}
           </label>
 
-          <Flatpickr data-enable-time
+          <Flatpickr
             value={this.state.date}
             options={{ dateFormat: "m-d-yy", static: true, wrap: false }}
             onChange={(e) => this.onChangeHandler(fieldName, this.state.date, fieldType, e)} />
