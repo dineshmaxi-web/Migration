@@ -46,6 +46,7 @@ class App extends React.Component {
 
   submit = () => {
     var fieldsInJsons = [];
+
     this.state.groups.map((json) => {
       json.fields.map((field) => {
         if (field.mandatory) {
@@ -74,7 +75,7 @@ class App extends React.Component {
     })
 
     var copyGroup = this.state.groups;
-
+    
     var copyRegistrationNumber = this.state.registrationNumber;
     var copyShowSuccess = this.state.showSuccess;
     var croppedState = this.state;
@@ -82,6 +83,7 @@ class App extends React.Component {
     delete croppedState.groups;
     delete croppedState.registrationNumber;
     delete croppedState.showSuccess;
+
     var keysOfCroppedState = Object.keys(this.state);
 
     var finalValues = [];
@@ -214,7 +216,7 @@ class App extends React.Component {
     var fourthSectionValues = Object.values(this.state.ServersinMigrationScope);
 
     var group = this.state.groups;
-    group[4].fields.map(function (grpVal, grpKey) {
+    group[4].fields.map(function (grpVal) {
       grpVal.subField.map(function (grpSubField) {
         if (fourthSectionValues.indexOf(grpSubField.fieldLabel) == -1) {
           grpSubField.disabled = false;
@@ -224,7 +226,7 @@ class App extends React.Component {
       })
     })
 
-    this.setState({ group })
+    this.setState({ groups : group })
   }
 
   delFifthSecState = () => {

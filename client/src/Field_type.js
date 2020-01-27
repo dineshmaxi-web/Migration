@@ -4,6 +4,7 @@ import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import './App.css';
 import 'flatpickr/dist/themes/material_green.css';
 import Flatpickr from 'react-flatpickr';
+import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import Input from 'react-phone-number-input/input';
 import _ from 'lodash';
@@ -67,6 +68,10 @@ class Type extends React.Component {
     }
 
     if (fieldType === "text" || fieldType === "date" || fieldType === "phoneNumber" || fieldType === "textarea") {
+      if(fieldType === "date")
+      {
+        fieldValue = String(fieldValue[0]).substring(4, 15);
+      }
 
       this.props.func(fieldName, fieldValue, groupName);
 
@@ -562,6 +567,7 @@ class Type extends React.Component {
   delCurrentServer = () => {
     this.props.group.fields.map((field, index) => {
       if (field.fieldName === this.props.field.fieldName) {
+        this.props.delSubField(this.props.group.groupName, field.fieldName)
         this.props.group.fields.splice(index, 1);
       }
     })
@@ -601,12 +607,17 @@ class Type extends React.Component {
         <div id={fieldName + '_field'} name={fieldName + '_field'}>
           <label id={fieldName + '_label'}>{fieldLabel}
           </label>
-          <Input
+          <PhoneInput
+            defaultCountry="US"
+            placeholder="Enter phone number"
+            value={phoneNumber}
+            onChange={(phoneNumber) => this.onChangeHandler(fieldName, phoneNumber, fieldType, "")}/>
+          {/* <Input
             className="phone-number"
             placeholder="Enter phone number"
             country="US"
             value={phoneNumber}
-            onChange={(phoneNumber) => this.onChangeHandler(fieldName, phoneNumber, fieldType, "")} />
+            onChange={(phoneNumber) => this.onChangeHandler(fieldName, phoneNumber, fieldType, "")} /> */}
           {
             (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : null)
           }
@@ -820,13 +831,13 @@ class Type extends React.Component {
                 }
                 <option id="addServerOption" name="addServerOption" value="Add Server">Add Server</option>
               </select>
-              {
-                (this.props.field.showRequired ? (<span className="span-algn" style={{ color: "red" }}>*Required</span>) : (<span></span>))
-              }
               {fieldKey == 0 &&
                 <div>
                   <button id="addButton" className="btn btn-primary" name="addButton" onClick={this.addNewServerInfoFunc}>Add</button>
                 </div>
+              }
+              {
+                (this.props.field.showRequired ? (<span className="span-algn" style={{ color: "red" }}>*Required</span>) : (<span></span>))
               }
 
             </div>
@@ -898,18 +909,20 @@ class Type extends React.Component {
     }
 
     if (fieldType === "date") {
+      var date = this.state.date;
+
       return (
         <div id={fieldName + '_field'} name={fieldName + '_field'}>
           <label id={fieldName + '_label'}>{fieldLabel}
           </label>
 
           <Flatpickr
-            value={this.state.date}
+            value={date}
             options={{ dateFormat: "m-d-yy", static: true, wrap: false }}
-            onChange={(e) => this.onChangeHandler(fieldName, this.state.date, fieldType, e)} />
-          {
-            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
-          }
+            onChange={(date) => this.onChangeHandler(fieldName, date, fieldType)} />
+            {
+              (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
+            }
         </div>
       )
     }

@@ -9,8 +9,7 @@ import Modal from 'react-modal';
 import _ from 'lodash';
 
 
-var args = ["name", "emailAddress","phoneNumber", "country", "state", "zipCode"];
-var fieldKeysOfGroup = [];
+var groupKeys = [], fieldKeysOfGroup = [];
 class GetData extends Component {
 
   state = {
@@ -24,10 +23,10 @@ class GetData extends Component {
       resizable: true,
       filter: true,
     },
-    dbData :[],
     pushData : [],
     pushKeys : [],
-    dbGroup :[]
+    dbGroup :[],
+    count : 0
   }
 
   closeModal = () => {
@@ -41,48 +40,13 @@ class GetData extends Component {
   onRowClicked = (e) => {
     this.setState({ modalIsOpen: true, showHome: false, showLogin: false });
 
-    this.state.dbGroup.map(group => {
-      group.fields.map(field => {
-        fieldKeysOfGroup.push(field.fieldName)
-        if(field.subField)
-        {
-          field.subField.map(subField => {
-            fieldKeysOfGroup.push(subField.fieldName)
+    fetch('/get/formdata/particular/'+e.data._id)
+    .then(result => result.json())
+    .then(fullSingleData => {
 
-            if(subField.subField)
-            {
-              subField.subField.map(subSubField => {
-                fieldKeysOfGroup.push(subSubField.fieldName)
-
-              })
-            }
-          })
-        }
-      })
+      groupKeys = Object.keys(fullSingleData[0].data)
+      this.setState({pushData : fullSingleData[0].data}, ()=>console.log(this.state.pushData));
     })
-
-    console.log(fieldKeysOfGroup)
-
-    for(let j = 0 ; j <  this.state.dbData.length ; j++)
-    {
-      let objectKeys = Object.keys(this.state.dbData[j].data);
-      this.setState({pushKeys : objectKeys})
-      let objects = Object.values(this.state.dbData[j].data);
-      let lengthOfObjectValues = Object.values(this.state.dbData[j].data).length; 
-      
-
-      for(let i = 0 ; i < lengthOfObjectValues ; i++)
-      {
-        if(objects[i].hasOwnProperty("emailAddress"))
-        {
-          if(objects[i].emailAddress === e.data.emailAddress)
-          { 
-            this.setState({pushData : objects}, ()=>console.log(this.state.pushData))            
-          }
-           
-        }
-      }
-    }
   }
   
   onGridReady = params => {
@@ -95,36 +59,61 @@ class GetData extends Component {
   }
 
   componentDidMount(){
-    fetch('/get/formdata')
-    .then(result => result.json())
-    .then(rowDataSet => {
-      this.setState({dbData : rowDataSet})
-    });
-
+    
     fetch('/get/forminfo')
     .then(result => result.json())
     .then(groupDataSet => {
       this.setState({dbGroup : groupDataSet})
+
+      this.state.dbGroup.map(group => {
+        group.fields.map(field => {
+          fieldKeysOfGroup.push(field.fieldName)
+          if(field.subField)
+          {
+            field.subField.map(subField => {
+              if(subField.fieldType !== "option")
+                fieldKeysOfGroup.push(subField.fieldName)
+  
+              if(subField.subField)
+              {
+                subField.subField.map(subSubField => {
+                  fieldKeysOfGroup.push(subSubField.fieldName)
+  
+                })
+              }
+            })
+          }
+        })
+      })
+
+      console.log(fieldKeysOfGroup)
     });
 
-    fetch('/get/formdata')
+    fetch('/get/formdata/args')
       .then(result => result.json())
       .then(rowDataSet => {
-
-        var tempRowData = [];
         var tempColumnDefs = [];
-      
-        rowDataSet.map(function(rowData){
-          tempRowData.push(_.assign.apply(_, Object.values(rowData.data)));
-        })
+        console.log(rowDataSet)
+        var argsCopy = Object.keys(rowDataSet[0])
+        console.log(argsCopy)
 
-        
-        for (let i = 0; i < args.length; i++) {
-          tempColumnDefs.push({
-            "headerName": args[i].charAt(0).toUpperCase() + args[i].slice(1).replace(/([A-Z])/g, ' $1').trim(),
-            "field": args[i],
-            lockPosition: true
-          });
+        for (let i = 0; i < argsCopy.length; i++) {
+          if(i !== 0)
+          {
+            tempColumnDefs.push({  
+              "headerName": argsCopy[i].charAt(0).toUpperCase() + argsCopy[i].slice(1).replace(/([A-Z])/g, ' $1').trim(),
+              "field": argsCopy[i],
+              lockPosition: true
+            });
+          }
+          else{
+            tempColumnDefs.push({  
+              "headerName": argsCopy[i].charAt(0).toUpperCase() + argsCopy[i].slice(1).replace(/([A-Z])/g, ' $1').trim(),
+              "field": argsCopy[i],
+              lockPosition: true,
+              hide : true
+            });
+          }
         }
 
         tempColumnDefs.push({
@@ -135,20 +124,28 @@ class GetData extends Component {
           },
         });
 
-        this.setState({ rowData: tempRowData, columnDefs: tempColumnDefs })
+        this.setState({ rowData: rowDataSet, columnDefs: tempColumnDefs })
       })
   }
 
-  render() {
-    var datas = this.state.dbData;
-    var keys = Object.keys(datas)
+  toggleFunction = (param) => {
+    var datas= this.state.dbGroup;
+    datas.map(data => {
+      if(data.groupName === param){
+        data.toggleActive=!data.toggleActive;
+      }
+    })
+    this.setState({dbGroup : datas}, ()=>console.log(this.state.dbGroup))
+  }
 
+  render() {
     if (this.state.showHome) {
       return (
         <div>
           <div className="header">
             <img src={logo} className="logo"></img>
-            <input type="Submit" className="logout-btn" onClick={this.handleLogout} value="Log Out"></input>
+            <button className="logout-btn btn btn-danger" id="CloseData" name="CloseData" onClick={this.handleLogout}>
+            <i class="fa fa-sign-out"></i> logout</button>
           </div>
           <div
             className="ag-theme-balham" >
@@ -171,52 +168,84 @@ class GetData extends Component {
       )
     }
 
-    if (this.state.modalIsOpen) {
-      return (
-        <div className="data-modal">
-          <div className="header">
-            <img src={logo} className="logo"></img>
-            <button className="CloseData-btn btn-primary" id="CloseData" name="CloseData" onClick={this.closeModal}>
-          <i className="fa fa-arrow-circle-left"></i> BACK</button>
-          </div>
-          <Modal
-            isOpen={this.state.modalIsOpen}
-            onRequestClose={this.state.closeModal}
-            contentLabel="Example Modal"
-            ariaHideApp={false}
-            className="modal_data"
-          >
-            <div>
-              {
-                this.state.pushData.map((obj, index) => (
+    return (
+      <div className="data-modal">
+        <div className="header">
+          <img src={logo} className="logo"></img>
+          <button className="CloseData-btn btn-primary" id="CloseData" name="CloseData" onClick={this.closeModal}>
+        <i className="fa fa-arrow-circle-left"></i> Back</button>
+        </div>
+        <div className="container-fluid">
+            {
+              groupKeys.map((groupName, index) => (
+                (groupName !== "ServersinMigrationScope" ? (
                   <div className="box">
-                    <h4 className="box-head">{this.state.pushKeys[index].replace(/([A-Z])/g, ' $1').trim()}</h4>
-      
-                    <div className="box-body">
-                      <div className="row">
-                      {
-                        fieldKeysOfGroup.map(fieldName => (
-                          Object.keys(obj).map((key, index) => (
-                            (key === fieldName &&
-                              <div className="col-md-3 modal-algn">
-                                <label>{key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').trim()}</label> 
-                                <input value={obj[key]} disabled></input>  
-                              </div>
-                            )
-                          ))
-                        ))
-                      }
+                    <div>
+                        <h4 className="box-head" onClick={() => this.toggleFunction(groupName)}  data-toggle="collapse" data-target={'#' + groupName}>
+                        <i class="fa fa-bars"></i> {this.state.dbGroup[index].groupLabel}
+                        <i  class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
+                        </h4>
+                      </div>
+                    <div className="form-inline">
+                      <div className="box-body collapse show" id={groupName}>
+                        <div className="row">
+                          {
+                            fieldKeysOfGroup.map((fieldName1,index) => (
+                              Object.keys(this.state.pushData[groupName]).map(fieldName => (
+                                ((fieldName1 === fieldName) &&
+                                  <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <div className="form-group modal-algn">
+                                      <label>{fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1').trim()}</label> 
+                                      <input value={this.state.pushData[groupName][fieldName]} disabled></input>  
+                                    </div>
+                                  </div>
+                                )
+                              ))
+                            ))
+                          }
+                        </div>
+                      </div>
                     </div>
                   </div>
+                ) : (
+                  <div className="box">
+                    <div>
+                      <h4 className="box-head" onClick={() => this.toggleFunction(groupName)}  data-toggle="collapse" data-target={'#' + groupName}>
+                      <i class="fa fa-bars"></i> {this.state.dbGroup[index].groupLabel}
+                      <i  class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
+                      </h4>
+                    </div>
+                    <div className="form-inline">
+                      <div className="box-body collapse show" id={groupName}>
+                        <div className="row">
+                            <table id="t01">
+                            <thead>
+                              <th>Servers</th>
+                            </thead>
+                            {
+                            Object.keys(this.state.pushData[groupName]).map((fieldName) => (
+                              <div className="col-md-3 modal-algn form-group">
+                                {(fieldName.startsWith("servers") ? (
+                                    <tr>
+                                      <td><nobr>{this.state.pushData[groupName][fieldName]}</nobr></td>
+                                    </tr>
+                                ) : (null))}
+                              </div>                                
+                           ))
+                          }
+                          </table>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))
-              }
-            </div>
-          </Modal>
-        </div>
+              ))
+            }
+          </div>
+        {/* </Modal> */}
+      </div>
 
       )
-    }
   }
 }
 

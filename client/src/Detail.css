@@ -4,13 +4,13 @@
     margin-left: 48%;
 }
 
-.modal_data {
+/* .modal_data {
     position: absolute;
     top: 70px;
     left: 20px;
     right: 20px;
     bottom: 10px;
-    border: 1px solid rgb(201, 218, 234);
+    border:  1px solid #dadaef;
     background: #ffffff;
     overflow: auto;
     border-radius: 4px;
@@ -19,32 +19,38 @@
     font-size: 15px;
     font-weight: 400;
     font-family: 'Open Sans', sans-serif;
+} */
+
+.data-modal label{
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Open Sans', sans-serif;
 }
 
-.modal_data label::after {
-    content: " ";
+.data-modal label::after {
+    content: ":";
 }
 
-.data-modal .ReactModalPortal input {
+.modal-algn input {
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #4e4e4e;
+    background: #fff;
+    margin-left: 10px;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+/* .modal-algn label {
     width: 100%;
-}
-
-.data-modal .ReactModalPortal label {
-    width: 100%;
-}
+    margin-top: 0.8rem !important;
+	margin-bottom: 0rem !important;
+} */
 /* 
 .ReactModal__Overlay{
     background-color: #fbfcfd !important;
 } */
-
-.CloseData-btn{
-	border: none;
-    border-radius: 4px;
-    color: white;
-    float: right;
-    font-family: 'Open Sans', sans-serif;
-}
-
 
 .fullView:hover{
     cursor: pointer;
@@ -62,12 +68,6 @@
     display: inline-block;
 }
 
-.ag-theme-balham .ag-row {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 500;
-    font-size: 13px;
-}
-
 .ag-theme-balham .ag-row-even {
     background-color: #c1d0e2 !important;
 }
@@ -81,65 +81,116 @@
     margin-top: 15px;
 }
 
-.ag-root-wrapper {
-    overflow: unset !important;
-}
-
 .header .logout-btn {
     border: none;
     border-radius: 4px;
-    background-color: #f12d2d;
     color: white;
     float: right;
     font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    margin: 14px 20px;
+    padding: 1px 6px;
 }
 
-.modal-algn  input {
-    width: 100%;
-	padding: 6px 6px;
-	display: inline-block;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	box-sizing: border-box;
-	color: #4e4e4e;
-
+.CloseData-btn{
+	border: none;
+    border-radius: 4px;
+    color: white;
+    float: right;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    margin: 14px 20px;
 }
 
-.modal-algn label {
-    width: 100%;
-    margin-top: 0.8rem !important;
-	margin-bottom: 0rem !important;
-}
-
-.modal_data .box-head{
+.data-modal .box-head{
     padding: 5px;
-	height: 35px;
-	line-height: 25px;
-	background-color: #3d4061;
-	color:#ffffff;	
-	border-top-left-radius: 4px;
-	border-top-right-radius: 4px;
-	font-weight: 500;
-	font-size: 13px;
+    height: 35px;
+    line-height: 25px;
+    background-color: #d9edf7;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    font-weight: 700;
+    font-size: 13px;
     margin: auto;
     width: 100%;
+    color: #4489bf;
+    border: 1px solid #c3e9f2;
+    cursor: pointer;
 }
 
-.modal_data .box{
+.data-modal .box{
 	border-radius: 1px;
-	box-shadow: 1px 3px 6px 0px #cbcdd2;
-	font-family: 'Open Sans', sans-serif;
-	box-sizing: border-box;
-	font-weight: 600;
-	color: #4e4e4e;
-	font-size: 12px;
+    box-shadow: 1px 3px 6px 0px #e2e2e2;
+    font-family: 'Open Sans', sans-serif;
+    box-sizing: border-box;
+    font-weight: 600;
+    color: #4e4e4e;
+    font-size: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #c3e9f2;
   }
 
-  .modal_data .box-body {
+  .data-modal .box-body {
 	padding: 10px;
 	background-color:white;
 	border-bottom-right-radius: 4px;
 	border-bottom-left-radius: 4px;
-	height: max-content;
-	margin-bottom: 25px;
+    height: max-content;
+    width: 100%;
+    /* border: 1px solid #c3e9f2; */
+  }
+
+.data-modal .container-fluid {
+    padding-top: 75px;
+    background: #f9fafb;
+}
+
+.data-modal .box-head i {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.data-modal .icon-algn {
+    float: right;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 1125px) {
+    .data-modal label {
+        width: 100%;
+        display: block;
+    }
+    .modal-algn input {
+        display: inline-block;
+    }
+  }
+
+  table {
+    width:30%;
+    margin-left: 20px;
+  }
+  table, th {
+    border: 1px solid lightblue;
+    border-collapse: collapse;
+  }
+  th, tr {
+    padding: 15px;
+    text-align: left;
+  }
+  tr{
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid lightblue;
+  }
+  table#t01 tr:nth-child(even) {
+    background-color: #eee;
+  }
+  table#t01 tr:nth-child(odd) {
+   background-color: #fff;
+  }
+  
+  table#t01 th {
+    background-color: #66bde9;
+    color: #ffffff;
   }

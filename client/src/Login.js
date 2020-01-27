@@ -18,7 +18,7 @@ class Login extends React.Component {
     handleLogin = (e) => {
         e.preventDefault();
         
-        if(this.state.userName === "Zenfra" && this.state.password === "zenfra")
+        if(this.state.userName === "zenfra" && this.state.password === "zenfra")
         {
             this.setState({showHome : true})
             this.setState({showLogin : false})
@@ -70,23 +70,26 @@ class Login extends React.Component {
         {
         return (
         <div id="body">
-            <div className="wrapper fadeInDown">
-                
+            <div className="wrapper">
                 <div id="formContent">
                     <div className="fadeIn first">
                         <img src={logo} id="icon" alt="User Icon" />
                         </div>
-                        <form onSubmit={this.handleLogin}>
-                            <input type="text" id="login" name="userName" className="fadeIn second" minLength="4" maxLength="20" placeholder="Username" 
-                            onChange={this.handleChangeUserName, this.onChangeHandler} value={this.state.UserName} required/>
-                            <input type="password" id="password" className="fadeIn third" name="password" minLength="4" placeholder="Password" onChange={this.onChangeHandler} required/>
+                        <form onSubmit={this.handleLogin} className="login-form">
+                        <label className="user-label fadeIn five">User Name</label>
+                            <input type="text" id="login" name="userName" className="fadeIn second" placeholder="Username" 
+                            onChange={this.handleChangeUserName, this.onChangeHandler} value={this.state.UserName} />
+                            <label className="user-label fadeIn five">Password</label>
+                            <input type="password" id="password" className="fadeIn third" name="password"  placeholder="Password" onChange={this.onChangeHandler} />
                             {this.state.showErrorMessage &&
                                     <i>Provide valid informations</i>
                             }
-                            <input type="submit"  className="fadeIn fourth" value="Log In" />
+                            <button type="submit" class="fadeIn fourth">
+                            Log In <i class="fa fa-sign-in" style={{color: "white"}} ></i>
+                            </button>
+                            {/* <input type="submit"  className="fadeIn fourth" value="Log In" /> */}
                         </form>
-                        <div id="formFooter">
-                        </div>
+                        
                 </div>
             </div>
         </div>

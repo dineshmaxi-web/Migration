@@ -1,7 +1,11 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+var ObjectId = require('mongodb').ObjectID;
 
+var args = ["_id", "name", "emailAddress","phoneNumber", "country", "state", "zipCode"];
+var finalParticulars = [];
+var groupKeys = ["CustomerContactInformation","OpportunityInformation","ManagementInformation","SiteDetails","ServersinMigrationScope"]
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -51,10 +55,43 @@ app.get("/get/forminfo", (req,res) => {
   })
 });
 
+app.get("/get/formdata/args", (req,res) => {
+  dbo.collection("FormData").find({}).toArray(function(err, result) {
+  
+    var tempObject = {};
+    var key = [];
+
+    result.map(res => {
+      key = Object.keys(res.data)      
+      tempObject._id = res._id;
+
+      args.map(arg => {
+        key.map(groupName => {
+          if(res.data[groupName].hasOwnProperty(arg))
+          {
+            tempObject[arg] = res.data[groupName][arg]
+          }
+        })
+      })
+
+      finalParticulars.push(tempObject)
+      tempObject = {}
+    })
+    
+    res.send(finalParticulars)
+    finalParticulars = []
+  })
+}) 
+
+app.get("/get/formdata/particular/:id", (req,res) => {
+
+  dbo.collection("FormData").find(ObjectId(req.params.id)).toArray(function(err, result) {
+    res.send(result)
+  })
+});
 
 app.get("/get/formdata", (req,res) => {
   dbo.collection("FormData").find({}).toArray(function(err, result) {
-    console.log(result[0])
     res.send(result)
   })
 }); 
@@ -64,5 +101,6 @@ app.post("/post/data", (req,res) => {
       res.send(result);
   });
 });
+
 var port = process.env.NODE_ENV || 5000
 app.listen(port, () => console.log(`Listening on port 5000`));

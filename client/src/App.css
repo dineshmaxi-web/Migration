@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,700i,800&display=swap');
 body {
-	background-color:#dce4ec !important;
+	background-color:#f9fafb !important;
 	position: relative;
     width: 100%;
   }
   
   .header {
 	/* background-color: #14235b; */
-	background-color: #e6e5f1;
+	background-color: #ffffff;
 	padding: 10px;
 	text-align: center;
 	position: fixed;
@@ -15,40 +15,46 @@ body {
     right: 0;
 	left: 0;
 	z-index: 1;
+    box-shadow: 3px 0 10px 0 rgba(183,192,206,.2);
+    transition: width .1s ease,left .1s ease;
+    border-bottom: 1px solid #efefef;
   }
   
   .logo{
-	height: 40px;
-	width: 120px;
+	width: 160px
   }
   
   .box{
 	border-radius: 1px;
-	box-shadow: 1px 3px 6px 0px #cbcdd2;
-	font-family: 'Open Sans', sans-serif;
-	box-sizing: border-box;
-	font-weight: 600;
-	color: #4e4e4e;
-	font-size: 12px;
+    box-shadow: 1px 3px 6px 0px #e2e2e2;
+    font-family: 'Open Sans', sans-serif;
+    box-sizing: border-box;
+    font-weight: 600;
+    color: #4e4e4e;
+    font-size: 12px;
+    margin-bottom: 15px;
   }
   
   .box-head{
 	padding: 5px;
-	height: 35px;
-	line-height: 25px;
-	background-color: #3d4061;
-	color:#ffffff;	
-	border-top-left-radius: 4px;
-	border-top-right-radius: 4px;
-	font-weight: 500;
-	font-size: 13px;
-	margin: auto;
+    height: 35px;
+    line-height: 25px;
+    background-color: #d9edf7;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    font-weight: 700;
+    font-size: 13px;
+    margin: auto;
+    width: 100%;
+    color: #4489bf;
+    border: 1px solid #c3e9f2;
   }
 
-  .box-head i{
+ .group .box-head i{
 	float: right;
     text-align: right;
 	margin-right: 10px;
+	cursor: pointer;
 }
   
   .box-body {
@@ -56,8 +62,9 @@ body {
 	background-color:white;
 	border-bottom-right-radius: 4px;
 	border-bottom-left-radius: 4px;
-	height: max-content;
-	margin-bottom: 25px;
+    height: max-content;
+	width: 100%;
+    border: 1px solid #c3e9f2;
   }
 
   .box-footer{
@@ -68,7 +75,10 @@ body {
     bottom: 0;
     right: 0;
     left: 0;
-    background: #e6e5f1;
+	background: #ffffff;
+	box-shadow: 3px 0 10px 0 rgba(183,192,206,.2);
+    transition: width .1s ease,left .1s ease;
+    border-top: 1px solid #efefef;
   }
 
   .submit-btn{
@@ -77,7 +87,7 @@ body {
 	border-radius:4px;
   }
 
-  .group input[type="text"],input[type="email"],input[type="date"],select{
+  .group input[type="text"],input[type="email"],input[type="date"],input[type="tel"],select{
 	width: 100%;
 	padding: 6px 6px;
 	display: inline-block;
@@ -85,6 +95,15 @@ body {
 	border-radius: 4px;
 	box-sizing: border-box;
 	color: #4e4e4e;
+}
+
+.PhoneInputCountryIcon--border {
+	background-color: white !important; 
+    box-shadow: none !important;
+}
+
+.PhoneInputCountryIcon  {
+	height:4vh !important;
 }
 
 .checkbox{
@@ -177,6 +196,10 @@ label{
 	content: "";
 }
 
+.group .container-fluid {
+	padding-top: 75px;
+}
+
 #wasCode_field{
 	margin-top: 16px;
 }
@@ -223,22 +246,22 @@ label{
 }
 
 .group input:hover{
-	box-shadow:.5px .5px .5px #1bade5;
-	border-color: #1bade5
+	/* box-shadow:.5px .5px .5px #1bade5; */
+	border-color: #67aee6;
 }
 select:hover{
-	box-shadow:.5px .5px .5px #1bade5;
-	border-color: #1bade5
+	/* box-shadow:.5px .5px .5px #1bade5; */
+	border-color: #67aee6;
 }
 textarea:hover{
-	box-shadow:.5px .5px .5px #1bade5;
-	border-color: #1bade5
+	/* box-shadow:.5px .5px .5px #1bade5; */
+	border-color: #67aee6;
 }
 
-.checkbox:hover{
+/* .checkbox:hover{
 	box-shadow:.5px .5px .5px #1bade5;
 	border-color: #1bade5
-}
+} */
 
 .Modal-box {
 	position: absolute;
@@ -319,7 +342,7 @@ textarea:hover{
 	position: absolute;
     right: 48px;
     top: -5px;
-    color: #fff;
+    color: #4489bf;
     font-size: 12px;
 }
 
@@ -328,7 +351,7 @@ textarea:hover{
 }
 
 .request-no span{
-	border: 1px solid white;
+    border: 1px solid #57a5b7;
 	padding: 2px;
 }
 .subfield-algn {
@@ -397,6 +420,7 @@ textarea:hover{
 	font-weight: 500;
 	font-size: 13px;
 	margin: auto;
+	border: none;
   }
 
 .Modal-box {
@@ -427,7 +451,7 @@ textarea:hover{
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
 	margin-right: 5px;
-    padding: 3px;
+    padding: 2px;
 }
 
 .closeModal-btn .fa {
@@ -480,4 +504,14 @@ textarea:hover{
 
 .ReactModal__Overlay{
     background-color:  rgba(0, 0, 0, 0.6) !important;
+}
+
+.group label {
+	font-size: 12px;
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.server-box .span-algn {
+	margin-right: 15px;
 }
