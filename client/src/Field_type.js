@@ -6,10 +6,9 @@ import 'flatpickr/dist/themes/material_green.css';
 import Flatpickr from 'react-flatpickr';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
-import Input from 'react-phone-number-input/input';
 import _ from 'lodash';
-import $ from "jquery";
 import EmailValidator from 'email-validator';
+import Zip from 'react-zipcode';
 
 class Type extends React.Component {
   state = {
@@ -59,15 +58,28 @@ class Type extends React.Component {
     {
       if(EmailValidator.validate(fieldValue)){
         this.setState({inValidEmail : false})
-       this.props.func(fieldName, fieldValue, groupName);
+        this.props.func(fieldName, fieldValue, groupName);
       }
       else{
         event.target.value = "";
         this.setState({inValidEmail : true})
+        this.props.delSubField(groupName, fieldName);
       }
     }
 
-    if (fieldType === "text" || fieldType === "date" || fieldType === "phoneNumber" || fieldType === "textarea") {
+    if(fieldType === "phoneNumber")
+    {
+      console.log(fieldValue, this.state.phoneNumber)
+      if(fieldValue !== "")
+      {
+        this.props.func(fieldName, fieldValue, groupName);
+      }
+      else{
+        this.props.delSubField(groupName, fieldName);
+      }
+    }
+
+    if (fieldType === "text" || fieldType === "date" || fieldType === "zipCode" || fieldType === "textarea") {
       if(fieldType === "date")
       {
         fieldValue = String(fieldValue[0]).substring(4, 15);
@@ -193,6 +205,8 @@ class Type extends React.Component {
 
   addNewServerInfoFunc = () => {
     var lengthOfFields = this.props.group.fields.length - 1;
+    let addServerNumber = Number(this.props.group.fields[lengthOfFields].fieldName.charAt(this.props.group.fields[lengthOfFields].fieldName.length - 1)) + 1;
+    
     var copyField = {};
     var group = this.props.group;
 
@@ -201,7 +215,7 @@ class Type extends React.Component {
       if(index === 0)
       {
         copyField = _.clone(field, true);
-        copyField.fieldName = field.fieldName + "_" + lengthOfFields;
+        copyField.fieldName = field.fieldName + "_" + addServerNumber;
         copyField.subField.map((subField)=>{
           if(index === 0){
             subField.fieldName = copyField.fieldName;
@@ -234,7 +248,7 @@ class Type extends React.Component {
             count = count + 1;
           }
         })
-
+        console.log(count)
         if(count === 0)
         {
           copyField.subField.push({
@@ -541,6 +555,7 @@ class Type extends React.Component {
           this.props.changeFullGroup(this.props.stateGroups)
         }
       })
+
       this.setState({ [fieldValue]: fieldValue });
       this.setState({ showVmWare: false });
       this.props.func(fieldName, fieldValue, groupName);
@@ -560,6 +575,8 @@ class Type extends React.Component {
           })
         }
       })
+      this.props.delSubField(this.props.group.groupName, "numberofESXHosts", "numberofVMGuests", "numberofSANBoots", "VMware");
+
     }
   }
 
@@ -567,7 +584,10 @@ class Type extends React.Component {
     this.props.group.fields.map((field, index) => {
       if (field.fieldName === this.props.field.fieldName) {
         this.props.delSubField(this.props.group.groupName, field.fieldName)
-        this.props.group.fields.splice(index, 1);
+        
+        let index = this.props.group.fields.indexOf(field);
+        this.props.group.fields.splice(index, 1)
+        console.log(this.props.group.fields)
       }
     })
 
@@ -584,6 +604,20 @@ class Type extends React.Component {
     var placeholder = this.props.field.placeholder;
     var fieldKey = this.props.fieldKey;
     var { phoneNumber } = this.state;
+
+    if (fieldType === "zipCode") {
+      return (
+        <div id={fieldName + '_field'} name={fieldName + '_field'}>
+          <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
+          </label>
+          <Zip placeholder={placeholder} onValue={(value) => this.onChangeHandler(fieldName, value, fieldType)}></Zip>
+          {/* <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onBlur={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} /> */}
+          {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required Five Digit Number</span>) : null)
+          }
+        </div>
+      )
+    }
 
     if (fieldType === "email") {
       return (
@@ -609,16 +643,9 @@ class Type extends React.Component {
           <PhoneInput
             defaultCountry="US"
             placeholder="Enter phone number"
-            value={phoneNumber}
             onChange={(phoneNumber) => this.onChangeHandler(fieldName, phoneNumber, fieldType, "")}/>
-          {/* <Input
-            className="phone-number"
-            placeholder="Enter phone number"
-            country="US"
-            value={phoneNumber}
-            onChange={(phoneNumber) => this.onChangeHandler(fieldName, phoneNumber, fieldType, "")} /> */}
           {
-            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : null)
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Enter valid phone number</span>) : null)
           }
         </div>
       )

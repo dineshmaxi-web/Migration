@@ -35,7 +35,7 @@ body {
     margin-bottom: 15px;
   }
   
-  .box-head{
+  .group .box-head{
 	padding: 5px;
     height: 35px;
     line-height: 25px;
@@ -47,10 +47,11 @@ body {
     margin: auto;
     width: 100%;
     color: #4489bf;
-    border: 1px solid #c3e9f2;
+	border: 1px solid #c3e9f2;
+	cursor: pointer;
   }
 
-  .group .box-head .icon-algn2{
+ .group .box-head .icon-algn2{
 	float: right;
     text-align: right;
 	margin-right: 10px;
@@ -63,7 +64,7 @@ body {
 	cursor: pointer;
 	margin-top: 5px;
 }
-
+  
   .box-body {
 	padding: 10px;
 	background-color:white;
@@ -420,14 +421,14 @@ textarea:hover{
 	padding: 5px;
 	height: 35px;
 	line-height: 25px;
-	background-color: #3d4061;
-	color:#ffffff;	
+    background-color: #d9edf7;
+    color: #4489bf;
+	border: 1px solid #a4cbd4;
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
-	font-weight: 500;
+	font-weight: 700;
 	font-size: 13px;
 	margin: auto;
-	border: none;
   }
 
 .Modal-box {
@@ -532,3 +533,10 @@ textarea:hover{
 		margin-left: 0%;
 	}
   }
+
+/* 
+  input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+} */

@@ -5,11 +5,10 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import logo from './vtglogo.jpg';
 import './Detail.css';
-import Modal from 'react-modal';
 import _ from 'lodash';
 
 
-var groupKeys = [], fieldKeysOfGroup = [];
+var groupKeys = [], fieldKeysOfGroup = [], dbGroupKeys = [];
 class GetData extends Component {
 
   state = {
@@ -45,7 +44,7 @@ class GetData extends Component {
     .then(fullSingleData => {
 
       groupKeys = Object.keys(fullSingleData[0].data)
-      this.setState({pushData : fullSingleData[0].data}, ()=>console.log(this.state.pushData));
+      this.setState({pushData : fullSingleData[0].data});
     })
   }
   
@@ -66,6 +65,7 @@ class GetData extends Component {
       this.setState({dbGroup : groupDataSet})
 
       this.state.dbGroup.map(group => {
+        dbGroupKeys.push(group.groupName)
         group.fields.map(field => {
           fieldKeysOfGroup.push(field.fieldName)
           if(field.subField)
@@ -86,16 +86,13 @@ class GetData extends Component {
         })
       })
 
-      console.log(fieldKeysOfGroup)
     });
 
     fetch('/get/formdata/args')
       .then(result => result.json())
       .then(rowDataSet => {
         var tempColumnDefs = [];
-        console.log(rowDataSet)
         var argsCopy = Object.keys(rowDataSet[0])
-        console.log(argsCopy)
 
         for (let i = 0; i < argsCopy.length; i++) {
           if(i !== 0)
@@ -120,7 +117,7 @@ class GetData extends Component {
           headerName: "View",
           lockPosition: true,
           cellRendererFramework: () => {
-            return <i className="fa fa-eye fullView"></i>
+            return <i className="fa fa-eye fullView" style={{color: "#2B2B2C"}}></i>
           },
         });
 
@@ -135,10 +132,11 @@ class GetData extends Component {
         data.toggleActive=!data.toggleActive;
       }
     })
-    this.setState({dbGroup : datas}, ()=>console.log(this.state.dbGroup))
+    this.setState({dbGroup : datas})
   }
 
   render() {
+    
     if (this.state.showHome) {
       return (
         <div>
@@ -177,7 +175,9 @@ class GetData extends Component {
         </div>
         <div className="container-fluid">
             {
-              groupKeys.map((groupName, index) => (
+              dbGroupKeys.map((groupName, index) => (
+              groupKeys.map((groupKey) => (
+               (groupKey === groupName ? (
                 (groupName !== "ServersinMigrationScope" ? (
                   <div className="box">
                     <div>
@@ -243,6 +243,8 @@ class GetData extends Component {
                     </div>
                   </div>
                 ))
+                ) : (null))
+              ))
               ))
             }
           </div>

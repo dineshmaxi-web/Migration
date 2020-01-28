@@ -186,30 +186,38 @@ class App extends React.Component {
 
   setStateFunction = (fieldName, fieldValue, groupName) => {
     let stateVariables = this.state;
- 
-    if (fieldValue === "") {
-      delete stateVariables[groupName][fieldName];
-      this.setState(stateVariables);
-    }
-    else {
-      if (stateVariables[groupName]) {
-        stateVariables[groupName][fieldName] = fieldValue;
-        this.setState(stateVariables, () => {
-          if (groupName == "ServersinMigrationScope") {
-            this.disableSelectedValue();
+    console.log(fieldValue)
+    if(fieldValue !== undefined)
+    {
+        if(fieldValue === "") {
+          delete stateVariables[groupName][fieldName];
+          this.setState(stateVariables, () => console.log(this.state));
+        }
+        else {
+          if (stateVariables[groupName]) {
+            stateVariables[groupName][fieldName] = fieldValue;
+            this.setState(stateVariables, () => {
+              console.log(this.state)
+              if (groupName == "ServersinMigrationScope") {
+                this.disableSelectedValue();
+              }
+            });
           }
-        });
-      }
-      else {
-        this.setState({
-          [groupName]: { [fieldName]: fieldValue }
-        }, () => {
-          if (groupName == "ServersinMigrationScope") {
-            this.disableSelectedValue();
+          else {
+            this.setState({
+              [groupName]: { [fieldName]: fieldValue }
+            }, () => {
+              console.log(this.state)
+              if (groupName == "ServersinMigrationScope") {
+                this.disableSelectedValue();
+              }
+            })
           }
-        })
+        }
       }
-    }
+      else{
+        delete stateVariables[groupName][fieldName];
+      }
   }
 
   disableSelectedValue = () => {
@@ -236,18 +244,32 @@ class App extends React.Component {
     this.setState(wholeState)
   }
 
-  delSubField = (groupName, fieldName1, fieldName2) => {
+  delSubField = (groupName, fieldName1, fieldName2, fieldName3, server) => {
     let temp = this.state;
-
-    if (temp.hasOwnProperty(groupName)) {
-      delete temp[groupName][fieldName1];
-      delete temp[groupName][fieldName2];
-      this.setState(temp);
+    if(groupName !== "ServersinMigrationScope")
+    {
+        delete temp[groupName][fieldName1];
+        delete temp[groupName][fieldName2];
+        this.setState(temp, ()=>console.log(this.state));
+    }
+    else{
+      if(temp.hasOwnProperty("ServersinMigrationScope"))
+      {
+        let key = Object.values(temp.ServersinMigrationScope)
+        if (!key.includes(server)) {
+          if (temp.hasOwnProperty(groupName)) {
+            delete temp[groupName][fieldName1];
+            delete temp[groupName][fieldName2];
+            delete temp[groupName][fieldName3];
+            this.setState(temp, ()=>console.log(this.state));
+          }
+        }
+      }
     }
   }
 
   changeFullGroup = (fullGroup) => {
-    this.setState({ groups: fullGroup })
+    this.setState({ groups: fullGroup }, ()=>console.log(this.state.groups[4]))
   }
 
   arrowFunction(groupKey) {
