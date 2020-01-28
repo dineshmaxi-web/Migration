@@ -140,7 +140,6 @@ class Type extends React.Component {
         })
       }
       else {
-        //Changing show Required to false
         this.props.group.fields.map(field => {
           if (field.hasOwnProperty("subField")) {
             field.subField.map(subField => {

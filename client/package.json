@@ -24,6 +24,7 @@
     "react-phone-number-input": "^3.0.13",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
+    "react-zipcode": "^1.0.1",
     "upper-case": "^2.0.1"
   },
   "scripts": {

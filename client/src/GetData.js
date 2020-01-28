@@ -229,7 +229,11 @@ class GetData extends Component {
                                     <tr>
                                       <td><nobr>{this.state.pushData[groupName][fieldName]}</nobr></td>
                                     </tr>
-                                ) : (null))}
+                                ) : (
+                                  <tr>
+                                      <td><nobr> - {fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1').trim()} : {this.state.pushData[groupName][fieldName]}</nobr></td>
+                                    </tr>
+                                ))}
                               </div>                                
                            ))
                           }
