@@ -276,6 +276,8 @@ class App extends React.Component {
 
       $('.connectivity-algn').parent().removeClass('col-md-3');
       $('.connectivity-algn').parent().addClass('col-md-6');
+
+      $('#zipCode_field').parent().addClass('zipcode-algn');
   });
 
     if (this.state.showSuccess) {
@@ -323,9 +325,10 @@ class App extends React.Component {
                 (group.isActive ? (
                   <div>
                     <div className="box" id={group.groupLabel} name={group.groupName}>
-                      <h4 className="box-head" onClick={this.arrowFunction.bind(this, groupKey)} data-toggle="collapse" data-target={'#' + group.groupName}  >
-                        {group.groupLabel}
-                        <i id={group.toggleActive + '_test'} className={group.toggleActive ? "fa fa-angle-up" : "fa fa-angle-down"}></i>
+                    <h4 className="box-head" onClick={this.arrowFunction.bind(this, groupKey)} data-toggle="collapse" data-target={'#' + group.groupName}  >
+                      <i class="fa fa-bars icon-algn1"></i> {group.groupLabel}
+                      <i  id={group.toggleActive + '_test'} class={`icon-algn2 ${group.toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
+                        {/* <i id={group.toggleActive + '_test'} className={group.toggleActive ? "fa fa-angle-up" : "fa fa-angle-down"}></i> */}
                       </h4>
                       <div className="box-body collapse show" id={group.groupName}>
                         <div className="row">

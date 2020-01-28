@@ -50,13 +50,20 @@ body {
     border: 1px solid #c3e9f2;
   }
 
- .group .box-head i{
+  .group .box-head .icon-algn2{
 	float: right;
     text-align: right;
 	margin-right: 10px;
 	cursor: pointer;
+	margin-top: 5px;
 }
-  
+
+.group .box-head .icon-algn1{
+	margin-right: 5px;
+	cursor: pointer;
+	margin-top: 5px;
+}
+
   .box-body {
 	padding: 10px;
 	background-color:white;
@@ -515,3 +522,13 @@ textarea:hover{
 .server-box .span-algn {
 	margin-right: 15px;
 }
+
+.group .zipcode-algn{
+	margin-left: -25%;
+}
+
+@media only screen and (max-width: 320px) {
+    .group .zipcode-algn {
+		margin-left: 0%;
+	}
+  }
