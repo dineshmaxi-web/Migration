@@ -95,7 +95,7 @@ body {
 	border-radius:4px;
   }
 
-  .group input[type="text"],input[type="email"],input[type="date"],input[type="tel"],select{
+  .group input[type="text"],input[type="email"],input[type="date"],input[type="tel"],input[type="zipCode"],select{
 	width: 100%;
 	padding: 6px 6px;
 	display: inline-block;
@@ -528,7 +528,7 @@ textarea:hover{
 	margin-left: -25%;
 }
 
-@media only screen and (max-width: 320px) {
+@media only screen and (max-width: 640px) {
     .group .zipcode-algn {
 		margin-left: 0%;
 	}

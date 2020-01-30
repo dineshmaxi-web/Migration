@@ -8,7 +8,7 @@ import './Detail.css';
 import _ from 'lodash';
 
 
-var groupKeys = [], fieldKeysOfGroup = [], dbGroupKeys = [];
+var groupKeys = [], fieldKeysOfGroup = [], dbGroupKeys = [], dummy = [1, 2, 3, 4], startsWithServer = [];
 class GetData extends Component {
 
   state = {
@@ -22,10 +22,12 @@ class GetData extends Component {
       resizable: true,
       filter: true,
     },
-    pushData : [],
-    pushKeys : [],
-    dbGroup :[],
-    count : 0
+    pushData: [],
+    pushFieldName: [],
+    pushKeys: [],
+    dbGroup: [],
+    startsWithServer : [],
+    count: 0
   }
 
   closeModal = () => {
@@ -39,54 +41,62 @@ class GetData extends Component {
   onRowClicked = (e) => {
     this.setState({ modalIsOpen: true, showHome: false, showLogin: false });
 
-    fetch('/get/formdata/particular/'+e.data._id)
-    .then(result => result.json())
-    .then(fullSingleData => {
+    fetch('/get/formdata/particular/' + e.data._id)
+      .then(result => result.json())
+      .then(fullSingleData => {
 
-      groupKeys = Object.keys(fullSingleData[0].data)
-      this.setState({pushData : fullSingleData[0].data});
-    })
+        groupKeys = Object.keys(fullSingleData[0].data)
+        this.setState({ pushData: fullSingleData[0].data }, () => {
+          this.setState({ pushFieldName: Object.keys(this.state.pushData["ServersinMigrationScope"]) }, ()=>{
+            this.state.pushFieldName.map((key) => {
+              if(key.startsWith("servers"))
+              {
+                startsWithServer.push(key)
+              }
+              this.setState({startsWithServer : startsWithServer})
+            })
+          })
+        });
+      })
   }
-  
+
   onGridReady = params => {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
   }
 
-  setFixedSize = () =>{
+  setFixedSize = () => {
     this.gridApi.sizeColumnsToFit();
   }
 
-  componentDidMount(){
-    
+  componentDidMount() {
+
     fetch('/get/forminfo')
-    .then(result => result.json())
-    .then(groupDataSet => {
-      this.setState({dbGroup : groupDataSet})
+      .then(result => result.json())
+      .then(groupDataSet => {
+        this.setState({ dbGroup: groupDataSet })
 
-      this.state.dbGroup.map(group => {
-        dbGroupKeys.push(group.groupName)
-        group.fields.map(field => {
-          fieldKeysOfGroup.push(field.fieldName)
-          if(field.subField)
-          {
-            field.subField.map(subField => {
-              if(subField.fieldType !== "option")
-                fieldKeysOfGroup.push(subField.fieldName)
-  
-              if(subField.subField)
-              {
-                subField.subField.map(subSubField => {
-                  fieldKeysOfGroup.push(subSubField.fieldName)
-  
-                })
-              }
-            })
-          }
+        this.state.dbGroup.map(group => {
+          dbGroupKeys.push(group.groupName)
+          group.fields.map(field => {
+            fieldKeysOfGroup.push(field.fieldName)
+            if (field.subField) {
+              field.subField.map(subField => {
+                if (subField.fieldType !== "option")
+                  fieldKeysOfGroup.push(subField.fieldName)
+
+                if (subField.subField) {
+                  subField.subField.map(subSubField => {
+                    fieldKeysOfGroup.push(subSubField.fieldName)
+
+                  })
+                }
+              })
+            }
+          })
         })
-      })
 
-    });
+      });
 
     fetch('/get/formdata/args')
       .then(result => result.json())
@@ -95,20 +105,19 @@ class GetData extends Component {
         var argsCopy = Object.keys(rowDataSet[0])
 
         for (let i = 0; i < argsCopy.length; i++) {
-          if(i !== 0)
-          {
-            tempColumnDefs.push({  
+          if (i !== 0) {
+            tempColumnDefs.push({
               "headerName": argsCopy[i].charAt(0).toUpperCase() + argsCopy[i].slice(1).replace(/([A-Z])/g, ' $1').trim(),
               "field": argsCopy[i],
               lockPosition: true
             });
           }
-          else{
-            tempColumnDefs.push({  
+          else {
+            tempColumnDefs.push({
               "headerName": argsCopy[i].charAt(0).toUpperCase() + argsCopy[i].slice(1).replace(/([A-Z])/g, ' $1').trim(),
               "field": argsCopy[i],
               lockPosition: true,
-              hide : true
+              hide: true
             });
           }
         }
@@ -117,7 +126,7 @@ class GetData extends Component {
           headerName: "View",
           lockPosition: true,
           cellRendererFramework: () => {
-            return <i className="fa fa-eye fullView" style={{color: "#2B2B2C"}}></i>
+            return <i className="fa fa-eye fullView" style={{ color: "#2B2B2C" }}></i>
           },
         });
 
@@ -126,24 +135,23 @@ class GetData extends Component {
   }
 
   toggleFunction = (param) => {
-    var datas= this.state.dbGroup;
+    var datas = this.state.dbGroup;
     datas.map(data => {
-      if(data.groupName === param){
-        data.toggleActive=!data.toggleActive;
+      if (data.groupName === param) {
+        data.toggleActive = !data.toggleActive;
       }
     })
-    this.setState({dbGroup : datas})
+    this.setState({ dbGroup: datas })
   }
 
   render() {
-    
     if (this.state.showHome) {
       return (
         <div>
           <div className="header">
             <img src={logo} className="logo"></img>
             <button className="logout-btn btn btn-danger" id="CloseData" name="CloseData" onClick={this.handleLogout}>
-            <i class="fa fa-sign-out"></i> logout</button>
+              <i class="fa fa-sign-out"></i> logout</button>
           </div>
           <div
             className="ag-theme-balham" >
@@ -159,7 +167,7 @@ class GetData extends Component {
         </div>
       );
     }
-    
+
     if (this.state.showLogin) {
       return (
         <Login />
@@ -171,87 +179,89 @@ class GetData extends Component {
         <div className="header">
           <img src={logo} className="logo"></img>
           <button className="CloseData-btn btn-primary" id="CloseData" name="CloseData" onClick={this.closeModal}>
-        <i className="fa fa-arrow-circle-left"></i> Back</button>
+            <i className="fa fa-arrow-circle-left"></i> Back</button>
         </div>
         <div className="container-fluid">
-            {
-              dbGroupKeys.map((groupName, index) => (
+          {
+            dbGroupKeys.map((groupName, index) => (
               groupKeys.map((groupKey) => (
-               (groupKey === groupName ? (
-                (groupName !== "ServersinMigrationScope" ? (
-                  <div className="box">
-                    <div>
-                        <h4 className="box-head" onClick={() => this.toggleFunction(groupName)}  data-toggle="collapse" data-target={'#' + groupName}>
-                        <i class="fa fa-bars"></i> {this.state.dbGroup[index].groupLabel}
-                        <i  class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
+                (groupKey === groupName ? (
+                  (groupName !== "ServersinMigrationScope" ? (
+                    <div className="box">
+                      <div>
+                        <h4 className="box-head" onClick={() => this.toggleFunction(groupName)} data-toggle="collapse" data-target={'#' + groupName}>
+                          <i class="fa fa-bars"></i> {this.state.dbGroup[index].groupLabel}
+                          <i class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
                         </h4>
                       </div>
-                    <div className="form-inline">
-                      <div className="box-body collapse show" id={groupName}>
-                        <div className="row">
-                          {
-                            fieldKeysOfGroup.map((fieldName1,index) => (
-                              Object.keys(this.state.pushData[groupName]).map(fieldName => (
-                                ((fieldName1 === fieldName) &&
-                                  <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <div className="form-group modal-algn">
-                                      <label>{fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1').trim()}</label> 
-                                      <input value={this.state.pushData[groupName][fieldName]} disabled></input>  
-                                    </div>
-                                  </div>
-                                )
-                              ))
-                            ))
-                          }
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="box">
-                    <div>
-                      <h4 className="box-head" onClick={() => this.toggleFunction(groupName)}  data-toggle="collapse" data-target={'#' + groupName}>
-                      <i class="fa fa-bars"></i> {this.state.dbGroup[index].groupLabel}
-                      <i  class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
-                      </h4>
-                    </div>
-                    <div className="form-inline">
-                      <div className="box-body collapse show" id={groupName}>
-                        <div className="row">
-                            <table id="t01">
-                            <thead>
-                              <th>Servers</th>
-                            </thead>
+                      <div className="form-inline">
+                        <div className="box-body collapse show" id={groupName}>
+                          <div className="row">
                             {
-                            Object.keys(this.state.pushData[groupName]).map((fieldName) => (
-                              <div className="col-md-3 modal-algn form-group">
-                                {(fieldName.startsWith("servers") ? (
-                                    <tr>
-                                      <td><nobr>{this.state.pushData[groupName][fieldName]}</nobr></td>
-                                    </tr>
-                                ) : (
-                                  <tr>
-                                      <td><nobr> - {fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1').trim()} : {this.state.pushData[groupName][fieldName]}</nobr></td>
-                                    </tr>
-                                ))}
-                              </div>                                
-                           ))
-                          }
-                          </table>
+                              fieldKeysOfGroup.map((fieldName1) => (
+                                Object.keys(this.state.pushData[groupName]).map(fieldName => (
+                                  ((fieldName1 === fieldName) &&
+                                    <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                      <div className="form-group modal-algn">
+                                        <label>{fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1').trim()}</label>
+                                        <p>{this.state.pushData[groupName][fieldName]}</p>
+                                      </div>
+                                    </div>
+                                  )
+                                ))
+                              ))
+                            }
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  ) : (
+                      <div className="box">
+                        <div>
+                          <h4 className="box-head" onClick={() => this.toggleFunction(groupName)} data-toggle="collapse" data-target={'#' + groupName}>
+                            <i class="fa fa-bars"></i> {this.state.dbGroup[index].groupLabel}
+                            <i class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
+                          </h4>
+                        </div>
+                        <div className="form-inline">
+                          <div className="box-body collapse show" id={groupName}>
+                        
+                            <table id="01">
+                              <thead>
+                                <th>Servers</th>
+                                <th>Number of ESX Hosts</th>
+                                <th>Number of VM Guests</th>
+                                <th>Number of SAN Boots</th>
+                              </thead>
+                              {
+                                this.state.startsWithServer.map((server) => (
+                                  
+                                  <tr>
+                                   <td>{this.state.pushData[groupName][server]}</td>
+                                    {
+                                      this.state.pushFieldName.map((fieldName) => (
+                                        ((server.charAt(server.length - 1) === fieldName.charAt(fieldName.length - 1)) && (this.state.pushData[groupName][server] !== this.state.pushData[groupName][fieldName] ) ? (
+                                          <td>{this.state.pushData[groupName][fieldName]}</td>
+                                        ) : (null))
+                                      ))
+                                    }
+                                  </tr>
+                                ))
+                              }
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    ))
                 ) : (null))
               ))
-              ))
-            }
-          </div>
+            ))
+          }
+        </div>
         {/* </Modal> */}
       </div>
 
-      )
+    )
   }
 }
 

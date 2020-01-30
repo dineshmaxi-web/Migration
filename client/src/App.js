@@ -20,8 +20,8 @@ class App extends React.Component {
       state: "Texas",
     },
     OpportunityInformation: {
-      startDate: new Date(),
-      completionDate: new Date()
+      startDate: String(new Date()).substring(4, 15),
+      completionDate: String(new Date()).substring(4, 15)
     }
   }
 
@@ -186,18 +186,16 @@ class App extends React.Component {
 
   setStateFunction = (fieldName, fieldValue, groupName) => {
     let stateVariables = this.state;
-    console.log(fieldValue)
     if(fieldValue !== undefined)
     {
         if(fieldValue === "") {
           delete stateVariables[groupName][fieldName];
-          this.setState(stateVariables, () => console.log(this.state));
+          this.setState(stateVariables);
         }
         else {
           if (stateVariables[groupName]) {
             stateVariables[groupName][fieldName] = fieldValue;
             this.setState(stateVariables, () => {
-              console.log(this.state)
               if (groupName == "ServersinMigrationScope") {
                 this.disableSelectedValue();
               }
@@ -207,7 +205,6 @@ class App extends React.Component {
             this.setState({
               [groupName]: { [fieldName]: fieldValue }
             }, () => {
-              console.log(this.state)
               if (groupName == "ServersinMigrationScope") {
                 this.disableSelectedValue();
               }
@@ -246,11 +243,11 @@ class App extends React.Component {
 
   delSubField = (groupName, fieldName1, fieldName2, fieldName3, server) => {
     let temp = this.state;
-    if(groupName !== "ServersinMigrationScope")
+    if(groupName !== "ServersinMigrationScope" && temp.hasOwnProperty(groupName))
     {
         delete temp[groupName][fieldName1];
         delete temp[groupName][fieldName2];
-        this.setState(temp, ()=>console.log(this.state));
+        this.setState(temp);
     }
     else{
       if(temp.hasOwnProperty("ServersinMigrationScope"))
@@ -261,15 +258,16 @@ class App extends React.Component {
             delete temp[groupName][fieldName1];
             delete temp[groupName][fieldName2];
             delete temp[groupName][fieldName3];
-            this.setState(temp, ()=>console.log(this.state));
+            this.setState(temp);
           }
         }
+        this.disableSelectedValue();
       }
     }
   }
 
   changeFullGroup = (fullGroup) => {
-    this.setState({ groups: fullGroup }, ()=>console.log(this.state.groups[4]))
+    this.setState({ groups: fullGroup }, ()=>console.log(this.state.groups[4].fields))
   }
 
   arrowFunction(groupKey) {

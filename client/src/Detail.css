@@ -42,6 +42,22 @@
     width: 33%;
 }
 
+.modal-algn p{
+    margin-bottom: 0;
+    line-height: 14px;
+    display: inline-flex;
+    margin-top: 11px;
+    word-break: break-all;
+    margin-left: 10px;
+    max-width: 70%;
+}
+.groupName{
+    display: block;
+}
+.subField{
+    display: inherit;
+}
+
 /* .modal-algn label {
     width: 100%;
     margin-top: 0.8rem !important;

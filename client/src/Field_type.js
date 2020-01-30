@@ -22,7 +22,7 @@ class Type extends React.Component {
     country: "United States",
     state: "Texas",
     showISCSI: false,
-    date: new Date(),
+    date: String(new Date()).substring(4, 15),
     phoneNumber: "",
     inValidEmail : false
   }
@@ -59,6 +59,13 @@ class Type extends React.Component {
       if(EmailValidator.validate(fieldValue)){
         this.setState({inValidEmail : false})
         this.props.func(fieldName, fieldValue, groupName);
+        this.props.field.showRequired = false;
+        this.props.stateGroups.map(group => {
+          if (group.groupName === this.props.group.groupName) {
+            group = this.props.group;
+            this.props.changeFullGroup(this.props.stateGroups)
+          }
+        })
       }
       else{
         event.target.value = "";
@@ -69,13 +76,19 @@ class Type extends React.Component {
 
     if(fieldType === "phoneNumber")
     {
-      console.log(fieldValue, this.state.phoneNumber)
       if(fieldValue !== "")
       {
         this.props.func(fieldName, fieldValue, groupName);
+        this.props.field.showRequired = false;
+        this.props.stateGroups.map(group => {
+          if (group.groupName === this.props.group.groupName) {
+            group = this.props.group;
+            this.props.changeFullGroup(this.props.stateGroups)
+          }
+        })
       }
       else{
-        this.props.delSubField(groupName, fieldName);
+        this.props.delSubField(groupName, fieldName);  
       }
     }
 
@@ -188,13 +201,6 @@ class Type extends React.Component {
       this.setState({ showDsn: true })
   }
 
-  changeShowVmWare = () => {
-    if (this.state.showVmWare)
-      this.setState({ showVmWare: false })
-    else
-      this.setState({ showVmWare: true })
-  }
-
   openModal = () => {
     this.setState({ modalIsOpen: true });
   }
@@ -206,7 +212,6 @@ class Type extends React.Component {
   addNewServerInfoFunc = () => {
     var lengthOfFields = this.props.group.fields.length - 1;
     let addServerNumber = Number(this.props.group.fields[lengthOfFields].fieldName.charAt(this.props.group.fields[lengthOfFields].fieldName.length - 1)) + 1;
-    
     var copyField = {};
     var group = this.props.group;
 
@@ -214,17 +219,26 @@ class Type extends React.Component {
       
       if(index === 0)
       {
-        copyField = _.clone(field, true);
+        copyField = _.cloneDeep(field);
         copyField.fieldName = field.fieldName + "_" + addServerNumber;
-        copyField.subField.map((subField)=>{
-          if(index === 0){
-            subField.fieldName = copyField.fieldName;
-          }
+
+        copyField.mandatory = false;
+        
+        copyField.subField.map((copySubField) => {
+          copySubField.fieldName = field.fieldName + "_" + addServerNumber;
+              if(copySubField.hasOwnProperty("subField"))
+              {
+                  copySubField.subField.map((copySubSubField)=>{
+                    copySubSubField.fieldName = copySubSubField.fieldName + "_" + addServerNumber;
+                    copySubSubField.show = false;
+                    copySubSubField.mandatory = false;
+                })
+              }
         })
         this.props.group.fields.push(copyField)
+        
       }
     })
-
     this.props.stateGroups[4] = group
     this.props.changeFullGroup(this.props.stateGroups)
   } 
@@ -238,33 +252,33 @@ class Type extends React.Component {
     var copyField = {};
     this.setState({ modalIsOpen: false });
     var group = this.props.group;
+
     group.fields.map(field => {
-      copyField = _.clone(field, true);
-      if(copyField.fieldName ==  copyField.subField[0].fieldName  && this.state.tempVar !== ""){
+      if(this.state.tempVar !== ""){
         let count = 0;
-        copyField.subField.map(subSubField => {
+        field.subField.map(subSubField => {
           if(subSubField.fieldLabel.toUpperCase() === this.state.tempVar.toUpperCase())
           {
             count = count + 1;
           }
         })
-        console.log(count)
+    
         if(count === 0)
         {
-          copyField.subField.push({
-            fieldName : copyField.fieldName,
+          field.subField.push({
+            fieldName : field.fieldName,
             fieldLabel : this.state.tempVar,
             fieldType : "option",
             disabled : false,
             isActive : 1
           })
+
+          this.props.stateGroups[4] = this.props.group
+          this.props.changeFullGroup(this.props.stateGroups)   
         }
       }
       
-    })   
-
-    this.props.stateGroups[4] = this.props.group
-    this.props.changeFullGroup(this.props.stateGroups)
+    })
   }
 
   handleSelect1 = (event) => {
@@ -486,28 +500,32 @@ class Type extends React.Component {
     var groupName = this.props.group.groupName;
     var fieldName = event.target.name;
     var fieldValue = event.target.value;
-
-    if (fieldValue === "VMware") {
-
-      this.props.field.showRequired = false;
-
-      this.props.group.fields.map(field => {
-        if (field.fieldName === fieldName) {
-          field = this.props.field
-          this.props.stateGroups[4] = this.props.group
-          this.props.changeFullGroup(this.props.stateGroups)
+    let tempCount = 0; 
+    
+    this.props.field.subField.map(subField => {
+      if(subField.fieldLabel === fieldValue)
+      {
+        if(subField.hasOwnProperty("subField"))
+        {
+          tempCount++;
         }
-      })
+      }
+    })
 
+    if (tempCount > 0 && fieldValue !== "Add Server") {
+      
+      this.props.field.showRequired = false;
+      
       this.setState({ [fieldValue]: fieldValue });
       this.props.func(fieldName, fieldValue, groupName);
       this.setState({ showVmWare: true });
 
       this.props.field.subField.map(subField => {
         if (subField.subField) {
-          if (subField.fieldLabel === "VMware") {
+          if (subField.fieldLabel === fieldValue) {
             subField.subField.map(subSubField => {
               subSubField.mandatory = true;
+              subSubField.show = true;
               this.props.group.fields.map(field => {
                 if (field.fieldName === fieldName) {
                   field = this.props.field
@@ -520,7 +538,7 @@ class Type extends React.Component {
           else {
             subField.subField.map(subSubField => {
               subSubField.mandatory = false;
-
+              subSubField.show = false;
               this.props.group.fields.map(field => {
                 if (field.fieldName === fieldName) {
                   field = this.props.field
@@ -532,10 +550,10 @@ class Type extends React.Component {
           }
         }
       })
+      tempCount = 0
     }
     else if (fieldValue === "Add Server") {
-      this.setState({ modalIsOpen: true });
-      this.setState({ showVmWare: false });
+      this.setState({ modalIsOpen: true,  showVmWare: false  });
 
       this.props.group.fields.map(field => {
         if (field.fieldName === fieldName) {
@@ -548,23 +566,14 @@ class Type extends React.Component {
     else {
       this.props.field.showRequired = false;
 
-      this.props.group.fields.map(field => {
-        if (field.fieldName === fieldName) {
-          field = this.props.field
-          this.props.stateGroups[4] = this.props.group
-          this.props.changeFullGroup(this.props.stateGroups)
-        }
-      })
-
-      this.setState({ [fieldValue]: fieldValue });
-      this.setState({ showVmWare: false });
+      this.setState({ [fieldValue]: fieldValue ,showVmWare: false });
       this.props.func(fieldName, fieldValue, groupName);
 
       this.props.field.subField.map(subField => {
         if (subField.subField) {
           subField.subField.map(subSubField => {
             subSubField.mandatory = false;
-
+            subSubField.show = false;
             this.props.group.fields.map(field => {
               if (field.fieldName === fieldName) {
                 field = this.props.field
@@ -576,21 +585,19 @@ class Type extends React.Component {
         }
       })
       this.props.delSubField(this.props.group.groupName, "numberofESXHosts", "numberofVMGuests", "numberofSANBoots", "VMware");
-
     }
   }
 
   delCurrentServer = () => {
-    this.props.group.fields.map((field, index) => {
+    this.props.group.fields.map((field) => {
       if (field.fieldName === this.props.field.fieldName) {
         this.props.delSubField(this.props.group.groupName, field.fieldName)
-        
+        console.log(field)
         let index = this.props.group.fields.indexOf(field);
-        this.props.group.fields.splice(index, 1)
-        console.log(this.props.group.fields)
+        console.log(index)
+          this.props.group.fields.splice(index, 1)
       }
     })
-
     this.props.stateGroups[4] = this.props.group;
     this.props.changeFullGroup(this.props.stateGroups);
   }
@@ -626,10 +633,7 @@ class Type extends React.Component {
           </label>
           <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onBlur={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />
           {
-            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : null)
-          }
-          {
-            (this.state.inValidEmail ? (<span style={{ color: "red" }}>Invalid Email Address</span>) : null)
+            (this.props.field.showRequired && !this.state.inValidEmail  ? (<span style={{ color: "red" }}>*Required </span>) :  (this.state.inValidEmail ? (<span style={{ color: "red" }}>Invalid Email Address</span>) : null))
           }
         </div>
       )
@@ -751,9 +755,9 @@ class Type extends React.Component {
               <CountryDropdown
                 value={country}
                 onChange={(val) => this.selectCountry(val)} />
-              {
-                (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
-              }
+                {
+                  (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
+                }
             </div>
 
             <div id='region_field' name='region_field'>
@@ -762,9 +766,9 @@ class Type extends React.Component {
                 country={country}
                 value={state}
                 onChange={(val) => this.selectRegion(val)} />
-              {
-                (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
-              }
+                {
+                  (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
+                }
             </div>
 
           </div>
@@ -829,12 +833,11 @@ class Type extends React.Component {
 
       else if (this.props.group.groupName === "ServersinMigrationScope") {
         let subSubField = [];
-        subField.map((field) => (
+        this.props.field.subField.map((field) => (
           (field.subField ? (
             subSubField.push(field.subField)
           ) : (null))
         ))
-
         return (
           <div className="row server-box">
             {
@@ -891,17 +894,19 @@ class Type extends React.Component {
             </div>
             <div className="field-align align col-md-9">
               {
-                (this.state.showVmWare && subSubField ? (
+                (subSubField ? (
                   subSubField.map((field) => (
-                    field.map((field) => (
-                      <div className="field-align col-md-4" id={field.fieldName + '_field'} name={field.fieldName + '_field'}>
-                        <label id={field.fieldName + '_label'} name={field.fieldName + '_label'}>{field.fieldLabel}</label>
-                        <input type={field.fieldType} id={field.fieldName} name={field.fieldName} onChange={(e) => this.onChangeHandler(field.fieldName, e.target.value, field.fieldType, e)}></input>
-                        {
-                          (field.showRequired ? (<span className="span-algn" style={{ color: "red" }}>*Required</span>) : (<span></span>))
-                        }
-                      </div>
-                    ))
+                      field.map((field) => (
+                        (field.show ? (
+                        <div className="field-align col-md-4" id={field.fieldName + '_field'} name={field.fieldName + '_field'}>
+                          <label id={field.fieldName + '_label'} name={field.fieldName + '_label'}>{field.fieldLabel}</label>
+                          <input type={field.fieldType} id={field.fieldName} name={field.fieldName} onChange={(e) => this.onChangeHandler(field.fieldName, e.target.value, field.fieldType, e)}></input>
+                          {
+                            (field.showRequired ? (<span className="span-algn" style={{ color: "red" }}>*Required</span>) : (<span></span>))
+                          }
+                        </div>
+                        ) : (null))
+                      ))
                   ))
                 ) : (null))
               }
@@ -944,8 +949,9 @@ class Type extends React.Component {
 
           <Flatpickr
             value={date}
-            options={{ dateFormat: "m-d-yy", static: true, wrap: false }}
-            onChange={(date) => this.onChangeHandler(fieldName, date, fieldType)} />
+            options={{ 
+              Format: "m-d-yy", static: true, wrap: false }}
+             onChange={(date) => this.onChangeHandler(fieldName, date, fieldType)} />
             {
               (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
             }
