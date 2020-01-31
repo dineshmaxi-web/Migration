@@ -32,6 +32,7 @@ class GetData extends Component {
 
   closeModal = () => {
     this.setState({ showHome: true, modalIsOpen: false, showLogin: false });
+    window.location.reload();
   }
 
   handleLogout = () => {
@@ -226,7 +227,7 @@ class GetData extends Component {
                         <div className="form-inline">
                           <div className="box-body collapse show" id={groupName}>
                         
-                            <table id="01">
+                            <table id="table-algn">
                               <thead>
                                 <th>Servers</th>
                                 <th>Number of ESX Hosts</th>
