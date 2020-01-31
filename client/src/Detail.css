@@ -46,17 +46,23 @@
     margin-bottom: 0;
     line-height: 14px;
     display: inline-flex;
-    margin-top: 15px;
+    margin-top: -5px;
     word-break: break-all;
     margin-left: 10px;
     max-width: 70%;
 }
-.groupName{
+
+.modal-algn label {
+    margin-bottom: 0.5rem !important;
+    margin-top: 0.2rem !important;
+  }
+
+/* .groupName{
     display: block;
 }
 .subField{
     display: inherit;
-}
+} */
 
 /* .modal-algn label {
     width: 100%;
@@ -207,8 +213,12 @@
     border: 1px solid #ddd;
   }
   
-  #table-algn td, #table-algn th {
+  #table-algn td{
     padding: 8px;
+  }
+
+  #table-algn th {
+      padding: 8px;
   }
   
   /* #table-algn tr:nth-child(even) {

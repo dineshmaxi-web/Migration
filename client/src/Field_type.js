@@ -10,6 +10,7 @@ import _ from 'lodash';
 import EmailValidator from 'email-validator';
 import Zip from 'react-zipcode';
 
+
 class Type extends React.Component {
   state = {
     showInstall: false,
@@ -22,7 +23,7 @@ class Type extends React.Component {
     country: "United States",
     state: "Texas",
     showISCSI: false,
-    date: String(new Date()).substring(4, 15),
+    date:  ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear() + " to " + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear(), 
     phoneNumber: "",
     inValidEmail : false
   }
@@ -95,7 +96,11 @@ class Type extends React.Component {
     if (fieldType === "text" || fieldType === "date" || fieldType === "zipCode" || fieldType === "textarea") {
       if(fieldType === "date")
       {
-        fieldValue = String(fieldValue[0]).substring(4, 15);
+        let appendDate = ""
+        fieldValue.map(val => {
+             appendDate += String(val).substring(4, 15) + " to "
+        })
+        fieldValue =  appendDate.slice(0, 26);
       }
 
       this.props.func(fieldName, fieldValue, groupName);
@@ -592,9 +597,9 @@ class Type extends React.Component {
     this.props.group.fields.map((field) => {
       if (field.fieldName === this.props.field.fieldName) {
         this.props.delSubField(this.props.group.groupName, field.fieldName)
-        console.log(field)
+
         let index = this.props.group.fields.indexOf(field);
-        console.log(index)
+
           this.props.group.fields.splice(index, 1)
       }
     })
@@ -603,7 +608,9 @@ class Type extends React.Component {
   }
 
   render() {
-
+//     var dat = ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear();
+//     var dat1 = ("0" + (new Date().getMonth() + )).slice(-2) + "-" + ("0" + (new Date().getDate())).slice(-2) +"-" + new Date().getFullYear();
+// console.log(dat, dat1)
     var fieldType = this.props.field.fieldType;
     var fieldName = this.props.field.fieldName;
     var fieldLabel = this.props.field.fieldLabel;
@@ -900,6 +907,7 @@ class Type extends React.Component {
                         (field.show ? (
                         <div className="field-align col-md-4" id={field.fieldName + '_field'} name={field.fieldName + '_field'}>
                           <label id={field.fieldName + '_label'} name={field.fieldName + '_label'}>{field.fieldLabel}</label>
+                      
                           <input type={field.fieldType} id={field.fieldName} name={field.fieldName} onChange={(e) => this.onChangeHandler(field.fieldName, e.target.value, field.fieldType, e)}></input>
                           {
                             (field.showRequired ? (<span className="span-algn" style={{ color: "red" }}>*Required</span>) : (<span></span>))
@@ -940,7 +948,9 @@ class Type extends React.Component {
     }
 
     if (fieldType === "date") {
-      var date = this.state.date;
+      var {date} = this.state;
+      console.log(this.state.date)
+
 
       return (
         <div id={fieldName + '_field'} name={fieldName + '_field'}>
@@ -948,13 +958,12 @@ class Type extends React.Component {
           </label>
 
           <Flatpickr
-            value={date}
-            options={{ 
-              Format: "m-d-yy", static: true, wrap: false }}
-             onChange={(date) => this.onChangeHandler(fieldName, date, fieldType)} />
-            {
-              (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
-            }
+            id="date"
+            options={{mode: "range", Format: "m-d-Y", static: true, wrap: false}}
+             onChange={(val) => this.onChangeHandler(fieldName, val, fieldType)} />
+              {
+                (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
+              }
         </div>
       )
     }

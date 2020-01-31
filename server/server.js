@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 var ObjectId = require('mongodb').ObjectID;
 
-var args = ["_id", "name", "emailAddress","phoneNumber", "country", "state", "zipCode"];
+var args = ["_id", "name", "emailAddress","phoneNumber", "country", "state"];
 var finalParticulars = [];
 var groupKeys = ["CustomerContactInformation","OpportunityInformation","ManagementInformation","SiteDetails","ServersinMigrationScope"]
 app.use(bodyParser.json());

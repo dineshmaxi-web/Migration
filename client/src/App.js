@@ -6,7 +6,6 @@ import logo from './vtglogo.jpg';
 import $ from "jquery";
 import './success_page.css';
 import _ from 'lodash';
-import GetData from './GetData';
 
 var latestGroup = [];
 
@@ -20,8 +19,7 @@ class App extends React.Component {
       state: "Texas",
     },
     OpportunityInformation: {
-      startDate: String(new Date()).substring(4, 15),
-      completionDate: String(new Date()).substring(4, 15)
+      date: ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear() + " to " + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear()
     }
   }
 
@@ -73,7 +71,16 @@ class App extends React.Component {
         }
       })
     })
-
+    fieldsInJsons.map(fieldName => {
+      if(fieldName.startsWith("numberofESXHosts"))
+      {
+        let lastChars = fieldName.replace('numberofESXHosts', '');
+        let finalServerNumbers = "numberofservers"+lastChars;
+        var fullState = this.state;
+        fullState.ServersinMigrationScope[finalServerNumbers] = "";
+        this.setState(fullState)
+      }
+    })
     var copyGroup = this.state.groups;
     
     var copyRegistrationNumber = this.state.registrationNumber;
@@ -83,7 +90,7 @@ class App extends React.Component {
     delete croppedState.groups;
     delete croppedState.registrationNumber;
     delete croppedState.showSuccess;
-
+    
     var keysOfCroppedState = Object.keys(this.state);
 
     var finalValues = [];
@@ -103,7 +110,7 @@ class App extends React.Component {
           count = count + 1;
         }
       }
-    }
+    } 
     else {
       count = count + 1;
     }
@@ -196,6 +203,7 @@ class App extends React.Component {
           if (stateVariables[groupName]) {
             stateVariables[groupName][fieldName] = fieldValue;
             this.setState(stateVariables, () => {
+        
               if (groupName == "ServersinMigrationScope") {
                 this.disableSelectedValue();
               }
@@ -205,6 +213,7 @@ class App extends React.Component {
             this.setState({
               [groupName]: { [fieldName]: fieldValue }
             }, () => {
+             
               if (groupName == "ServersinMigrationScope") {
                 this.disableSelectedValue();
               }
@@ -267,7 +276,7 @@ class App extends React.Component {
   }
 
   changeFullGroup = (fullGroup) => {
-    this.setState({ groups: fullGroup }, ()=>console.log(this.state.groups[4].fields))
+    this.setState({ groups: fullGroup })
   }
 
   arrowFunction(groupKey) {
@@ -330,7 +339,6 @@ class App extends React.Component {
     }
 
     return (
-      
       <div>
         <div className="header">
           <img src={logo} className="logo"></img>

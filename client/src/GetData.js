@@ -8,7 +8,7 @@ import './Detail.css';
 import _ from 'lodash';
 
 
-var groupKeys = [], fieldKeysOfGroup = [], dbGroupKeys = [], dummy = [1, 2, 3, 4], startsWithServer = [];
+var groupKeys = [], fieldKeysOfGroup = [], dbGroupKeys = [], dummy = [1, 2, 3, 4], startsWithServer = [], startsWithNumber = [];
 class GetData extends Component {
 
   state = {
@@ -27,7 +27,9 @@ class GetData extends Component {
     pushKeys: [],
     dbGroup: [],
     startsWithServer : [],
-    count: 0
+    startsWithNumber : [],
+    count: 0,
+    startWithNumbers : ["numberofservers", "numberofESXHosts", "numberofVMGuests", "numberofSANBoots"]
   }
 
   closeModal = () => {
@@ -54,11 +56,14 @@ class GetData extends Component {
               {
                 startsWithServer.push(key)
               }
-              this.setState({startsWithServer : startsWithServer})
-            })
+              else{
+                startsWithNumber.push(key)
+              }
+              this.setState({startsWithServer : startsWithServer, startsWithNumber : startsWithNumber})
           })
-        });
+        })
       })
+    })
   }
 
   onGridReady = params => {
@@ -103,6 +108,8 @@ class GetData extends Component {
       .then(result => result.json())
       .then(rowDataSet => {
         var tempColumnDefs = [];
+        if(rowDataSet.length > 0)
+        {
         var argsCopy = Object.keys(rowDataSet[0])
 
         for (let i = 0; i < argsCopy.length; i++) {
@@ -132,6 +139,7 @@ class GetData extends Component {
         });
 
         this.setState({ rowData: rowDataSet, columnDefs: tempColumnDefs })
+        }
       })
   }
 
@@ -230,6 +238,7 @@ class GetData extends Component {
                             <table id="table-algn">
                               <thead>
                                 <th>Servers</th>
+                                <th>Number of Servers</th>
                                 <th>Number of ESX Hosts</th>
                                 <th>Number of VM Guests</th>
                                 <th>Number of SAN Boots</th>
@@ -238,12 +247,18 @@ class GetData extends Component {
                                 this.state.startsWithServer.map((server) => (
                                   
                                   <tr>
+
                                    <td>{this.state.pushData[groupName][server]}</td>
+                                   
                                     {
-                                      this.state.pushFieldName.map((fieldName) => (
-                                        ((server.charAt(server.length - 1) === fieldName.charAt(fieldName.length - 1)) && (this.state.pushData[groupName][server] !== this.state.pushData[groupName][fieldName] ) ? (
-                                          <td>{this.state.pushData[groupName][fieldName]}</td>
-                                        ) : (null))
+                                      this.state.startWithNumbers.map(startsWithNumber => (
+                                        this.state.pushFieldName.map((fieldName) => (
+                                          (fieldName.startsWith(startsWithNumber) ? (
+                                            ((server.charAt(server.length - 1) === fieldName.charAt(fieldName.length - 1)) && (this.state.pushData[groupName][server] !== this.state.pushData[groupName][fieldName] ) ? (                                          
+                                              <td>{this.state.pushData[groupName][fieldName]}</td>
+                                            ) : (null))
+                                          ): (null))
+                                        ))
                                       ))
                                     }
                                   </tr>
