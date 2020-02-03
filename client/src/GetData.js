@@ -50,18 +50,21 @@ class GetData extends Component {
 
         groupKeys = Object.keys(fullSingleData[0].data)
         this.setState({ pushData: fullSingleData[0].data }, () => {
-          this.setState({ pushFieldName: Object.keys(this.state.pushData["ServersinMigrationScope"]) }, ()=>{
-            this.state.pushFieldName.map((key) => {
-              if(key.startsWith("servers"))
-              {
-                startsWithServer.push(key)
-              }
-              else{
-                startsWithNumber.push(key)
-              }
-              this.setState({startsWithServer : startsWithServer, startsWithNumber : startsWithNumber})
-          })
-        })
+          if(this.state.pushData["ServersinMigrationScope"])
+          {
+              this.setState({ pushFieldName: Object.keys(this.state.pushData["ServersinMigrationScope"]) }, ()=>{
+                this.state.pushFieldName.map((key) => {
+                  if(key.startsWith("servers"))
+                  {
+                    startsWithServer.push(key)
+                  }
+                  else{
+                    startsWithNumber.push(key)
+                  }
+                  this.setState({startsWithServer : startsWithServer, startsWithNumber : startsWithNumber})
+              })
+            })
+          }
       })
     })
   }

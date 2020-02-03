@@ -19,7 +19,8 @@ class App extends React.Component {
       state: "Texas",
     },
     OpportunityInformation: {
-      date: ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear() + " to " + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear()
+      startDate:  ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear(), 
+      endDate:  ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear(), 
     }
   }
 
@@ -44,7 +45,6 @@ class App extends React.Component {
 
   submit = () => {
     var fieldsInJsons = [];
-
     this.state.groups.map((json) => {
       json.fields.map((field) => {
         if (field.mandatory) {
@@ -72,15 +72,47 @@ class App extends React.Component {
       })
     })
     fieldsInJsons.map(fieldName => {
-      if(fieldName.startsWith("numberofESXHosts"))
-      {
-        let lastChars = fieldName.replace('numberofESXHosts', '');
-        let finalServerNumbers = "numberofservers"+lastChars;
-        var fullState = this.state;
-        fullState.ServersinMigrationScope[finalServerNumbers] = "";
-        this.setState(fullState)
-      }
+    if(fieldName.startsWith("numberofESXHosts") &&  this.state.ServersinMigrationScope)
+    {
+      let lastChars = fieldName.replace('numberofESXHosts', '');
+      let finalServerNumbers = "numberofservers"+lastChars;
+      var fullState = this.state;
+      fullState.ServersinMigrationScope[finalServerNumbers] = "";
+      this.setState(fullState)
+    }
     })
+
+    // var copyStateGroups = 
+
+    // copyGroup.map(group => {
+    //   group.map(field => {
+    //     if(field.showRequired)
+    //     {
+    //       group.toggleActive = 1;
+    //     }
+    //     if(field.hasOwnProperty("subField"))
+    //     {
+    //       field.subField.map(subField => {
+    //         if(subField.showRequired)
+    //         {
+    //           group.toggleActive = 1;
+    //         }
+
+    //         if(subField.hasOwnProperty("subField"))
+    //         {
+    //           subField.subField.map(subSubField => {
+    //             if(subSubField.showRequired)
+    //             {
+    //               group.toggleActive = 1;
+    //             }
+    //           })
+    //         }
+
+    //       })
+    //     }
+    //   })
+    // })
+
     var copyGroup = this.state.groups;
     
     var copyRegistrationNumber = this.state.registrationNumber;
@@ -90,7 +122,7 @@ class App extends React.Component {
     delete croppedState.groups;
     delete croppedState.registrationNumber;
     delete croppedState.showSuccess;
-    
+
     var keysOfCroppedState = Object.keys(this.state);
 
     var finalValues = [];
@@ -103,7 +135,7 @@ class App extends React.Component {
         finalValues.push(nestedKeys[j])
       }
     }
-
+  
     if (finalValues.length > 0) {
       for (let i = 0; i < fieldsInJsons.length; i++) {
         if (finalObject.hasOwnProperty(fieldsInJsons[i]) === false || finalObject[fieldsInJsons[i]] === "") {
@@ -147,12 +179,14 @@ class App extends React.Component {
         copyGroup.map((json) => {
           json.fields.map((field) => {
             if (fieldsInJsons[i] === field.fieldName && field.mandatory) {
+              json.toggleActive = 1;
               field.showRequired = true;
             }
 
             if (field.subField) {
               field.subField.map((subField) => {
                 if (fieldsInJsons[i] === subField.fieldName && subField.mandatory) {
+                  json.toggleActive = 1;
                   subField.showRequired = true;
                 }
 
@@ -160,9 +194,11 @@ class App extends React.Component {
                   subField.subField.map((subSubField) => {
                     if (fieldsInJsons[i] === subSubField.fieldName && subSubField.mandatory) {
                       if (subSubField.fieldType === "text") {
+                        json.toggleActive = 1;
                         subSubField.showRequired = true;
                       }
                       else {
+                        json.toggleActive = 1;
                         subField.showRequired = true;
                       }
                     }
@@ -172,6 +208,8 @@ class App extends React.Component {
             }
           })
         })
+
+        this.setState({groups : copyGroup}, ()=> console.log(this.state.groups))
       }
       countForShowRequired = 0;
     }
@@ -197,13 +235,13 @@ class App extends React.Component {
     {
         if(fieldValue === "") {
           delete stateVariables[groupName][fieldName];
-          this.setState(stateVariables);
+          this.setState(stateVariables, ()=>console.log(this.state));
         }
         else {
           if (stateVariables[groupName]) {
             stateVariables[groupName][fieldName] = fieldValue;
             this.setState(stateVariables, () => {
-        
+              console.log(this.state)
               if (groupName == "ServersinMigrationScope") {
                 this.disableSelectedValue();
               }
@@ -213,7 +251,7 @@ class App extends React.Component {
             this.setState({
               [groupName]: { [fieldName]: fieldValue }
             }, () => {
-             
+              console.log(this.state)
               if (groupName == "ServersinMigrationScope") {
                 this.disableSelectedValue();
               }
@@ -256,7 +294,7 @@ class App extends React.Component {
     {
         delete temp[groupName][fieldName1];
         delete temp[groupName][fieldName2];
-        this.setState(temp);
+        this.setState(temp, ()=>console.log(this.state));
     }
     else{
       if(temp.hasOwnProperty("ServersinMigrationScope"))
@@ -276,7 +314,7 @@ class App extends React.Component {
   }
 
   changeFullGroup = (fullGroup) => {
-    this.setState({ groups: fullGroup })
+    this.setState({ groups: fullGroup }, ()=>console.log(this.state.groups))
   }
 
   arrowFunction(groupKey) {
@@ -290,24 +328,81 @@ class App extends React.Component {
     window.location.reload();
   }
 
+  addNewServerInfoFunc = () => {
+    var lengthOfFields = this.state.groups[4].fields.length - 1;
+    var group = this.state.groups;
+
+    let addServerNumber = Number(group[4].fields[lengthOfFields].fieldName.charAt(group[4].fields[lengthOfFields].fieldName.length - 1)) + 1;
+    var copyField = {};
+
+    group[4].fields.map((field,index) => {
+      
+      if(index === 0)
+      {
+        copyField = _.cloneDeep(field);
+        copyField.fieldName = field.fieldName + "_" + addServerNumber;
+
+        copyField.mandatory = false;
+        copyField.showRequired = false;
+        copyField.subField.map((copySubField) => {
+          copySubField.fieldName = field.fieldName + "_" + addServerNumber;
+              if(copySubField.hasOwnProperty("subField"))
+              {
+                  copySubField.subField.map((copySubSubField)=>{
+                    copySubSubField.fieldName = copySubSubField.fieldName + "_" + addServerNumber;
+                    copySubSubField.showRequired = false;
+                    copySubSubField.show = false;
+                    copySubSubField.mandatory = false;
+                })
+              }
+        })
+        group[4].fields.push(copyField)
+        
+      }
+    })
+
+    this.setState({groups : group})
+  } 
+
   render() {
 
     $(document).ready(function () {
       $('.state-country').parent().removeClass('col-md-3');
       $('.state-country').parent().addClass('col-md-6');
 
+      $('#connection_field').parent().removeClass('col-md-3');
+      $('#connection_field').parent().addClass('col-md-6');
+
       $('.row').parent().removeClass('col-md-3');
       $('.row').parent().addClass('col-md-12');
-
-
-      $('#migrationbetween_field').parent().removeClass('col-md-3');
-      $('#migrationbetween_field').parent().addClass('col-md-6');
-
+    
       $('.connectivity-algn').parent().removeClass('col-md-3');
       $('.connectivity-algn').parent().addClass('col-md-6');
+      // $('.connectivity-algn').parent().addClass('test');
 
       $('#zipCode_field').parent().addClass('zipcode-algn');
+
+  $("#freeze").click(function () {
+    if ($(this).is(":checked")) {
+      $('#freeze_field').parent().removeClass('col-md-3');
+      $('#freeze_field').parent().addClass('col-md-6');
+    } else {
+      $('#freeze_field').parent().removeClass('col-md-6');
+      $('#freeze_field').parent().addClass('col-md-3');
+    }
   });
+
+  $("#migrationbetween").click(function () {
+    if ($(this).is(":checked")) {
+      $('#migrationbetween_field').parent().removeClass('col-md-3');
+      $('#migrationbetween_field').parent().addClass('col-md-6');
+    } else {
+      $('#migrationbetween_field').parent().removeClass('col-md-6');
+      $('#migrationbetween_field').parent().addClass('col-md-3');
+    }
+  });
+
+});
 
     if (this.state.showSuccess) {
       return (
@@ -353,11 +448,17 @@ class App extends React.Component {
                 (group.isActive ? (
                   <div>
                     <div className="box" id={group.groupLabel} name={group.groupName}>
+                      <div>
                     <h4 className="box-head" onClick={this.arrowFunction.bind(this, groupKey)} data-toggle="collapse" data-target={'#' + group.groupName}  >
                       <i class="fa fa-bars icon-algn1"></i> {group.groupLabel}
                       <i  id={group.toggleActive + '_test'} class={`icon-algn2 ${group.toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
                         {/* <i id={group.toggleActive + '_test'} className={group.toggleActive ? "fa fa-angle-up" : "fa fa-angle-down"}></i> */}
                       </h4>
+                      {
+                        group.groupName === "ServersinMigrationScope" &&
+                        <button id="addButton" className="btn btn-primary" name="addButton" onClick={this.addNewServerInfoFunc}>Add <i className="fa fa-plus"></i></button>
+                      } 
+                      </div>
                       <div className="box-body collapse show" id={group.groupName}>
                         <div className="row">
                           {

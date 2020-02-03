@@ -8,8 +8,7 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import _ from 'lodash';
 import EmailValidator from 'email-validator';
-import Zip from 'react-zipcode';
-
+import { isPossiblePhoneNumber } from 'react-phone-number-input'
 
 class Type extends React.Component {
   state = {
@@ -23,15 +22,16 @@ class Type extends React.Component {
     country: "United States",
     state: "Texas",
     showISCSI: false,
-    date:  ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear() + " to " + ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear(), 
+    startDate:  ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear(), 
+    endDate:  ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear(), 
     phoneNumber: "",
-    inValidEmail : false
+    inValidEmail : false,
+    zipCode : ""
   }
 
   selectCountry = (val) => {
     var groupName = this.props.group.groupName;
-
-    this.setState({ country: val });
+    this.setState({ country: val }, ()=>console.log(this.state.country));
     this.props.func("country", val, groupName);
     this.props.field.showRequired = false;
   }
@@ -79,28 +79,75 @@ class Type extends React.Component {
     {
       if(fieldValue !== "")
       {
-        this.props.func(fieldName, fieldValue, groupName);
-        this.props.field.showRequired = false;
-        this.props.stateGroups.map(group => {
-          if (group.groupName === this.props.group.groupName) {
-            group = this.props.group;
-            this.props.changeFullGroup(this.props.stateGroups)
+        console.log(fieldValue, isPossiblePhoneNumber(fieldValue))
+        if(isPossiblePhoneNumber(fieldValue)){
+         
+            this.props.func(fieldName, fieldValue, groupName);
+            this.props.field.showRequired = false;
+            this.props.stateGroups.map(group => {
+              if (group.groupName === this.props.group.groupName) {
+                group = this.props.group;
+                this.props.changeFullGroup(this.props.stateGroups)
+              }
+            })
           }
-        })
-      }
-      else{
-        this.props.delSubField(groupName, fieldName);  
-      }
+          else{
+            this.props.delSubField(groupName, fieldName);  
+          }
+        }
+        else{
+          this.props.delSubField(groupName, fieldName);  
+        }
     }
 
-    if (fieldType === "text" || fieldType === "date" || fieldType === "zipCode" || fieldType === "textarea") {
+    if(fieldType === "zipCode")
+    {
+      this.setState({zipCode : fieldValue}, () => {
+        if(this.props.state.CustomerContactInformation.country === "India")
+        {
+          console.log(this.state.zipCode.length)
+          if(this.state.zipCode.length === 6)
+          {
+            this.props.func(fieldName, fieldValue, groupName);
+            this.props.field.showRequired = false;
+            this.props.stateGroups.map(group => {
+              if (group.groupName === this.props.group.groupName) {
+                group = this.props.group;
+                this.props.changeFullGroup(this.props.stateGroups)
+              }
+            })
+          }
+          else{
+            this.props.delSubField(groupName, "zipCode")
+          }
+        }
+        else{
+          if(this.state.zipCode.length === 5)
+          {
+            this.props.func(fieldName, fieldValue, groupName);
+            this.props.field.showRequired = false;
+            this.props.stateGroups.map(group => {
+              if (group.groupName === this.props.group.groupName) {
+                group = this.props.group;
+                this.props.changeFullGroup(this.props.stateGroups)
+              }
+            })
+          }
+          else{
+            this.props.delSubField(groupName, "zipCode")
+          }
+        }
+      })
+    }
+
+    if (fieldType === "text" || fieldType === "date" || fieldType === "textarea") {
       if(fieldType === "date")
       {
-        let appendDate = ""
-        fieldValue.map(val => {
-             appendDate += String(val).substring(4, 15) + " to "
-        })
-        fieldValue =  appendDate.slice(0, 26);
+        fieldValue = ("0" + (fieldValue[0].getMonth() + 1)).slice(-2) + "-" + ("0" + fieldValue[0].getDate()).slice(-2) +"-" + fieldValue[0].getFullYear()
+        if(fieldName === "startDate")
+          this.setState({startDate : fieldValue}, ()=> console.log(this.state.startDate))
+        if(fieldName === "endDate")
+          this.setState({endDate : fieldValue}, ()=> console.log(this.state.endDate))
       }
 
       this.props.func(fieldName, fieldValue, groupName);
@@ -270,14 +317,27 @@ class Type extends React.Component {
     
         if(count === 0)
         {
+          
+          let lastChars = field.fieldName.replace('servers', '');
+          console.log(lastChars)
           field.subField.push({
             fieldName : field.fieldName,
             fieldLabel : this.state.tempVar,
             fieldType : "option",
             disabled : false,
-            isActive : 1
+            isActive : 1,   
+            subField : [{
+              fieldName : "numberofservers"+lastChars,
+              fieldLabel : "Number of Servers",
+              placeholder:"Enter no of servers here",
+              fieldType : "text",
+              mandatory : false,
+              showRequired : false,
+              show : false,
+              isActive : 1
+            }]
           })
-
+          console.log(this.props.group)
           this.props.stateGroups[4] = this.props.group
           this.props.changeFullGroup(this.props.stateGroups)   
         }
@@ -424,6 +484,8 @@ class Type extends React.Component {
               subField.subField.map(subSubField => {
                 if (subSubField.hasOwnProperty("mandatory")) {
                   subSubField.mandatory = false;
+                  subSubField.show = false;
+                  subSubField.showRequired = false;
                 }
               })
             }
@@ -431,7 +493,7 @@ class Type extends React.Component {
           })
         }
       })
-
+      
       this.props.changeFullGroup(groupFour);
     }
 
@@ -560,11 +622,19 @@ class Type extends React.Component {
     else if (fieldValue === "Add Server") {
       this.setState({ modalIsOpen: true,  showVmWare: false  });
 
-      this.props.group.fields.map(field => {
-        if (field.fieldName === fieldName) {
-          field = this.props.field
-          this.props.stateGroups[4] = this.props.group
-          this.props.changeFullGroup(this.props.stateGroups)
+      this.props.field.subField.map(subField => {
+        if (subField.subField) {
+          subField.subField.map(subSubField => {
+            subSubField.mandatory = false;
+            subSubField.show = false;
+            this.props.group.fields.map(field => {
+              if (field.fieldName === fieldName) {
+                field = this.props.field
+                this.props.stateGroups[4] = this.props.group
+                this.props.changeFullGroup(this.props.stateGroups)
+              }
+            })
+          })
         }
       })
     }
@@ -589,7 +659,6 @@ class Type extends React.Component {
           })
         }
       })
-      this.props.delSubField(this.props.group.groupName, "numberofESXHosts", "numberofVMGuests", "numberofSANBoots", "VMware");
     }
   }
 
@@ -624,10 +693,11 @@ class Type extends React.Component {
         <div id={fieldName + '_field'} name={fieldName + '_field'}>
           <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
           </label>
-          <Zip placeholder={placeholder} onValue={(value) => this.onChangeHandler(fieldName, value, fieldType)}></Zip>
-          {/* <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onBlur={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} /> */}
+          <input placeholder={placeholder} type={fieldType} onBlur={(e) =>this.onChangeHandler(fieldName, e.target.value, fieldType)}></input>
           {
-            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required Five Digit Number</span>) : null)
+            (this.props.field.showRequired && this.props.state.CustomerContactInformation.country !== "India" ? (<span style={{ color: "red" }}>*Required five Digit Number</span>) : (
+              (this.props.field.showRequired && this.props.state.CustomerContactInformation.country === "India" ? (<span style={{ color: "red" }}>*Required six Digit Number</span>) : null)
+            ))
           }
         </div>
       )
@@ -655,9 +725,9 @@ class Type extends React.Component {
             defaultCountry="US"
             placeholder="Enter phone number"
             onChange={(phoneNumber) => this.onChangeHandler(fieldName, phoneNumber, fieldType, "")}/>
-          {
-            (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Enter valid phone number</span>) : null)
-          }
+            {
+              (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Enter valid phone number</span>) : null)
+            }
         </div>
       )
     }
@@ -723,7 +793,7 @@ class Type extends React.Component {
                     <div id={field.fieldName + '_field'} name={field.fieldName + '_field'}>
                       <label id={field.fieldName + '_label'} name={field.fieldName + '_label'}>{field.fieldLabel}</label>
 
-                      <input id={field.fieldName} type={field.fieldType} name={field.fieldName} onChange={(e) => this.onChangeHandler(field.fieldName, e.target.value, field.fieldType, e)}></input>
+                      <input id={field.fieldName} type={field.fieldType} placeholder={field.placeholder} name={field.fieldName} onChange={(e) => this.onChangeHandler(field.fieldName, e.target.value, field.fieldType, e)}></input>
                       {
                         (field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
                       }
@@ -862,16 +932,20 @@ class Type extends React.Component {
                 <option value="" selected disabled>{"Select " + fieldLabel}</option>
                 {
                   subField.map((field) => (
-                    <option id={field.fieldName} disabled={field.disabled} name={fieldName} value={field.fieldLabel}>{field.fieldLabel}</option>
+                    (field.disabled ? (
+                      <option id={field.fieldName} style={{color : "#ddd"}} disabled={field.disabled} name={fieldName} value={field.fieldLabel}>{field.fieldLabel}</option>
+                    ) : (
+                      <option id={field.fieldName} disabled={field.disabled} name={fieldName} value={field.fieldLabel}>{field.fieldLabel}</option>
+                    ))
                   ))
                 }
                 <option id="addServerOption" name="addServerOption" value="Add Server">Add Server</option>
               </select>
-              {fieldKey == 0 &&
+              {/* {fieldKey == 0 &&
                 <div>
                   <button id="addButton" className="btn btn-primary" name="addButton" onClick={this.addNewServerInfoFunc}>Add</button>
                 </div>
-              }
+              } */}
               {
                 (this.props.field.showRequired ? (<span className="span-algn" style={{ color: "red" }}>*Required</span>) : (<span></span>))
               }
@@ -887,7 +961,7 @@ class Type extends React.Component {
               >
                 <div className="box-head">
                 <button className="closeModal-btn btn-danger" id="closeModal" name="closeModal" onClick={this.closeModal}>Cancel <i class="fa fa-remove"></i></button>
-                <button className="btn btn-success" id="addServerBtn" name="addServerBtn" onClick={this.onClickAddServerName}>save&close <i class="fa fa-save"></i></button>
+                <button className="btn btn-success" id="addServerBtn" name="addServerBtn" onClick={this.onClickAddServerName}> Save & Close <i class="fa fa-save"></i></button>
                 <label className="server-label" id="serverLabel" name="ServerLabel">Add New Server</label>
                 </div>
                 <div className="modalbody">
@@ -948,28 +1022,50 @@ class Type extends React.Component {
     }
 
     if (fieldType === "date") {
-      var {date} = this.state;
-      console.log(this.state.date)
+      var {startDate, endDate} = this.state;
 
+      if(fieldName === "startDate")
+      {
+        return (
+          <div id={fieldName + '_field'} name={fieldName + '_field'}>
+            <label id={fieldName + '_label'}>{fieldLabel}
+            </label>
 
-      return (
-        <div id={fieldName + '_field'} name={fieldName + '_field'}>
-          <label id={fieldName + '_label'}>{fieldLabel}
-          </label>
-
-          <Flatpickr
-            id="date"
-            options={{mode: "range", Format: "m-d-Y", static: true, wrap: false}}
-             onChange={(val) => this.onChangeHandler(fieldName, val, fieldType)} />
+            <Flatpickr
+              id="date"
+              value = {startDate}
+              options={{dateFormat: "m-d-yy", static: true, wrap: false, minDate: "today"}}
+              onChange={(val) => this.onChangeHandler(fieldName, val, fieldType)} />
               {
                 (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
               }
-        </div>
-      )
+          </div>
+        )
+      }
+
+      if(fieldName === "endDate")
+      {
+        return (
+          <div id={fieldName + '_field'} name={fieldName + '_field'}>
+            <label id={fieldName + '_label'}>{fieldLabel}
+            </label>
+
+            <Flatpickr
+              id="date"
+              value = {endDate}
+              options={{dateFormat: "m-d-yy", static: true, wrap: false, minDate: "today"}}
+              onChange={(val) => this.onChangeHandler(fieldName, val, fieldType)} />
+              {
+                (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : (null))
+              }
+          </div>
+        )
+      }
     }
 
     return null
   }
+  
 }
 
 export default Type;

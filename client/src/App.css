@@ -39,14 +39,14 @@ body {
 	padding: 5px;
     height: 35px;
     line-height: 25px;
-    background-color: #d9edf7;
+	background-color: #d9edf7;
+    color: #4489bf;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     font-weight: 700;
     font-size: 13px;
     margin: auto;
     width: 100%;
-    color: #4489bf;
 	border: 1px solid #c3e9f2;
 	cursor: pointer;
   }
@@ -130,9 +130,17 @@ textarea{
     color: white;
     font-family: 'Open Sans', sans-serif;
     border-radius: 4px;
-    display: inline-block;
-    margin: -2px;
-    margin-top: 0px;
+    /* display: inline-block; */
+	margin: -2px;
+	float: right;
+	margin-top: -28px;
+	margin-right: 35px;
+	padding: 1px 6px;
+}
+
+#addServerOption {
+	background-color: #d9edf7;
+    color: #4489bf;
 }
 
 #addServerButton{
@@ -155,8 +163,8 @@ textarea{
 	color: #cacaca;
 }
 
-label{
-	margin-top: 0.8rem !important;
+.group label{
+	margin-top: 0.5rem !important;
 	margin-bottom: 0rem !important;
 }
 
@@ -313,7 +321,6 @@ textarea:hover{
 .servers{
 	float: left;
     width: 75%;
-	margin-right: 5px;
 }
 
 .server-box {
@@ -432,9 +439,10 @@ textarea:hover{
   }
 
 .Modal-box {
+	width:	35%;
 	position: absolute;
     top: 35%;
-    left: 25%;
+    left: 30%;
     right: 25%;
     border: none;
     background: rgb(228, 232, 234);
@@ -450,6 +458,7 @@ textarea:hover{
     border-radius: 4px;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
+	margin-top: -2px;
 }
 
 #addServerBtn{
@@ -458,8 +467,34 @@ textarea:hover{
     border-radius: 4px;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
-	margin-right: 5px;
+	margin-left: 5px;
+	margin-top: -3px;
     padding: 2px;
+}
+
+#storageVirtualization_field {
+	margin-top: 25px;
+}
+
+#connection_field {
+	margin-top: 25px;
+}
+
+#migrationbetween_field {
+	margin-top: 25px;
+}
+
+#freeze_field .subfield-algn {
+	width: 50%;
+	float: right;
+	margin-top: -17px;
+	margin-right: 65px;
+    /* margin-left: 60px;
+    margin-top: 7px; */
+}
+
+#freeze_field {
+	margin-top: 25px;
 }
 
 .closeModal-btn .fa {
@@ -469,7 +504,7 @@ textarea:hover{
 
 #addServerBtn .fa{
 	margin-top: 5px;
-    margin-left: 5px;
+	margin-left: 5px;
 }
 
 .closeModal-btn .fa{
@@ -528,15 +563,37 @@ textarea:hover{
 	margin-left: -25%;
 }
 
+#migrationbetween_field .subfield-algn {
+	margin-left: 160px;
+    margin-top: -50px;
+}
+
 @media only screen and (max-width: 640px) {
     .group .zipcode-algn {
 		margin-left: 0%;
 	}
   }
 
-/* 
-  input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
-} */
+  @media only screen and (max-width: 568px) {
+	#freeze_field .subfield-algn {
+		width: 100%;
+		margin-bottom: 15px;
+		float: right;
+		margin-top: 0px;
+    	margin-right: 0px;
+	}
+  }
+
+  @media only screen and (min-width: 1920px) {
+	#freeze_field {
+		margin-top: 10px;
+	}
+	#migrationbetween_field {
+		margin-top: 0px;
+	}
+
+	#migrationbetween_field .subfield-algn {
+		margin-top: 0px;
+	}
+  }
+
