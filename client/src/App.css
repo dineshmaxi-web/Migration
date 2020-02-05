@@ -95,7 +95,7 @@ body {
 	border-radius:4px;
   }
 
-  .group input[type="text"],input[type="email"],input[type="date"],input[type="tel"],input[type="zipCode"],select{
+  .group input[type="text"],input[type="email"],input[type="wasCode"],input[type="city"],input[type="accountNumber"],input[type="name"],input[type="date"],input[type="tel"],input[type="zipCode"],select{
 	width: 100%;
 	padding: 6px 6px;
 	display: inline-block;
@@ -467,8 +467,8 @@ textarea:hover{
     border-radius: 4px;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
-	margin-left: 5px;
-	margin-top: -3px;
+	margin-right: 5px;
+	margin-top: -1px;
     padding: 2px;
 }
 
@@ -487,7 +487,7 @@ textarea:hover{
 #freeze_field .subfield-algn {
 	width: 50%;
 	float: right;
-	margin-top: -17px;
+	margin-top: -53px;
 	margin-right: 65px;
     /* margin-left: 60px;
     margin-top: 7px; */
@@ -563,6 +563,10 @@ textarea:hover{
 	margin-left: -25%;
 }
 
+.modal-algn #accountNumber {
+	margin-right: 10px;
+}
+
 #migrationbetween_field .subfield-algn {
 	margin-left: 160px;
     margin-top: -50px;
@@ -586,7 +590,7 @@ textarea:hover{
 
   @media only screen and (min-width: 1920px) {
 	#freeze_field {
-		margin-top: 10px;
+		margin-top: 8px;
 	}
 	#migrationbetween_field {
 		margin-top: 0px;
@@ -597,3 +601,8 @@ textarea:hover{
 	}
   }
 
+  @media only screen and (min-width: 625px) {
+	#freeze_field .subfield-algn {
+		margin-right: 0px;
+	}
+  }

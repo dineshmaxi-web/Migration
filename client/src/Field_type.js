@@ -55,6 +55,26 @@ class Type extends React.Component {
 
     var groupName = this.props.group.groupName;
 
+    if(fieldType === "name" || fieldType === "city")
+    {
+      if(fieldValue.match(/^[A-Za-z .]+$/)){
+        this.setState({inValidEmail : false})
+        this.props.func(fieldName, fieldValue, groupName);
+        this.props.field.showRequired = false;
+        this.props.stateGroups.map(group => {
+          if (group.groupName === this.props.group.groupName) {
+            group = this.props.group;
+            this.props.changeFullGroup(this.props.stateGroups)
+          }
+        })
+      }
+      else{
+        this.setState({inValidEmail : true})
+        this.props.delSubField(groupName, fieldName);
+      }
+    }
+
+
     if(fieldType === "email")
     {
       if(EmailValidator.validate(fieldValue)){
@@ -69,7 +89,6 @@ class Type extends React.Component {
         })
       }
       else{
-        event.target.value = "";
         this.setState({inValidEmail : true})
         this.props.delSubField(groupName, fieldName);
       }
@@ -98,6 +117,41 @@ class Type extends React.Component {
         else{
           this.props.delSubField(groupName, fieldName);  
         }
+    }
+
+    if(fieldType === "accountNumber" || fieldType === "wasCode")
+    {
+      var minLength = 0;
+      var maxLength = 0;
+      if(fieldType === "accountNumber")
+      {
+        minLength = 8
+        maxLength = 16
+      }
+      if(fieldType === "wasCode")
+      {
+        minLength = 3
+        maxLength = 5
+      }
+      if(fieldValue.length > minLength && fieldValue.length < maxLength)
+      {
+        if(fieldValue.match(/^[0-9 .\b]+$/)){
+          this.props.func(fieldName, fieldValue, groupName);
+          this.props.field.showRequired = false;
+          this.props.stateGroups.map(group => {
+            if (group.groupName === this.props.group.groupName) {
+              group = this.props.group;
+              this.props.changeFullGroup(this.props.stateGroups)
+            }
+          })
+        }
+        else {
+          this.props.delSubField(groupName, fieldName);
+        }
+      }
+      else {
+        this.props.delSubField(groupName, fieldName);
+      }
     }
 
     if(fieldType === "zipCode")
@@ -693,7 +747,7 @@ class Type extends React.Component {
         <div id={fieldName + '_field'} name={fieldName + '_field'}>
           <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
           </label>
-          <input placeholder={placeholder} type={fieldType} onBlur={(e) =>this.onChangeHandler(fieldName, e.target.value, fieldType)}></input>
+          <input placeholder={placeholder} type={fieldType} onChange={(e) =>this.onChangeHandler(fieldName, e.target.value, fieldType)}></input>
           {
             (this.props.field.showRequired && this.props.state.CustomerContactInformation.country !== "India" ? (<span style={{ color: "red" }}>*Required five Digit Number</span>) : (
               (this.props.field.showRequired && this.props.state.CustomerContactInformation.country === "India" ? (<span style={{ color: "red" }}>*Required six Digit Number</span>) : null)
@@ -708,9 +762,9 @@ class Type extends React.Component {
         <div id={fieldName + '_field'} name={fieldName + '_field'}>
           <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
           </label>
-          <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onBlur={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />
+          <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />
           {
-            (this.props.field.showRequired && !this.state.inValidEmail  ? (<span style={{ color: "red" }}>*Required </span>) :  (this.state.inValidEmail ? (<span style={{ color: "red" }}>Invalid Email Address</span>) : null))
+            (this.props.field.showRequired  ? (<span style={{ color: "red" }}>*Enter valid Email address </span>) : (null))
           }
         </div>
       )
@@ -732,14 +786,82 @@ class Type extends React.Component {
       )
     }
 
+    if (fieldType === "accountNumber") {
+      return (
+        <div id={fieldName + '_field'} name={fieldName + '_field'}>
+          <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
+          </label>
+          <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />
+          {/* {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : null)
+          } */}
+          {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Enter valid account number </span>) : null)
+          }
+        </div>
+      )
+    }
+
+    if (fieldType === "name") {
+      return (
+        <div id={fieldName + '_field'} name={fieldName + '_field'}>
+          <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
+          </label>
+          <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />
+          {/* {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : null)
+          } */}
+          {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Enter valid name </span>) :  null)
+          }
+        </div>
+      )
+    }
+
+    if (fieldType === "city") {
+      return (
+        <div id={fieldName + '_field'} name={fieldName + '_field'}>
+          <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
+          </label>
+          <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />
+          {/* {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : null)
+          } */}
+          {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Enter valid name </span>) :  null)
+          }
+        </div>
+      )
+    }
+
+
     if (fieldType === "text") {
       return (
         <div id={fieldName + '_field'} name={fieldName + '_field'}>
           <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
           </label>
           <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />
-          {
+          {/* {
             (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : null)
+          } */}
+          {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required </span>) :   null)
+          }
+        </div>
+      )
+    }
+
+    if (fieldType === "wasCode") {
+      return (
+        <div id={fieldName + '_field'} name={fieldName + '_field'}>
+          <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}
+          </label>
+          <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />
+          {/* {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : null)
+          } */}
+          {
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Enter valid wasCode</span>) :   null)
           }
         </div>
       )

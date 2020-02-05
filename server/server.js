@@ -5,7 +5,7 @@ var ObjectId = require('mongodb').ObjectID;
 
 var args = ["_id", "name", "emailAddress","phoneNumber", "country", "state"];
 var finalParticulars = [];
-var groupKeys = ["CustomerContactInformation","OpportunityInformation","ManagementInformation","SiteDetails","ServersinMigrationScope"]
+// var groupKeys = ["CustomerContactInformation","OpportunityInformation","ManagementInformation","SiteDetails","ServersinMigrationScope"]
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

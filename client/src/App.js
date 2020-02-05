@@ -233,12 +233,12 @@ class App extends React.Component {
     let stateVariables = this.state;
     if(fieldValue !== undefined)
     {
-        if(fieldValue === "") {
+        if(fieldValue === "" && stateVariables[groupName]) {
           delete stateVariables[groupName][fieldName];
           this.setState(stateVariables, ()=>console.log(this.state));
         }
         else {
-          if (stateVariables[groupName]) {
+          if (stateVariables[groupName] && stateVariables[groupName]) {
             stateVariables[groupName][fieldName] = fieldValue;
             this.setState(stateVariables, () => {
               console.log(this.state)
@@ -420,8 +420,8 @@ class App extends React.Component {
                   <h4>Submission Successful!</h4>
                 </div>
                 <div>
-                  <p>We have received the information<br />
-                    And will get in touch shortly</p>
+                  <p>We have received the informations<br />
+                    and will get in touch shortly</p>
                 </div>
                 <div class="success-footer">
                   <input type="submit" className="fadeIn fourth" value="Ok" />
@@ -442,17 +442,19 @@ class App extends React.Component {
         <div className="container-fluid">
 
           <div className="group">
-            <label className="request-no" >Request No. <span>{this.state.registrationNumber}</span></label>
             {
               latestGroup.map((group, groupKey) => (
                 (group.isActive ? (
                   <div>
                     <div className="box" id={group.groupLabel} name={group.groupName}>
                       <div>
-                    <h4 className="box-head" onClick={this.arrowFunction.bind(this, groupKey)} data-toggle="collapse" data-target={'#' + group.groupName}  >
-                      <i class="fa fa-bars icon-algn1"></i> {group.groupLabel}
-                      <i  id={group.toggleActive + '_test'} class={`icon-algn2 ${group.toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
-                        {/* <i id={group.toggleActive + '_test'} className={group.toggleActive ? "fa fa-angle-up" : "fa fa-angle-down"}></i> */}
+                      <h4 className="box-head" onClick={this.arrowFunction.bind(this, groupKey)} data-toggle="collapse" data-target={'#' + group.groupName}  >
+                        <i class="fa fa-bars icon-algn1"></i> {group.groupLabel}
+                        <i  id={group.toggleActive + '_test'} class={`icon-algn2 ${group.toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
+                        {
+                          group.groupName === "CustomerContactInformation" &&
+                          <label className="request-no" >Request No. <span>VTG - {+ this.state.registrationNumber}</span></label>
+                        }
                       </h4>
                       {
                         group.groupName === "ServersinMigrationScope" &&

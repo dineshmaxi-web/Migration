@@ -6,6 +6,8 @@ import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import logo from './vtglogo.jpg';
 import './Detail.css';
 import _ from 'lodash';
+import $ from "jquery";
+
 
 
 var groupKeys = [], fieldKeysOfGroup = [], dbGroupKeys = [], dummy = [1, 2, 3, 4], startsWithServer = [], startsWithNumber = [];
@@ -34,7 +36,7 @@ class GetData extends Component {
 
   closeModal = () => {
     this.setState({ showHome: true, modalIsOpen: false, showLogin: false });
-    window.location.reload();
+    window.location = "/get_data";
   }
 
   handleLogout = () => {
@@ -67,7 +69,13 @@ class GetData extends Component {
           }
       })
     })
-  }
+
+    // if(fieldKeysOfGroup[8] === "accountNumber") {
+    //   var account= $('p').text('#accountNumber_value')
+    //   console.log(account)
+    //   account=new Array(account.length-3).join('x') + account.substr(account.length-4, 4);
+    // }
+}
 
   onGridReady = params => {
     this.gridApi = params.api;
@@ -137,14 +145,25 @@ class GetData extends Component {
           headerName: "View",
           lockPosition: true,
           cellRendererFramework: () => {
-            return <i className="fa fa-eye fullView" style={{ color: "#2B2B2C" }}></i>
-          },
+            return  <i className="fa fa-eye fullView" style={{ color: "#2B2B2C" }}></i>
+          }
         });
+
+        // tempColumnDefs.push({
+        //   headerName: "Edit",
+        //   lockPosition: true,
+        //   cellRendererFramework: () => {
+        //     return  <i className="fa fa-edit fullView" onClick={this.editFunction} style={{ color: "#2B2B2C" }}></i>
+        //   }
+        // });
 
         this.setState({ rowData: rowDataSet, columnDefs: tempColumnDefs })
         }
       })
+     
   }
+
+ 
 
   toggleFunction = (param) => {
     var datas = this.state.dbGroup;
@@ -157,6 +176,9 @@ class GetData extends Component {
   }
 
   render() {
+
+    var trailingCharsIntactCount = 4;
+
     if (this.state.showHome) {
       return (
         <div>
@@ -215,8 +237,12 @@ class GetData extends Component {
                                   ((fieldName1 === fieldName) &&
                                     <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                       <div className="form-group modal-algn">
-                                        <label>{fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1').trim()}</label>
-                                        <p>{this.state.pushData[groupName][fieldName]}</p>
+                                        <label id={fieldName}>{fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1').trim()}</label>
+  
+                                        {
+                                          fieldName === "accountNumber" ? this.state.pushData[groupName][fieldName]= new Array(this.state.pushData[groupName][fieldName].length - trailingCharsIntactCount + 1).join('x') + this.state.pushData[groupName][fieldName].slice( -trailingCharsIntactCount)
+                                          :  <p id={fieldName + "_value"}>{this.state.pushData[groupName][fieldName]}</p>
+                                        }
                                       </div>
                                     </div>
                                   )
