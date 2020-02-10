@@ -83,37 +83,6 @@ class App extends React.Component {
     }
     })
 
-    // var copyStateGroups = 
-
-    // copyGroup.map(group => {
-    //   group.map(field => {
-    //     if(field.showRequired)
-    //     {
-    //       group.toggleActive = 1;
-    //     }
-    //     if(field.hasOwnProperty("subField"))
-    //     {
-    //       field.subField.map(subField => {
-    //         if(subField.showRequired)
-    //         {
-    //           group.toggleActive = 1;
-    //         }
-
-    //         if(subField.hasOwnProperty("subField"))
-    //         {
-    //           subField.subField.map(subSubField => {
-    //             if(subSubField.showRequired)
-    //             {
-    //               group.toggleActive = 1;
-    //             }
-    //           })
-    //         }
-
-    //       })
-    //     }
-    //   })
-    // })
-
     var copyGroup = this.state.groups;
     
     var copyRegistrationNumber = this.state.registrationNumber;

@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 var nodemailer = require('nodemailer');
 var ObjectId = require('mongodb').ObjectID;
+var bcrypt = require('bcryptjs');
 
 var args = ["_id", "name", "emailAddress","phoneNumber", "country", "state"];
 var finalParticulars = [];
@@ -135,6 +136,25 @@ app.post("/post/data", (req,res) => {
 
    res.send(result);
   });
+});
+
+app.post("/post/adduser", (req,res) => {
+  bcrypt.genSalt(10, function(err, salt) {
+    bcrypt.hash(req.body.data.password, salt, function(err, hash) {
+      req.body.data.password = hash;
+      dbo.collection("Users").insertOne(req.body, function(err, result) {
+          if(result)
+          {
+              console.log(result.data);
+              res.send(result);     
+          }
+          else{
+            console.log(err);
+            res.send(err);
+          }
+        });
+     });
+   });
 });
 
 var port = process.env.NODE_ENV || 5000

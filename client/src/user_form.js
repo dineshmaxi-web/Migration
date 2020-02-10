@@ -9,6 +9,8 @@ import Forget_pass from './Forget_pass.js';
 import Modal from 'react-modal';
 import EmailValidator from 'email-validator';
 
+var count = 0;
+
 class UserForm extends React.Component {
     state = {
         showUserPage : true,
@@ -27,6 +29,8 @@ class UserForm extends React.Component {
     }
 
     onChangeHandler = (e) => {
+       
+
         if(e.target.name === "firstName")
         {
             if(e.target.value.match(/^[A-Za-z .]+$/)) {
@@ -62,30 +66,62 @@ class UserForm extends React.Component {
 
         if(e.target.name === "password")
         {
-            var minLength=8;
-            if(e.target.value > minLength){
-            if(e.target.value.match(/^[0-9 .\b]+$/)) {
+            if(e.target.value !== "") {
                 this.setState({password : e.target.value})
                 this.setState({ showRequiredPassWord: false })
             }
             else {
-                this.setState({password : ""})
                 this.setState({ showRequiredPassWord: true })
             }
         }
+
+        if(e.target.name === "userQuote")
+        {
+            this.setState({userQuote : e.target.value})
         }
     }
     
-    openModal = (e) => {
-         this.setState({ modalIsOpen: true });
-    }
 
-    handleSubmit = (e) => {
-        this.setState({showUserPage : true, modalIsOpen: true, showModal: true})
+    openModal = (e) => {
+
+        var {firstName, lastName, email, password, userQuote} = this.state;
+        console.log(firstName,lastName,email,password,userQuote, this.state.password);
+        if(firstName !== "" && lastName !== "" && email !== "" && password !== "" && userQuote !== "")
+        {
+            count = 0;
+        }
+        else{
+            count = 1;
+        }
+
+        var finalValue = {
+            firstName : firstName,
+            lastName : lastName,
+            email : email,
+            password : password,
+            userQuote : userQuote
+        }
+        if(count === 0){
+            fetch('/post/adduser', {
+                method: 'POST',
+                body: JSON.stringify({
+                data: finalValue
+                }),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(function (response) {
+                return response.json()
+            }).then(() => {
+                this.setState({ modalIsOpen: true });
+            });
+        }
+        else{
+            count = 0;
+        }
     }
 
     handleUser = (e) => {
-        this.setState({showUserPage : false, modalIsOpen: false,showHome:true})
+        this.setState({showUserPage : false, modalIsOpen: false,showHome:true, showLogin : false})
         window.location.reload();
     }
 
@@ -156,7 +192,7 @@ class UserForm extends React.Component {
         </div>
         <div className="col-md-4">
         <label className="user-label ">User Quote</label>
-        <select className="" onChange={this.handleChangeUserName, this.onChangeHandler}>
+        <select name="userQuote" className="" onChange={this.onChangeHandler}>
             <option selected disabled>Select Server</option>
             <option>VmWare</option>
             <option>AIX</option>
