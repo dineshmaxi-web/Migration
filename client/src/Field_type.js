@@ -632,7 +632,7 @@ class Type extends React.Component {
         }
       }
     })
-
+    
     if (tempCount > 0 && fieldValue !== "Add Server") {
       
       this.props.field.showRequired = false;
@@ -731,9 +731,7 @@ class Type extends React.Component {
   }
 
   render() {
-//     var dat = ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear();
-//     var dat1 = ("0" + (new Date().getMonth() + )).slice(-2) + "-" + ("0" + (new Date().getDate())).slice(-2) +"-" + new Date().getFullYear();
-// console.log(dat, dat1)
+
     var fieldType = this.props.field.fieldType;
     var fieldName = this.props.field.fieldName;
     var fieldLabel = this.props.field.fieldLabel;
@@ -908,7 +906,7 @@ class Type extends React.Component {
             }
             <h1>{this.props.field.showRequired}</h1>
 
-            <div className="subfield-algn">
+            <div className="subfield-algn col order-1">
               {
                 (this.state.showDsn ? (
                   subField.map((field) => (
@@ -983,7 +981,8 @@ class Type extends React.Component {
         ))
 
         return (
-          <div className="connectivity-algn">
+          <div className="row test1">
+          <div className="connectivity-algn col order-1">
             <div id={fieldName + '_field'} name={fieldName + '_field'}>
 
               <label id={fieldName + '_label'} name={fieldName + '_label'}>{fieldLabel}</label>
@@ -1026,7 +1025,7 @@ class Type extends React.Component {
               ) : (null))
             }
           </div>
-
+          </div>
         )
       }
 

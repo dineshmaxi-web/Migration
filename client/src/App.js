@@ -44,6 +44,7 @@ class App extends React.Component {
   }
 
   submit = () => {
+
     var fieldsInJsons = [];
     this.state.groups.map((json) => {
       json.fields.map((field) => {
@@ -365,20 +366,16 @@ class App extends React.Component {
   } 
 
   render() {
-
+    var registration = this.state.registrationNumber;
     $(document).ready(function () {
       $('.state-country').parent().removeClass('col-md-3');
       $('.state-country').parent().addClass('col-md-6');
 
-      $('#connection_field').parent().removeClass('col-md-3');
-      $('#connection_field').parent().addClass('col-md-6');
-
-      $('.row').parent().removeClass('col-md-3');
-      $('.row').parent().addClass('col-md-12');
+      $('.server-box').parent().removeClass('col-md-3');
+      $('.server-box').parent().addClass('col-md-12');
     
-      $('.connectivity-algn').parent().removeClass('col-md-3');
-      $('.connectivity-algn').parent().addClass('col-md-6');
-      // $('.connectivity-algn').parent().addClass('test');
+      $('.test1').parent().removeClass('col-md-3');
+      $('.test1').parent().addClass('col-md-12');
 
       $('#zipCode_field').parent().addClass('zipcode-algn');
 
@@ -394,14 +391,26 @@ class App extends React.Component {
 
   $("#migrationbetween").click(function () {
     if ($(this).is(":checked")) {
-      $('#migrationbetween_field').parent().removeClass('col-md-3');
-      $('#migrationbetween_field').parent().addClass('col-md-6');
-    } else {
-      $('#migrationbetween_field').parent().removeClass('col-md-6');
-      $('#migrationbetween_field').parent().addClass('col-md-3');
+      $('.connectivity-algn').parent().addClass('test');
+      $('#migrationbetween_field').children('.subfield-algn').appendTo('.test');
+      $('#connectivity_field').parent().removeClass(' order-1');
+      $('#connectivity_field').parent().addClass(' order-2')
+    }else {
+      $('#connectivity_field').parent().removeClass(' order-2');
+      $('#connectivity_field').parent().addClass('order-1');
+      $('.connectivity-algn').children().addClass('test');
+      $('#connectivity_field').css("width", "48.5%");
     }
   });
-
+  $(window).resize(function() {
+    if ($(window).width() < 800) {
+      // $('.test1').parent().removeClass('col-md-12');
+      // $('.test1').parent().addClass('col-md-3');
+      // $('#connectivity_field').parent().removeClass(' order-2');
+      // $('.test1').children().removeClass('order-1');
+      $('label[class*="request-no"]').text('VTG '+ registration);
+    }	
+  });
 });
 
     if (this.state.showSuccess) {
@@ -450,7 +459,7 @@ class App extends React.Component {
                       <div>
                       <h4 className="box-head" onClick={this.arrowFunction.bind(this, groupKey)} data-toggle="collapse" data-target={'#' + group.groupName}  >
                         <i class="fa fa-bars icon-algn1"></i> {group.groupLabel}
-                        <i  id={group.toggleActive + '_test'} class={`icon-algn2 ${group.toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
+                        <i  id={group.toggleActive + '_test'} class={`icon-algn2 ${group.toggleActive ? "fa fa-chevron-circle-up" : "fa fa-chevron-circle-down"}`} ></i>
                         {
                           group.groupName === "CustomerContactInformation" &&
                           <label className="request-no" >Request No. <span>VTG - {+ this.state.registrationNumber}</span></label>

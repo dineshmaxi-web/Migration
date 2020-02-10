@@ -6,7 +6,6 @@ body {
   }
   
   .header {
-	/* background-color: #14235b; */
 	background-color: #ffffff;
 	padding: 10px;
 	text-align: center;
@@ -57,6 +56,7 @@ body {
 	margin-right: 10px;
 	cursor: pointer;
 	margin-top: 5px;
+	font-size: 15px;
 }
 
 .group .box-head .icon-algn1{
@@ -130,7 +130,6 @@ textarea{
     color: white;
     font-family: 'Open Sans', sans-serif;
     border-radius: 4px;
-    /* display: inline-block; */
 	margin: -2px;
 	float: right;
 	margin-top: -28px;
@@ -234,12 +233,10 @@ textarea{
 
 #destinationSiteName_field {
 	float: left;
-    /* margin-top: 19px; */
-    width: 47%;
+    width: 48%;
 }
 
 #destinationSiteAddress_field {
-	/* margin-top: -12px; */
     width: 48%;
     float: right;
 }
@@ -247,37 +244,52 @@ textarea{
 .connectivity-algn {
 	display: flex;
 }
+
 #connectivity_field {
-	width: 47%;
+	width: 48%;
 }
 
 #NoofSANPorts_field {
-	margin-left: 6%;
-	width: 47%;
+	margin-left: 4%;
+	width: 48%;
+}
+
+.test #NoofSANPorts_field {
+    margin-left: 4% !important;
+    width: 48.5% !important;
+}
+
+.order-1 #NoofSANPorts_field {
+	margin-left: 2%;
+	width: 23.5%;
 }
 
 #NoofISCSI_field {
-	margin-left: 6%;
-	width: 47%;
+	margin-left: 4%;
+    width: 48%;
+}
+
+.test #NoofISCSI_field {
+    margin-left: 4% !important;
+    width: 48.5% !important;
+}
+
+.order-1 #NoofISCSI_field {
+	margin-left: 2%;
+	width: 23.5%;
 }
 
 .group input:hover{
-	/* box-shadow:.5px .5px .5px #1bade5; */
-	border-color: #67aee6;
-}
-select:hover{
-	/* box-shadow:.5px .5px .5px #1bade5; */
-	border-color: #67aee6;
-}
-textarea:hover{
-	/* box-shadow:.5px .5px .5px #1bade5; */
 	border-color: #67aee6;
 }
 
-/* .checkbox:hover{
-	box-shadow:.5px .5px .5px #1bade5;
-	border-color: #1bade5
-} */
+select:hover{
+	border-color: #67aee6;
+}
+
+textarea:hover{
+	border-color: #67aee6;
+}
 
 .Modal-box {
 	position: absolute;
@@ -290,7 +302,6 @@ textarea:hover{
     outline: none;
     padding: 0px;
 }
-
 
 .addserver-btn {
 	margin: 10px;
@@ -456,20 +467,21 @@ textarea:hover{
 	float: right;
     border: none;
     border-radius: 4px;
-	font-family: 'Open Sans', sans-serif;
-	font-size: 14px;
-	margin-top: -2px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    margin-top: -2px;
+    padding: 0px 6px;
 }
 
 #addServerBtn{
 	float: right;
     border: none;
     border-radius: 4px;
-	font-family: 'Open Sans', sans-serif;
-	font-size: 14px;
-	margin-right: 5px;
-	margin-top: -1px;
-    padding: 2px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    margin-right: 5px;
+    margin-top: -1px;
+    padding: 2px 6px;
 }
 
 #storageVirtualization_field {
@@ -489,8 +501,6 @@ textarea:hover{
 	float: right;
 	margin-top: -53px;
 	margin-right: 65px;
-    /* margin-left: 60px;
-    margin-top: 7px; */
 }
 
 #freeze_field {
@@ -592,9 +602,9 @@ textarea:hover{
 	#freeze_field {
 		margin-top: 8px;
 	}
-	#migrationbetween_field {
+	/* #migrationbetween_field {
 		margin-top: 0px;
-	}
+	} */
 
 	#migrationbetween_field .subfield-algn {
 		margin-top: 0px;
@@ -606,3 +616,12 @@ textarea:hover{
 		margin-right: 0px;
 	}
   }
+
+.order-1 #connectivity_field{
+	  width:23.5%
+  }
+
+/* order-1 #connectivity_field{
+	width:100%
+} */
+

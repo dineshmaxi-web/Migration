@@ -57,23 +57,6 @@
     margin-top: 0.2rem !important;
   }
 
-/* .groupName{
-    display: block;
-}
-.subField{
-    display: inherit;
-} */
-
-/* .modal-algn label {
-    width: 100%;
-    margin-top: 0.8rem !important;
-	margin-bottom: 0rem !important;
-} */
-/* 
-.ReactModal__Overlay{
-    background-color: #fbfcfd !important;
-} */
-
 .fullView:hover{
     cursor: pointer;
 }
@@ -118,6 +101,18 @@
     font-family: 'Open Sans', sans-serif;
     font-size: 11px;
     margin: 14px 20px;
+    padding: 1px 6px;
+}
+
+.header .addUser-btn {
+    border: none;
+    border-radius: 4px;
+    color: white;
+    float: right;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    margin: 14px 2px;
+    margin-left: -12px;
     padding: 1px 6px;
 }
 
@@ -166,7 +161,6 @@
 	border-bottom-left-radius: 4px;
     height: max-content;
     width: 100%;
-    /* border: 1px solid #c3e9f2; */
   }
 
 .data-modal .container-fluid {
@@ -195,12 +189,6 @@
     }
   }
 
-  /* @media only screen and (max-width: 1280px) {
-    .modal-algn input{
-        width: 99%;
-    }
-  } */
-
   #table-algn {
     border-collapse: collapse;
     width: 100%;
@@ -221,12 +209,8 @@
       padding: 8px;
   }
   
-  /* #table-algn tr:nth-child(even) {
-    background-color: #f1f1f1;
-  } */
-  
   #table-algn tr:hover {
-    background-color: #f1f1f1;
+    background-color: #e7e5e5;
   }
   
   #table-algn thead {

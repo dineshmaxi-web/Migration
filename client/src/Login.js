@@ -21,8 +21,9 @@ class Login extends React.Component {
         if(this.state.userName === "zenfra" && this.state.password === "zenfra")
         {
             this.setState({showHome : true})
-            this.setState({showLogin : false})
-            
+            this.setState({showLogin : false})    
+            sessionStorage.setItem("username", "zenfra");
+            sessionStorage.setItem("password", "zenfra");
         }
         else{
             this.setState({showErrorMessage : true});

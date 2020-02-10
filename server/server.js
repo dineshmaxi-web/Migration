@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+var nodemailer = require('nodemailer');
 var ObjectId = require('mongodb').ObjectID;
 
 var args = ["_id", "name", "emailAddress","phoneNumber", "country", "state"];
 var finalParticulars = [];
-// var groupKeys = ["CustomerContactInformation","OpportunityInformation","ManagementInformation","SiteDetails","ServersinMigrationScope"]
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -98,7 +98,42 @@ app.get("/get/formdata", (req,res) => {
 
 app.post("/post/data", (req,res) => {
   dbo.collection("FormData").insertOne(req.body, function(err, result) {
-      res.send(result);
+
+    transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'dineshozian@gmail.com',
+        pass: 'ozian@111'
+      }
+    });
+
+    mailOption = {
+      from: 'Website support <dineshozian@gmail.com>',
+      to: "dineshozian@gmail.com",
+      subject: "Regarding Zenfra Submission",
+      html: '<p>Hello <b>Zenfra</b>, The submission was successfully made to <b>'+req.body.data.CustomerContactInformation.name+'</b>. Cheers! </p>'
+    };
+
+    transporter.sendMail(mailOption,function(info, err){
+      if(info){
+        console.log(info.message);
+      }
+    });
+
+    mailOption = {
+      from: 'Website support <dineshozian@gmail.com>',
+      to: req.body.data.CustomerContactInformation.emailAddress,
+      subject: "Regarding Zenfra Submission",
+      html: '<p>Hello <b>'+ req.body.data.CustomerContactInformation.name+'</b>, Your submission was successfully made. Cheers! </p>'
+    };
+
+   transporter.sendMail(mailOption,function(info, err){
+     if(info){
+      console.log(info.message);
+     }
+   });
+
+   res.send(result);
   });
 });
 

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Login from './Login.js';
+import User from './user_form.js';
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
@@ -18,6 +19,7 @@ class GetData extends Component {
     showLogin: false,
     showHome: true,
     showDetail: false,
+    showUser: false,
     columnDefs: [],
     defaultColDef: {
       sortable: true,
@@ -35,12 +37,17 @@ class GetData extends Component {
   }
 
   closeModal = () => {
-    this.setState({ showHome: true, modalIsOpen: false, showLogin: false });
-    window.location = "/get_data";
+    this.setState({ showHome: true, modalIsOpen: false, showLogin: false, showUser:false });
+    window.location.reload();
+  }
+
+  handleUser = () => {
+    this.setState({ showHome: false, modalIsOpen: false, showLogin: false, showUser:true });
   }
 
   handleLogout = () => {
-    this.setState({ showLogin: true, showHome: false, modalIsOpen: false })
+    this.setState({ showLogin: true, showHome: false, modalIsOpen: false, showUser:false })
+    window.location.reload();
   }
 
   onRowClicked = (e) => {
@@ -184,6 +191,8 @@ class GetData extends Component {
         <div>
           <div className="header">
             <img src={logo} className="logo"></img>
+            <button className="addUser-btn btn-primary" id="addUser" name="addUser" onClick={this.handleUser}>
+             Add User <i className="fa fa-plus"></i></button>
             <button className="logout-btn btn btn-danger" id="CloseData" name="CloseData" onClick={this.handleLogout}>
               <i class="fa fa-sign-out"></i> logout</button>
           </div>
@@ -208,6 +217,12 @@ class GetData extends Component {
       )
     }
 
+    if (this.state.showUser) {
+      return (
+        <User />
+      )
+    }
+
     return (
       <div className="data-modal">
         <div className="header">
@@ -225,7 +240,7 @@ class GetData extends Component {
                       <div>
                         <h4 className="box-head" onClick={() => this.toggleFunction(groupName)} data-toggle="collapse" data-target={'#' + groupName}>
                           <i class="fa fa-bars"></i> {this.state.dbGroup[index].groupLabel}
-                          <i class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
+                          <i class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-chevron-circle-up" : "fa fa-chevron-circle-down"}`} ></i>
                         </h4>
                       </div>
                       <div className="form-inline">
@@ -258,7 +273,7 @@ class GetData extends Component {
                         <div>
                           <h4 className="box-head" onClick={() => this.toggleFunction(groupName)} data-toggle="collapse" data-target={'#' + groupName}>
                             <i class="fa fa-bars"></i> {this.state.dbGroup[index].groupLabel}
-                            <i class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-minus" : "fa fa-plus"}`} ></i>
+                            <i class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-chevron-circle-up" : "fa fa-chevron-circle-down"}`} ></i>
                           </h4>
                         </div>
                         <div className="form-inline">
