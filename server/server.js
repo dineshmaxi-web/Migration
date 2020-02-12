@@ -6,7 +6,7 @@ var ObjectId = require('mongodb').ObjectID;
 var bcrypt = require('bcryptjs');
 
 var args = ["_id", "name", "emailAddress","phoneNumber", "country", "state"];
-var finalParticulars = [];
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -14,12 +14,12 @@ var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017";
 var dbo;
 
-MongoClient.connect(url, function(err, db) {
+MongoClient.connect(url, (err, db) => {
   dbo = db.db("Migration");
 });
 
 app.get("/get/forminfo", (req,res) => {
-  dbo.collection("Form_Details").find({}).toArray(function(err, groups) {
+  dbo.collection("Form_Details").find({}).toArray((err, groups) => {
 
     var activeResult = []
     var tempGroupName = "";
@@ -57,10 +57,10 @@ app.get("/get/forminfo", (req,res) => {
 });
 
 app.get("/get/formdata/args", (req,res) => {
-  dbo.collection("FormData").find({}).toArray(function(err, result) {
-  
-    var tempObject = {};
-    var key = [];
+  dbo.collection("FormData").find({}).toArray((err, result) => {
+    let finalParticulars = [];
+    let tempObject = {};
+    let key = [];
 
     result.map(res => {
       key = Object.keys(res.data)      
@@ -78,27 +78,25 @@ app.get("/get/formdata/args", (req,res) => {
       finalParticulars.push(tempObject)
       tempObject = {}
     })
-    
     res.send(finalParticulars)
     finalParticulars = []
   })
 }) 
 
 app.get("/get/formdata/particular/:id", (req,res) => {
-
-  dbo.collection("FormData").find(ObjectId(req.params.id)).toArray(function(err, result) {
+  dbo.collection("FormData").find(ObjectId(req.params.id)).toArray((err, result) => {
     res.send(result)
   })
 });
 
 app.get("/get/formdata", (req,res) => {
-  dbo.collection("FormData").find({}).toArray(function(err, result) {
+  dbo.collection("FormData").find({}).toArray((err, result) => {
     res.send(result)
   })
 }); 
 
 app.post("/post/data", (req,res) => {
-  dbo.collection("FormData").insertOne(req.body, function(err, result) {
+  dbo.collection("FormData").insertOne(req.body, (err, result) => {
 
     transporter = nodemailer.createTransport({
       service: 'Gmail',
@@ -115,9 +113,8 @@ app.post("/post/data", (req,res) => {
       html: '<p>Hello <b>Zenfra</b>, The submission was successfully made to <b>'+req.body.data.CustomerContactInformation.name+'</b>. Cheers! </p>'
     };
 
-    transporter.sendMail(mailOption,function(info, err){
+    transporter.sendMail(mailOption, (info, err) => {
       if(info){
-        console.log(info.message);
       }
     });
 
@@ -128,9 +125,8 @@ app.post("/post/data", (req,res) => {
       html: '<p>Hello <b>'+ req.body.data.CustomerContactInformation.name+'</b>, Your submission was successfully made. Cheers! </p>'
     };
 
-   transporter.sendMail(mailOption,function(info, err){
+   transporter.sendMail(mailOption, (info, err) => {
      if(info){
-      console.log(info.message);
      }
    });
 
@@ -139,23 +135,61 @@ app.post("/post/data", (req,res) => {
 });
 
 app.post("/post/adduser", (req,res) => {
-  bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(req.body.data.password, salt, function(err, hash) {
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(req.body.data.password, salt, (err, hash) => {
       req.body.data.password = hash;
-      dbo.collection("Users").insertOne(req.body, function(err, result) {
+      dbo.collection("Users").insertOne(req.body, (err, result) => {
           if(result)
           {
-              console.log(result.data);
               res.send(result);     
           }
           else{
-            console.log(err);
             res.send(err);
           }
         });
      });
    });
 });
+
+app.get("/get/users", (req,res) => {
+  dbo.collection("Users").find({}).toArray((err, result) => {
+    let finalParticulars = [];
+    let tempObject = {};
+    let key = [];
+
+    result.map(res => {
+      key = Object.keys(res.data)      
+      tempObject._id = res._id;
+
+      key.map(field => {
+            tempObject[field] = res.data[field]
+      })
+
+      finalParticulars.push(tempObject)
+      tempObject = {}
+    })
+    res.send(finalParticulars)
+    finalParticulars = []
+  })
+}); 
+
+app.post("/update/user", (req,res) => {
+  const options = {returnOriginal: false, upsert: true};
+
+  var newvalues = { $set: { data :{ firstName: req.body.data.firstName, lastName: req.body.data.lastName, email: req.body.data.email, password: req.body.data.password, userQuote: req.body.data.userQuote} }};
+
+  dbo.collection("Users").findOneAndUpdate({_id : ObjectId(req.body.data.id)}, newvalues, options).then((err, result) => {
+      res.send(result)
+  })
+})
+
+app.post("/delete/user", (req,res) => {
+  const options = {returnOriginal: false};
+  dbo.collection("Users").deleteOne({_id : ObjectId(req.body.data)}, options).then((err, result) => {
+      res.send(result)
+  })
+})
+
 
 var port = process.env.NODE_ENV || 5000
 app.listen(port, () => console.log(`Listening on port 5000`));

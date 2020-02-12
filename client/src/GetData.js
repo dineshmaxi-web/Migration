@@ -1,25 +1,24 @@
 import React, { Component } from "react";
 import Login from './Login.js';
-import User from './user_form.js';
+import UserManagement from './UserManagement.js';
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import logo from './vtglogo.jpg';
 import './Detail.css';
 import _ from 'lodash';
-import $ from "jquery";
-
-
 
 var groupKeys = [], fieldKeysOfGroup = [], dbGroupKeys = [], dummy = [1, 2, 3, 4], startsWithServer = [], startsWithNumber = [];
 class GetData extends Component {
 
   state = {
+    showAddUserPage : false,
     modalIsOpen: false,
     showLogin: false,
     showHome: true,
     showDetail: false,
-    showUser: false,
+    showGetData: true,
+    showUserManagement: false,
     columnDefs: [],
     defaultColDef: {
       sortable: true,
@@ -37,16 +36,11 @@ class GetData extends Component {
   }
 
   closeModal = () => {
-    this.setState({ showHome: true, modalIsOpen: false, showLogin: false, showUser:false });
-    window.location.reload();
-  }
-
-  handleUser = () => {
-    this.setState({ showHome: false, modalIsOpen: false, showLogin: false, showUser:true });
+    this.setState({ showHome: true, modalIsOpen: false, showLogin: false, showAddUserPage:false });
   }
 
   handleLogout = () => {
-    this.setState({ showLogin: true, showHome: false, modalIsOpen: false, showUser:false })
+    this.setState({ showLogin: true, showHome: false, modalIsOpen: false, showAddUserPage:false })
     window.location.reload();
   }
 
@@ -76,12 +70,6 @@ class GetData extends Component {
           }
       })
     })
-
-    // if(fieldKeysOfGroup[8] === "accountNumber") {
-    //   var account= $('p').text('#accountNumber_value')
-    //   console.log(account)
-    //   account=new Array(account.length-3).join('x') + account.substr(account.length-4, 4);
-    // }
 }
 
   onGridReady = params => {
@@ -126,6 +114,8 @@ class GetData extends Component {
       .then(result => result.json())
       .then(rowDataSet => {
         var tempColumnDefs = [];
+
+        console.log(rowDataSet)
         if(rowDataSet.length > 0)
         {
         var argsCopy = Object.keys(rowDataSet[0])
@@ -155,21 +145,20 @@ class GetData extends Component {
             return  <i className="fa fa-eye fullView" style={{ color: "#2B2B2C" }}></i>
           }
         });
-
-        // tempColumnDefs.push({
-        //   headerName: "Edit",
-        //   lockPosition: true,
-        //   cellRendererFramework: () => {
-        //     return  <i className="fa fa-edit fullView" onClick={this.editFunction} style={{ color: "#2B2B2C" }}></i>
-        //   }
-        // });
-
+        console.log(tempColumnDefs)
         this.setState({ rowData: rowDataSet, columnDefs: tempColumnDefs })
         }
       })
      
   }
 
+  handleClickViewQuote = () => {
+    this.setState({showGetData: true, showUserManagement : false})
+  }
+
+  handleClickUserManagement = () => {
+    this.setState({showGetData: false, showUserManagement : true})
+  }
  
 
   toggleFunction = (param) => {
@@ -189,24 +178,42 @@ class GetData extends Component {
     if (this.state.showHome) {
       return (
         <div>
-          <div className="header">
-            <img src={logo} className="logo"></img>
-            <button className="addUser-btn btn-primary" id="addUser" name="addUser" onClick={this.handleUser}>
-             Add User <i className="fa fa-plus"></i></button>
-            <button className="logout-btn btn btn-danger" id="CloseData" name="CloseData" onClick={this.handleLogout}>
-              <i class="fa fa-sign-out"></i> logout</button>
-          </div>
-          <div
-            className="ag-theme-balham" >
-            <AgGridReact
-              columnDefs={this.state.columnDefs}
-              rowData={this.state.rowData}
-              onRowClicked={this.onRowClicked}
-              onGridReady={this.onGridReady}
-              onFirstDataRendered={this.setFixedSize}
-            >
-            </AgGridReact>
-          </div>
+          {/* <div className="header"> */}
+          <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+                <a class="navbar-brand" href="#"><img src={logo} className="logo"></img></a>
+                <ul class="navbar-nav">
+                <li class="nav-item" style={{paddingTop: "7px"}}>
+                  <nobr>
+                    <a class="nav-link1" href="#" id="navbardrop" onClick={this.handleClickViewQuote}>
+                      View Quote
+                    </a>
+                  </nobr>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                   <i className="fa fa-cog"></i> Settings
+                  </a>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" onClick={this.handleClickUserManagement}>User Management</a>
+                  </div>
+                </li>
+                </ul> 
+                <button className="logout-btn btn btn-danger" id="CloseData" name="CloseData" onClick={this.handleLogout}>
+                <i class="fa fa-sign-out"></i> logout</button>
+              </nav>
+              { this.state.showGetData ?
+                <div className="ag-theme-balham" >
+                  <AgGridReact
+                    columnDefs={this.state.columnDefs}
+                    rowData={this.state.rowData}
+                    onRowClicked={this.onRowClicked}
+                    onGridReady={this.onGridReady}
+                    onFirstDataRendered={this.setFixedSize}
+                  >
+                  </AgGridReact>
+                </div> :
+                <UserManagement />
+              }
         </div>
       );
     }
@@ -214,12 +221,6 @@ class GetData extends Component {
     if (this.state.showLogin) {
       return (
         <Login />
-      )
-    }
-
-    if (this.state.showUser) {
-      return (
-        <User />
       )
     }
 

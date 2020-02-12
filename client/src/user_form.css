@@ -57,6 +57,18 @@
     padding: 1px 6px;
   }
 
+  #register .back-btn {
+    border: none;
+    border-radius: 4px;
+    color: white;
+    float: right;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    margin: -1px 26px;
+    margin-left: -23px;
+    padding: 1px 30px;
+  }
+
   #register .user-label {
     margin-top: 0.5rem !important;
     margin-bottom: -0.5rem !important;

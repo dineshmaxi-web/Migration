@@ -4,8 +4,8 @@ import App from './App.js';
 import Login from './Login.js';
 import GetData from './GetData';
 import * as serviceWorker from './serviceWorker';
-import Detail from './Detail.js';
 import user_form from './user_form.js';
+import NoMatch from './NoMatch.js';
 import { Route, Router,  BrowserRouter } from 'react-router-dom';
 
 class Index extends Component {
@@ -17,6 +17,8 @@ class Index extends Component {
               <Route path="/get_data" component={((sessionStorage.getItem("username") === "zenfra" && sessionStorage.getItem("password") === "zenfra") ? (GetData) : (Login))} />
               <Route path="/login" component={Login} />
               <Route path="/user_form" component={user_form}  />
+              <Route path="*" component={NoMatch}/>
+              {/* <Route path="/UserManagement" component={UserManagement}  /> */}
           </div>
         </BrowserRouter>
       )

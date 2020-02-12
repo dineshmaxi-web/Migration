@@ -1,30 +1,29 @@
 import React from 'react';
 import './user_form.css';
-import GetData from './GetData.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from './vtglogo.jpg';
-import Login from './Login.js';
 import Modal from 'react-modal';
 import EmailValidator from 'email-validator';
 import UserManagement from './UserManagement';
 
 var count = 0;
-
+var servers = ["VmWare","AIX","Windows","Linux","Solaris","HP-UX"]
 class UserForm extends React.Component {
     state = {
-        showUserPage : true,
-        showHome: false,
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        userQuote: "",
+        id : this.props.fields._id,
+        firstName: this.props.fields.firstName,
+        lastName: this.props.fields.lastName,
+        email: this.props.fields.email,
+        password: this.props.fields.password,
+        userQuote: this.props.fields.userQuote,
         showErrorMessage : false,
         modalIsOpen: false,
         showRequiredFirstName : false,
         showRequiredLastName : false,
         showRequiredEmail : false,
-        showRequiredPassWord : false
+        showRequiredPassWord : false,
+        showUserManagementPage : false,
+        showEditUserPage : true
     }
 
     onChangeHandler = (e) => {
@@ -32,45 +31,32 @@ class UserForm extends React.Component {
 
         if(e.target.name === "firstName")
         {
+            console.log(e.target.value)
             if(e.target.value.match(/^[A-Za-z .]+$/)) {
-                this.setState({firstName : e.target.value})
-                this.setState({ showRequiredFirstName: false })
+                this.setState({firstName : e.target.value,  showRequiredFirstName: false})
             }
             else {
-                this.setState({ showRequiredFirstName: true })
+                this.setState({firstName : e.target.value, showRequiredFirstName: true })
             }
         }
 
         if(e.target.name === "lastName")
         {
             if(e.target.value.match(/^[A-Za-z .]+$/)) {
-                this.setState({lastName : e.target.value})
-                this.setState({ showRequiredLastName: false })
+                this.setState({lastName : e.target.value,  showRequiredLastName: false})
             }
             else {
-                this.setState({ showRequiredLastName: true })
+                this.setState({lastName : e.target.value, showRequiredLastName: true })
             }
         }
 
         if(e.target.name === "email")
         {
             if(EmailValidator.validate(e.target.value)) {
-                this.setState({email : e.target.value})
-                this.setState({ showRequiredEmail: false })
+                this.setState({email : e.target.value, showRequiredEmail: false })
             }
             else {
-                this.setState({ showRequiredEmail: true })
-            }
-        }
-
-        if(e.target.name === "password")
-        {
-            if(e.target.value !== "") {
-                this.setState({password : e.target.value})
-                this.setState({ showRequiredPassWord: false })
-            }
-            else {
-                this.setState({ showRequiredPassWord: true })
+                this.setState({email : e.target.value, showRequiredEmail: true })
             }
         }
 
@@ -80,74 +66,73 @@ class UserForm extends React.Component {
         }
     }
     
-    closeModal = () =>{
-        this.setState({showUserPage : false, showUserManagement: true, modalIsOpen: false,showHome:false, showLogin : false})
-    }
 
-    openModal = () => {
+    openModal = (e) => {
 
-        var {firstName, lastName, email, password, userQuote} = this.state;
-        console.log(firstName,lastName,email,password,userQuote, this.state.password);
-        if(firstName !== "" && lastName !== "" && email !== "" && password !== "" && userQuote !== "")
+        var {id, firstName, lastName, email, password, userQuote} = this.state;
+        if(firstName !== "" && lastName !== "" && email !== "" && userQuote !== "")
         {
             count = 0;
         }
         else{
             count = 1;
         }
-
+        
         var finalValue = {
+            id : id,
             firstName : firstName,
             lastName : lastName,
             email : email,
             password : password,
             userQuote : userQuote
         }
+
         if(count === 0){
-            fetch('/post/adduser', {
+            fetch('/update/user', {
                 method: 'POST',
                 body: JSON.stringify({
                 data: finalValue
                 }),
                 headers: { "Content-Type": "application/json" }
             })
-            .then(function (response) {
-                return response.json();
-            }).then(() => {
-                this.setState({ modalIsOpen: true });
-            });
+            .then((response) => {
+                this.setState({modalIsOpen: true});
+            })
         }
         else{
             count = 0;
         }
     }
 
+    closeModal = () =>{
+        this.setState({showUserPage : false, showUserManagementPage: true, modalIsOpen: false,showHome:false, showLogin : false})
+    }
+
     handleUser = (e) => {
-        this.setState({showUserPage : false, showUserManagement: true, modalIsOpen: false,showHome:false, showLogin : false})
+        this.setState({showUserPage : false, modalIsOpen: false, showUserManagementPage:true})
     }
 
     render() {
 
-        if(this.state.showHome){
+        if(this.state.showUserManagementPage){
             return (
-                <GetData />
+                <UserManagement />
             )
         }
     
-        if(this.state.showUserPage)
+        if(this.state.showEditUserPage)
         {
         return (
             <div id="register">
-            <div className="header">
+                <div className="header">
             <img src={logo} className="logo"></img>
             </div>
             <div className="container-fluid">
                 <div className="user-box">
                 <h4 className="userbox-head">Add new user
                     <button type="submit" class="btn-success adduser-btn" onClick={this.openModal}>
-                      Save & Close <i class="fa fa-save"></i>
-                    </button>
-                   <button type="submit" class="btn-danger back-btn" onClick={this.closeModal}>
+                     Save & Close <i class="fa fa-save"></i>
+                    </button><button type="submit" class="btn-danger back-btn" onClick={this.closeModal}>
                      Back <i class="fa fa-save"></i>
                     </button>
                     <Modal
@@ -156,7 +141,7 @@ class UserForm extends React.Component {
                         ariaHideApp={false}
                         className="userModal-box">
                         <div className="Modalbody">
-                            User Added Successfully!<br/>
+                            User Edited Successfully!<br/>
                             <div>
                                 <button className="btn-success done-btn" onClick={this.handleUser}>Done <i class="fa fa-thumbs-up"></i></button>
                             </div>
@@ -167,7 +152,7 @@ class UserForm extends React.Component {
                     <div className="row">
                         <div className="col-md-4">
                             <label className="user-label">First Name</label>
-                            <input type="text" id="login" name="firstName" className="" placeholder="First name" 
+                            <input type="text" id="login" value={this.state.firstName} name="firstName" className="" placeholder="First name" 
                             onChange={this.onChangeHandler} />
                             {
                                 (this.state.showRequiredFirstName ? <div style={{color:"red"}}>Invalid First Name</div> : null)
@@ -175,7 +160,7 @@ class UserForm extends React.Component {
                         </div>
                         <div className="col-md-4">
                             <label className="user-label">Last Name</label>
-                            <input type="text" id="login" name="lastName" className="" placeholder="Last name" 
+                            <input type="text" id="login" name="lastName" value={this.state.lastName} className="" placeholder="Last name" 
                             onChange={this.onChangeHandler} />
                             {
                                 (this.state.showRequiredLastName ?  <div style={{color:"red"}}>Invalid Last Name</div> : null)
@@ -183,29 +168,21 @@ class UserForm extends React.Component {
                         </div>
                         <div className="col-md-4">
                             <label className="user-label ">Email Address</label>
-                            <input type="email" id="login" name="email" className="" placeholder="Email Address" 
+                            <input type="email" id="login" name="email" value={this.state.email} className="" placeholder="Email Address" 
                             onChange={this.onChangeHandler} />
                             {
                                 (this.state.showRequiredEmail ?  <div style={{color:"red"}}>Invalid Email Address</div> : null)
                             }
                         </div>
                         <div className="col-md-4">
-                            <label className="user-label">Password</label>
-                            <input type="password" id="password" className="" name="password"  placeholder="Password" onChange={this.onChangeHandler} />
-                            {
-                                (this.state.showRequiredPassWord ?  <div style={{color:"red"}}>Invalid Password</div> : null)
-                            }
-                        </div>
-                        <div className="col-md-4">
                             <label className="user-label ">User Quote</label>
-                            <select name="userQuote" className="" onChange={this.onChangeHandler}>
-                                <option selected disabled>Select Server</option>
-                                <option>VmWare</option>
-                                <option>AIX</option>
-                                <option>Windows</option>
-                                <option>Linux</option>
-                                <option>Solaris</option>
-                                <option>HP-UX</option>
+                            <select name="userQuote" value={this.state.userQuote} className="" onChange={this.onChangeHandler}>
+                                <option selected>{this.state.userQuote}</option>
+                                {
+                                    servers.map(server => (
+                                        ((server !== this.state.userQuote) ? (<option>{server}</option>) : (null))
+                                    ))
+                                }
                             </select>
                             {
                                 (this.state.showErrorMessage ? "required" : null)
@@ -217,16 +194,6 @@ class UserForm extends React.Component {
             </div>
             </div>
         )
-        }
-        if(this.state.showLogin){
-            return(
-                <Login />
-            )
-        }
-        if(this.state.showUserManagement){
-            return(
-                <UserManagement />
-            )
         }
     }
 }
