@@ -17,7 +17,7 @@ class Index extends Component {
               <Route path="/get_data" component={((sessionStorage.getItem("username") === "zenfra" && sessionStorage.getItem("password") === "zenfra") ? (GetData) : (Login))} />
               <Route path="/login" component={Login} />
               <Route path="/user_form" component={user_form}  />
-              <Route path="*" component={NoMatch}/>
+              {/* <Route path="*" exact={true} component={NoMatch}/> */}
               {/* <Route path="/UserManagement" component={UserManagement}  /> */}
           </div>
         </BrowserRouter>

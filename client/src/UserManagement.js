@@ -39,23 +39,22 @@ class UserManagement extends React.Component {
 					console.log(argsCopy)
 				for (let i = 0; i < argsCopy.length; i++) {
 					if (i !== 0) {
-						tempColumnDefs.push({
-						"headerName": argsCopy[i].charAt(0).toUpperCase() + argsCopy[i].slice(1).replace(/([A-Z])/g, ' $1').trim(),
-						"field": argsCopy[i],
-						lockPosition: true
-						});
-					}
-					else {
 						if(argsCopy[i] !== "password")
 						{
-							console.log(argsCopy[i])
 							tempColumnDefs.push({
 							"headerName": argsCopy[i].charAt(0).toUpperCase() + argsCopy[i].slice(1).replace(/([A-Z])/g, ' $1').trim(),
 							"field": argsCopy[i],
-							lockPosition: true,
-							hide: true
+							lockPosition: true
 							});
 						}
+					}
+					else {
+						tempColumnDefs.push({
+						"headerName": argsCopy[i].charAt(0).toUpperCase() + argsCopy[i].slice(1).replace(/([A-Z])/g, ' $1').trim(),
+						"field": argsCopy[i],
+						lockPosition: true,
+						hide: true
+						});
 					}
         		}
 
