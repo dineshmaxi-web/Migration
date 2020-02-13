@@ -1,0 +1,12 @@
+img{
+	margin-top: 4px;
+    margin-right: 18px;
+    margin-left: 6px;
+}
+.navbar{
+    border-radius : 0px;
+}
+li, img{
+	font-size : 16px;
+    cursor: pointer;
+}

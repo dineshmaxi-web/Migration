@@ -12,8 +12,6 @@ var count = 0;
 
 class UserForm extends React.Component {
     state = {
-        showUserPage : true,
-        showHome: false,
         firstName: "",
         lastName: "",
         email: "",
@@ -81,7 +79,7 @@ class UserForm extends React.Component {
     }
     
     closeModal = () =>{
-        this.setState({showUserPage : false, showUserManagement: true, modalIsOpen: false,showHome:false, showLogin : false})
+      window.location = "/UserManagement"
     }
 
     openModal = () => {
@@ -123,19 +121,10 @@ class UserForm extends React.Component {
     }
 
     handleUser = (e) => {
-        this.setState({showUserPage : false, showUserManagement: true, modalIsOpen: false,showHome:false, showLogin : false})
+        window.location = "/UserManagement"
     }
 
     render() {
-
-        if(this.state.showHome){
-            return (
-                <GetData />
-            )
-        }
-    
-        if(this.state.showUserPage)
-        {
         return (
             <div id="register">
             <div className="header">
@@ -217,17 +206,6 @@ class UserForm extends React.Component {
             </div>
             </div>
         )
-        }
-        if(this.state.showLogin){
-            return(
-                <Login />
-            )
-        }
-        if(this.state.showUserManagement){
-            return(
-                <UserManagement />
-            )
-        }
     }
 }
 

@@ -7,18 +7,14 @@ import "ag-grid-community/dist/styles/ag-theme-balham.css";
 import logo from './vtglogo.jpg';
 import './Detail.css';
 import _ from 'lodash';
+import Navbar from "./navbar.js";
 
 var groupKeys = [], fieldKeysOfGroup = [], dbGroupKeys = [], dummy = [1, 2, 3, 4], startsWithServer = [], startsWithNumber = [];
 class GetData extends Component {
 
   state = {
-    showAddUserPage : false,
     modalIsOpen: false,
-    showLogin: false,
-    showHome: true,
-    showDetail: false,
     showGetData: true,
-    showUserManagement: false,
     columnDefs: [],
     defaultColDef: {
       sortable: true,
@@ -36,16 +32,15 @@ class GetData extends Component {
   }
 
   closeModal = () => {
-    this.setState({ showHome: true, modalIsOpen: false, showLogin: false, showAddUserPage:false });
+    window.location = "/viewquote"
   }
 
   handleLogout = () => {
-    this.setState({ showLogin: true, showHome: false, modalIsOpen: false, showAddUserPage:false })
-    window.location.reload();
+    this.setState({ showLogin: true, showGetData: false, modalIsOpen: false, showAddUserPage:false })
   }
 
   onRowClicked = (e) => {
-    this.setState({ modalIsOpen: true, showHome: false, showLogin: false });
+    this.setState({ modalIsOpen: true, showGetData: false, showLogin: false });
 
     fetch('/get/formdata/particular/' + e.data._id)
       .then(result => result.json())
@@ -149,17 +144,7 @@ class GetData extends Component {
         this.setState({ rowData: rowDataSet, columnDefs: tempColumnDefs })
         }
       })
-     
   }
-
-  handleClickViewQuote = () => {
-    this.setState({showGetData: true, showUserManagement : false})
-  }
-
-  handleClickUserManagement = () => {
-    this.setState({showGetData: false, showUserManagement : true})
-  }
- 
 
   toggleFunction = (param) => {
     var datas = this.state.dbGroup;
@@ -175,32 +160,11 @@ class GetData extends Component {
 
     var trailingCharsIntactCount = 4;
 
-    if (this.state.showHome) {
+    if (this.state.showGetData) {
       return (
         <div>
           {/* <div className="header"> */}
-          <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-                <a class="navbar-brand" href="#"><img src={logo} className="logo"></img></a>
-                <ul class="navbar-nav">
-                <li class="nav-item" style={{paddingTop: "7px"}}>
-                  <nobr>
-                    <a class="nav-link1" href="#" id="navbardrop" onClick={this.handleClickViewQuote}>
-                      View Quote
-                    </a>
-                  </nobr>
-                </li>
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                   <i className="fa fa-cog"></i> Settings
-                  </a>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" onClick={this.handleClickUserManagement}>User Management</a>
-                  </div>
-                </li>
-                </ul> 
-                <button className="logout-btn btn btn-danger" id="CloseData" name="CloseData" onClick={this.handleLogout}>
-                <i class="fa fa-sign-out"></i> logout</button>
-              </nav>
+          <Navbar/>
               { this.state.showGetData ?
                 <div className="ag-theme-balham" >
                   <AgGridReact
@@ -218,58 +182,21 @@ class GetData extends Component {
       );
     }
 
-    if (this.state.showLogin) {
+    if(this.state.modalIsOpen)
+    {
       return (
-        <Login />
-      )
-    }
-
-    return (
-      <div className="data-modal">
-        <div className="header">
-          <img src={logo} className="logo"></img>
-          <button className="CloseData-btn btn-primary" id="CloseData" name="CloseData" onClick={this.closeModal}>
-            <i className="fa fa-arrow-circle-left"></i> Back</button>
-        </div>
-        <div className="container-fluid">
-          {
-            dbGroupKeys.map((groupName, index) => (
-              groupKeys.map((groupKey) => (
-                (groupKey === groupName ? (
-                  (groupName !== "ServersinMigrationScope" ? (
-                    <div className="box">
-                      <div>
-                        <h4 className="box-head" onClick={() => this.toggleFunction(groupName)} data-toggle="collapse" data-target={'#' + groupName}>
-                          <i class="fa fa-bars"></i> {this.state.dbGroup[index].groupLabel}
-                          <i class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-chevron-circle-up" : "fa fa-chevron-circle-down"}`} ></i>
-                        </h4>
-                      </div>
-                      <div className="form-inline">
-                        <div className="box-body collapse show" id={groupName}>
-                          <div className="row">
-                            {
-                              fieldKeysOfGroup.map((fieldName1) => (
-                                Object.keys(this.state.pushData[groupName]).map(fieldName => (
-                                  ((fieldName1 === fieldName) &&
-                                    <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                      <div className="form-group modal-algn">
-                                        <label id={fieldName}>{fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1').trim()}</label>
-  
-                                        {
-                                          fieldName === "accountNumber" ? this.state.pushData[groupName][fieldName]= new Array(this.state.pushData[groupName][fieldName].length - trailingCharsIntactCount + 1).join('x') + this.state.pushData[groupName][fieldName].slice( -trailingCharsIntactCount)
-                                          :  <p id={fieldName + "_value"}>{this.state.pushData[groupName][fieldName]}</p>
-                                        }
-                                      </div>
-                                    </div>
-                                  )
-                                ))
-                              ))
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
+        <div className="data-modal">
+          <div className="header">
+            <img src={logo} className="logo"></img>
+            <button className="CloseData-btn btn-primary" id="CloseData" name="CloseData" onClick={this.closeModal}>
+              <i className="fa fa-arrow-circle-left"></i> Back</button>
+          </div>
+          <div className="container-fluid">
+            {
+              dbGroupKeys.map((groupName, index) => (
+                groupKeys.map((groupKey) => (
+                  (groupKey === groupName ? (
+                    (groupName !== "ServersinMigrationScope" ? (
                       <div className="box">
                         <div>
                           <h4 className="box-head" onClick={() => this.toggleFunction(groupName)} data-toggle="collapse" data-target={'#' + groupName}>
@@ -279,50 +206,84 @@ class GetData extends Component {
                         </div>
                         <div className="form-inline">
                           <div className="box-body collapse show" id={groupName}>
-                        
-                            <table id="table-algn">
-                              <thead>
-                                <th>Servers</th>
-                                <th>Number of Servers</th>
-                                <th>Number of ESX Hosts</th>
-                                <th>Number of VM Guests</th>
-                                <th>Number of SAN Boots</th>
-                              </thead>
+                            <div className="row">
                               {
-                                this.state.startsWithServer.map((server) => (
-                                  
-                                  <tr>
-
-                                   <td>{this.state.pushData[groupName][server]}</td>
-                                   
-                                    {
-                                      this.state.startWithNumbers.map(startsWithNumber => (
-                                        this.state.pushFieldName.map((fieldName) => (
-                                          (fieldName.startsWith(startsWithNumber) ? (
-                                            ((server.charAt(server.length - 1) === fieldName.charAt(fieldName.length - 1)) && (this.state.pushData[groupName][server] !== this.state.pushData[groupName][fieldName] ) ? (                                          
-                                              <td>{this.state.pushData[groupName][fieldName]}</td>
-                                            ) : (null))
-                                          ): (null))
-                                        ))
-                                      ))
-                                    }
-                                  </tr>
+                                fieldKeysOfGroup.map((fieldName1) => (
+                                  Object.keys(this.state.pushData[groupName]).map(fieldName => (
+                                    ((fieldName1 === fieldName) &&
+                                      <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <div className="form-group modal-algn">
+                                          <label id={fieldName}>{fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace(/([A-Z])/g, ' $1').trim()}</label>
+    
+                                          {
+                                            fieldName === "accountNumber" ? this.state.pushData[groupName][fieldName]= new Array(this.state.pushData[groupName][fieldName].length - trailingCharsIntactCount + 1).join('x') + this.state.pushData[groupName][fieldName].slice( -trailingCharsIntactCount)
+                                            :  <p id={fieldName + "_value"}>{this.state.pushData[groupName][fieldName]}</p>
+                                          }
+                                        </div>
+                                      </div>
+                                    )
+                                  ))
                                 ))
                               }
-                            </table>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    ))
-                ) : (null))
-              ))
-            ))
-          }
-        </div>
-        {/* </Modal> */}
-      </div>
+                    ) : (
+                        <div className="box">
+                          <div>
+                            <h4 className="box-head" onClick={() => this.toggleFunction(groupName)} data-toggle="collapse" data-target={'#' + groupName}>
+                              <i class="fa fa-bars"></i> {this.state.dbGroup[index].groupLabel}
+                              <i class={`icon-algn ${this.state.dbGroup[index].toggleActive ? "fa fa-chevron-circle-up" : "fa fa-chevron-circle-down"}`} ></i>
+                            </h4>
+                          </div>
+                          <div className="form-inline">
+                            <div className="box-body collapse show" id={groupName}>
+                          
+                              <table id="table-algn">
+                                <thead>
+                                  <th>Servers</th>
+                                  <th>Number of Servers</th>
+                                  <th>Number of ESX Hosts</th>
+                                  <th>Number of VM Guests</th>
+                                  <th>Number of SAN Boots</th>
+                                </thead>
+                                {
+                                  this.state.startsWithServer.map((server) => (
+                                    
+                                    <tr>
 
-    )
+                                    <td>{this.state.pushData[groupName][server]}</td>
+                                    
+                                      {
+                                        this.state.startWithNumbers.map(startsWithNumber => (
+                                          this.state.pushFieldName.map((fieldName) => (
+                                            (fieldName.startsWith(startsWithNumber) ? (
+                                              ((server.charAt(server.length - 1) === fieldName.charAt(fieldName.length - 1)) && (this.state.pushData[groupName][server] !== this.state.pushData[groupName][fieldName] ) ? (                                          
+                                                <td>{this.state.pushData[groupName][fieldName]}</td>
+                                              ) : (null))
+                                            ): (null))
+                                          ))
+                                        ))
+                                      }
+                                    </tr>
+                                  ))
+                                }
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                  ) : (null))
+                ))
+              ))
+            }
+          </div>
+          {/* </Modal> */}
+        </div>
+
+        )
+    }
   }
 }
 

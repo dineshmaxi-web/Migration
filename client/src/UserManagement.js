@@ -4,13 +4,13 @@ import EditUser from './edit_user';
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham.css";
+import Navbar from './navbar.js';
 
 class UserManagement extends React.Component {
 
     state = {
-			showAddUserPage : false,
 			showEditUserPage : false,
-			showUserManagementPage : true
+			showUserManagementPage : true		
 		}
 		
 		onGridReady = params => {
@@ -23,7 +23,7 @@ class UserManagement extends React.Component {
 		}
 
 		showAddUserPage = () =>{
-			this.setState({showAddUserPage : true, showEditUserPage : false, showUserManagementPage : false})
+			window.location = "/adduser"
 		}
 
 		componentDidMount() {
@@ -80,7 +80,6 @@ class UserManagement extends React.Component {
 		}
 		
 		onCellClicked = (e) => {
-			console.log(e.data._id)
 			if(e.colDef.headerName === "Edit")
 			{
 				this.setState({fields : e.data, showEditUserPage : true, showUserManagementPage : false})
@@ -94,7 +93,7 @@ class UserManagement extends React.Component {
 					}),
 					headers: { "Content-Type": "application/json" }
 				})
-				.then((response) => {
+				.then(() => {
 					var rowData = [];
 					this.gridApi.forEachNode(function (node) {
 						rowData.push(node.data);
@@ -110,7 +109,10 @@ class UserManagement extends React.Component {
 			if(this.state.showUserManagementPage === true)
 			{
 				return(
+					<div>
+						<Navbar />
 						<div className="ag-theme-balham" >
+						
 							<div className="addUser-btn">
 								<button className="btn-primary btn" onClick={this.showAddUserPage}>Add User +</button>
 							</div>
@@ -123,18 +125,13 @@ class UserManagement extends React.Component {
 								>
 								</AgGridReact>
 						</div>
+					</div>
 				)
 			}
 			if(this.state.showEditUserPage === true)
 			{
 				return(
 					<EditUser fields={this.state.fields} />
-				)
-			}
-			if(this.state.showAddUserPage === true)
-			{
-				return(
-					<AddUser />
 				)
 			}
     }

@@ -105,11 +105,11 @@ class UserForm extends React.Component {
     }
 
     closeModal = () =>{
-        this.setState({showUserPage : false, showUserManagementPage: true, modalIsOpen: false,showHome:false, showLogin : false})
+        window.location = "/UserManagement"
     }
 
     handleUser = (e) => {
-        this.setState({showUserPage : false, modalIsOpen: false, showUserManagementPage:true})
+        window.location = "/UserManagement"
     }
 
     render() {
