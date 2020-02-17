@@ -1,12 +1,11 @@
 import React from 'react';
 import './user_form.css';
-import GetData from './GetData.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import logo from './vtglogo.jpg';
-import Login from './Login.js';
 import Modal from 'react-modal';
 import EmailValidator from 'email-validator';
-import UserManagement from './UserManagement';
+import Navbar from "./navbar.js"
+import Footer from './footer.js';
+import './footer.css';
 
 var count = 0;
 
@@ -127,17 +126,12 @@ class UserForm extends React.Component {
     render() {
         return (
             <div id="register">
-            <div className="header">
-            <img src={logo} className="logo"></img>
-            </div>
+            <Navbar />
             <div className="container-fluid">
                 <div className="user-box">
                 <h4 className="userbox-head">Add new user
                     <button type="submit" class="btn-success adduser-btn" onClick={this.openModal}>
-                      Save & Close <i class="fa fa-save"></i>
-                    </button>
-                   <button type="submit" class="btn-danger back-btn" onClick={this.closeModal}>
-                     Back <i class="fa fa-save"></i>
+                     <i class="fa fa-save"></i>&nbsp; Save & Close 
                     </button>
                     <Modal
                         isOpen={this.state.modalIsOpen}
@@ -204,6 +198,7 @@ class UserForm extends React.Component {
                 </div>
                 </div>
             </div>
+            <Footer />
             </div>
         )
     }

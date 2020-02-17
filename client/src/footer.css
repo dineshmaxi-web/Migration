@@ -1,0 +1,15 @@
+.footer{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #ececec;
+    color: white;
+    text-align: center;
+    padding: 5px;
+    color: skyblue;
+}
+
+.companyLink{
+    margin-left: 5px;
+}

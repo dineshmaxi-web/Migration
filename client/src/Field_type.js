@@ -121,20 +121,20 @@ class Type extends React.Component {
 
     if(fieldType === "accountNumber" || fieldType === "wasCode")
     {
-      var minLength = 0;
-      var maxLength = 0;
-      if(fieldType === "accountNumber")
-      {
-        minLength = 8
-        maxLength = 16
-      }
-      if(fieldType === "wasCode")
-      {
-        minLength = 3
-        maxLength = 5
-      }
-      if(fieldValue.length > minLength && fieldValue.length < maxLength)
-      {
+      // var minLength = 0;
+      // var maxLength = 0;
+      // if(fieldType === "accountNumber")
+      // {
+      //   minLength = 8
+      //   maxLength = 16
+      // }
+      // if(fieldType === "wasCode")
+      // {
+      //   minLength = 3
+      //   maxLength = 5
+      // }
+      // if(fieldValue.length > minLength && fieldValue.length < maxLength)
+      // {
         if(fieldValue.match(/^[0-9 .\b]+$/)){
           this.props.func(fieldName, fieldValue, groupName);
           this.props.field.showRequired = false;
@@ -148,10 +148,10 @@ class Type extends React.Component {
         else {
           this.props.delSubField(groupName, fieldName);
         }
-      }
-      else {
-        this.props.delSubField(groupName, fieldName);
-      }
+      // }
+      // else {
+      //   this.props.delSubField(groupName, fieldName);
+      // }
     }
 
     if(fieldType === "zipCode")
@@ -747,8 +747,8 @@ class Type extends React.Component {
           </label>
           <input placeholder={placeholder} type={fieldType} onChange={(e) =>this.onChangeHandler(fieldName, e.target.value, fieldType)}></input>
           {
-            (this.props.field.showRequired && this.props.state.CustomerContactInformation.country !== "India" ? (<span style={{ color: "red" }}>*Required five Digit Number</span>) : (
-              (this.props.field.showRequired && this.props.state.CustomerContactInformation.country === "India" ? (<span style={{ color: "red" }}>*Required six Digit Number</span>) : null)
+            (this.props.field.showRequired && this.props.state.CustomerContactInformation.country !== "India" ? (<span style={{ color: "red" }}>*Required five digit number</span>) : (
+              (this.props.field.showRequired && this.props.state.CustomerContactInformation.country === "India" ? (<span style={{ color: "red" }}>*Required six digit number</span>) : null)
             ))
           }
         </div>
@@ -762,7 +762,7 @@ class Type extends React.Component {
           </label>
           <input id={fieldName} type={fieldType} placeholder={placeholder} name={fieldName} onChange={(e) => this.onChangeHandler(fieldName, e.target.value, fieldType, e)} />
           {
-            (this.props.field.showRequired  ? (<span style={{ color: "red" }}>*Enter valid Email address </span>) : (null))
+            (this.props.field.showRequired  ? (<span style={{ color: "red" }}>*Enter valid email address </span>) : (null))
           }
         </div>
       )
@@ -859,7 +859,7 @@ class Type extends React.Component {
             (this.props.field.showRequired ? (<span style={{ color: "red" }}>*Required</span>) : null)
           } */}
           {
-            (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Enter valid wasCode</span>) :   null)
+            (this.props.field.showRequired ? (<span style={{ color: "red" }}>* Enter valid was code</span>) :   null)
           }
         </div>
       )

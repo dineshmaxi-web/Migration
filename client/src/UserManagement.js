@@ -3,8 +3,10 @@ import AddUser from './user_form.js';
 import EditUser from './edit_user';
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-balham.css";
+import "ag-grid-community/dist/styles/ag-theme-material.css";
 import Navbar from './navbar.js';
+import Footer from './footer.js';
+import './footer.css';
 
 class UserManagement extends React.Component {
 
@@ -111,20 +113,23 @@ class UserManagement extends React.Component {
 				return(
 					<div>
 						<Navbar />
-						<div className="ag-theme-balham" >
+						<div className="ag-theme-material" >
 						
 							<div className="addUser-btn">
-								<button className="btn-primary btn" onClick={this.showAddUserPage}>Add User +</button>
+								<button className="btn-primary btn" onClick={this.showAddUserPage}><i class="fa fa-plus-circle"></i>&nbsp; Add User</button>
 							</div>
 								<AgGridReact
+								rowHeight ={40}
 								columnDefs={this.state.columnDefs}
 								rowData={this.state.rowData}
 								onCellClicked={this.onCellClicked}
 								onGridReady={this.onGridReady}
 								onFirstDataRendered={this.setFixedSize}
+								animateRows={true}
 								>
 								</AgGridReact>
 						</div>
+						<Footer />
 					</div>
 				)
 			}

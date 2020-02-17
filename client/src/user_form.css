@@ -13,7 +13,7 @@
   }
 
   #register .container-fluid {
-    padding-top: 58px;
+    padding-top: 5px;
   }
 
   #register input[type="text"],#register input[type="email"],#register input[type="password"] {
@@ -54,7 +54,7 @@
     font-size: 11px;
     margin: -1px 2px;
     margin-left: -12px;
-    padding: 1px 6px;
+    padding: 1px 20px;
   }
 
   #register .back-btn {
@@ -64,7 +64,7 @@
     float: right;
     font-family: 'Open Sans', sans-serif;
     font-size: 11px;
-    margin: -1px 26px;
+    margin: -1px 20px;
     margin-left: -23px;
     padding: 1px 30px;
   }

@@ -17,7 +17,7 @@ class Navbar extends React.Component {
     render() {
         return (
             <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-                <img src="http://www.virtualtechgurus.com/wp-content/uploads/2018/03/VTG-logo_50h-white.png" width="150" onClick={this.redirectViewQuotePage}></img>
+                <img src="http://www.virtualtechgurus.com/wp-content/uploads/2018/03/VTG-logo_50h-white.png" width="140" onClick={this.redirectViewQuotePage}></img>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -28,7 +28,7 @@ class Navbar extends React.Component {
                         </li>
                         <li class="nav-item dropdown">
                           <a class="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown">
-                             <i className="fa fa-cog"></i> Settings
+                             <i className="fa fa-cog fa-spin"></i> Settings
                           </a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" onClick={this.redirectUserManagementPage}><i className="fa fa-user"></i> User Management</a>

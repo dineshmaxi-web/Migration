@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Varela+Round&display=swap');
+
 .details-view .btn{
     margin-top: 5%;
     margin-left: 48%;
@@ -44,39 +46,58 @@
     cursor: pointer;
 }
 
-.ag-theme-balham .ag-header-row {
-    background-color: #efefff;
-    color: #504db0;
-    font-weight: 700;
+.ag-theme-material .ag-header-row {
+    color: #444;
+    font-family: 'Varela Round', sans-serif;
+    letter-spacing: 1px;
+    font-size: 13px;
+}
+.ag-theme-material .ag-header{
+    height: 45px !important;
+    min-height: 45px !important;
+}
+.ag-theme-material .ag-header-cell{
+    height: 45px;
 }
 
-.ag-theme-balham{
+.ag-theme-material .ag-header-cell:not(.ag-column-resizing) + .ag-header-cell:hover,.ag-theme-material .ag-header-cell:first-of-type:hover {
+   background-color: white;
+}
+
+.ag-theme-material{
     height: 100vh;
     width: 100%;
     padding: 6px;
 }
 
-.ag-theme-balham .ag-row-even {
-    background-color: #fafaff !important;
+.ag-theme-material .ag-row {
+    font-family: 'Varela Round', sans-serif;
+    font-size: 13px;
+    border-color: transparent;
+    color: #566787;
+}
+.ag-theme-material .ag-cell{
+    line-height: 38px;
+    padding-left: 24px;
+    padding-right: 24px;
+    border: 1px solid transparent;
+    padding-left: 23px;
+    padding-right: 23px;
+    font-size: 12px; 
 }
 
-.ag-theme-balham .ag-row-odd {
-    background-color: #fafaff !important;
+
+.ag-theme-material .ag-row-even {
+    background-color: rgba(0,0,0,.05);
 }
 
-.ag-theme-balham .ag-root {
-    border: 1px solid #BDC3C7;
-    margin-top: 18px;
+.ag-theme-material .ag-root {
+    border: 1px solid #e8e8e8;
     color: #696969;
-    font-weight: 600;
 }
 
 .ag-root-wrapper {
     padding-top: 10px;
-}
-
-.ag-theme-balham .ag-row {
-    border-color: white;
 }
 .CloseData-btn{
 	border: none;
@@ -183,4 +204,9 @@
 
 .addUser-btn{
     margin-top: 20px;
+}
+
+.btn-primary{
+    font-size: 13px;
+    font-family: 'Varela Round', sans-serif;
 }

@@ -23,6 +23,7 @@ class App extends React.Component {
       endDate:  ("0" + (new Date().getMonth() + 1)).slice(-2) + "-" + ("0" + new Date().getDate()).slice(-2) +"-" + new Date().getFullYear(), 
     }
   }
+  
 
   componentDidMount() {
     fetch('/get/forminfo')

@@ -3,11 +3,13 @@ import Login from './Login.js';
 import UserManagement from './UserManagement.js';
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
-import "ag-grid-community/dist/styles/ag-theme-balham.css";
+import "ag-grid-community/dist/styles/ag-theme-material.css";
 import logo from './vtglogo.jpg';
 import './Detail.css';
 import _ from 'lodash';
 import Navbar from "./navbar.js";
+import Footer from './footer.js';
+import './footer.css';
 
 var groupKeys = [], fieldKeysOfGroup = [], dbGroupKeys = [], dummy = [1, 2, 3, 4], startsWithServer = [], startsWithNumber = [];
 class GetData extends Component {
@@ -165,9 +167,9 @@ class GetData extends Component {
         <div>
           {/* <div className="header"> */}
           <Navbar/>
-              { this.state.showGetData ?
-                <div className="ag-theme-balham" >
+                <div className="ag-theme-material" >
                   <AgGridReact
+                    rowHeight ={40}
                     columnDefs={this.state.columnDefs}
                     rowData={this.state.rowData}
                     onRowClicked={this.onRowClicked}
@@ -175,9 +177,8 @@ class GetData extends Component {
                     onFirstDataRendered={this.setFixedSize}
                   >
                   </AgGridReact>
-                </div> :
-                <UserManagement />
-              }
+                </div>
+          <Footer />
         </div>
       );
     }
@@ -280,6 +281,7 @@ class GetData extends Component {
             }
           </div>
           {/* </Modal> */}
+          
         </div>
 
         )
